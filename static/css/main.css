@@ -1,0 +1,130 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #0f1720;
+    color: white;
+    margin-top: 80px;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 20px 60px;
+
+    background-color: #0f1720;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.nav {
+    display: flex;
+    gap: 40px;
+}
+
+.nav a {
+    text-decoration: none;
+    color: #cbd5e1;
+    font-size: 16px;
+}
+
+.nav a:hover {
+    color: white;
+}
+
+.actions {
+    display: flex;
+    gap: 15px;
+}
+
+button {
+    padding: 10px 18px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.piacter {
+    background: transparent;
+    border: 1px solid #334155;
+    color: white;
+}
+
+.regisztracio {
+    background: rgb(22, 22, 22);
+    border: none;
+    color: white;
+}
+
+.menu {
+    background: transparent;
+    border: 1px solid #334155;
+    color: white;
+}
+
+
+
+
+.fejlec {
+    background-color: #1a1a1a;
+    color: white;
+    padding: 60px 20px 100px 20px;
+    display: flex;           
+    flex-direction: column; 
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.gomb-kontener {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+}
+
+h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+p {
+    color: #ccc;
+    margin-bottom: 30px;
+}
+
+
+button {
+    padding: 12px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 15px;
+    margin: 5px;
+}
+
+.fekete-gomb {
+    background-color: #000;
+    color: #fff;
+    border: 1px solid #333;
+}
+
+.keretes-gomb {
+    background-color: transparent;
+    color: #fff;
+    border: 1px solid #666;
+}
+
