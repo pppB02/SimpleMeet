@@ -1,5 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from .site.routes import site
+from .admin.routes import admin
 
 db = SQLAlchemy()
 
@@ -12,6 +14,8 @@ def create_app():
 
     db.init_app(app)
 
-    import app.db_models as models
+    #DB might not working
 
+    app.register_blueprint(site)
+    app.register_blueprint(admin)
     return app
