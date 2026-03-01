@@ -1,11 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Hello</h1>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+    <div class="fejlec">
+        <h1>A szalonok és gyógyfürdők első számú szoftvere</h1>
+        <p>Egyszerű, rugalmas és hatékony foglalási szoftver vállalkozása számára.</p>
+        
+        <div class="gomb-kontener">
+            <button class="fekete-gomb">Vágj bele most</button>
+            <button class="keretes-gomb">Áttekintés megtekintése</button>
+        </div>
+    </div>
+
+    <div class="kep-kontener">
+        <img src="ChatGPT Image 2026. febr. 28. 15_58_04.png" alt="Naptár" class="fokep">
+    </div>
+
+{% endblock %}

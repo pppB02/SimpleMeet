@@ -4,4 +4,4 @@ admin = Blueprint("admin", __name__, static_folder="static", template_folder="te
 
 @admin.route("/")
 def index():
-    return render_template("home/admin.html")
+    return render_template("admin.html")

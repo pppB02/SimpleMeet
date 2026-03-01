@@ -1,13 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fodraszat neve</title>
-    <link rel="stylesheet" href="felhasznalo_fodrasz_oldal.css">
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{url_for('static',filename='felhasznalo_fodrasz_oldal.css')}}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-</head>
-<body>
+{% endblock %}
+
+{% block body %}
     <div class="alap-fejléc">
 
         <div class="baloldal">
@@ -34,6 +32,5 @@
             <button class="icon-btn"><i class="fa-regular fa-heart"></i></button>
         </div>
     </div>
-</body>
-</html>
+{% endblock %}
 

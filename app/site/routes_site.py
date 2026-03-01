@@ -4,4 +4,4 @@ site = Blueprint("site", __name__, static_folder="static", template_folder="temp
 
 @site.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("felhasznalo_fodrasz_oldal.html")
