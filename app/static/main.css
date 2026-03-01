@@ -1,147 +1,146 @@
-:root {
-    --ff: Archivo-Regular;
-    --colorprimary: black;
-    --colorsecondary: white;
-    --coloraccent: #0b8bcc;
-    --h1: bold 54px/64px var(--ff);
-    --h2: bold 36px/36px var(--ff);
-    --h3: bold 24px/30px var(--ff);
-    --links: bold 18px/18px var(--ff);
-    --p: 18px/30px var(--ff);
-    --subtext: 12px/20px var(--ff);
-    --smalltext: bold 20px/26px var(--ff);
-    --transition: 0.3s ease-in-out;
-    --shadow: #00000030 0px 0px 10px 0px;
-}
-
+/* Reset */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
+/* Variables */
+:root {
+    --colorprimary: black;
+    --colorsecondary: white; 
+    --coloraccent: #576fcf;
+    --colorshadow: #858585;
+    --ff: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif";
+    --ff2: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif";
+    --p: 1rem/1.5em var(--ff);
+    --h1: 600 3rem/1.2em var(--ff2);
+    --h2: 600 2rem/1.2em var(--ff2);
+    --spacing1: 4px;
+    --spacing2: 8px;
+    --spacing3: 16px;
+    --spacing4: 20px;
+    --spacing5: 40px;
+    --spacing6: 80px;
+    --spacing7: 160px;
+}
+
+/* Global Styles */
+html {
+  scroll-behavior: smooth;
+}
 body {
-    font-family: Arial, sans-serif;
-    background-color: #0f1720;
-    color: white;
-    margin-top: 80px;
+  text-wrap: balance;
+  font: var(--p);
+  background: var(--colorsecondary);
+  color: var(--colorprimary);
 }
-
-.header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 20px 60px;
-
-    background-color: #0f1720;
-    z-index: 1000;
-}
-
-.logo {
-    font-size: 22px;
-    font-weight: bold;
-}
-
-.nav {
-    display: flex;
-    gap: 40px;
-}
-
-.nav a {
-    text-decoration: none;
-    color: #cbd5e1;
-    font-size: 16px;
-}
-
-.nav a:hover {
-    color: white;
-}
-
-.actions {
-    display: flex;
-    gap: 15px;
-}
-
-button {
-    padding: 10px 18px;
-    border-radius: 25px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.piacter {
-    background: transparent;
-    border: 1px solid #334155;
-    color: white;
-}
-
-.regisztracio {
-    background: rgb(22, 22, 22);
-    border: none;
-    color: white;
-}
-
-.menu {
-    background: transparent;
-    border: 1px solid #334155;
-    color: white;
-}
-
-
-
-
-.fejlec {
-    background-color: #1a1a1a;
-    color: white;
-    padding: 60px 20px 100px 20px;
-    display: flex;           
-    flex-direction: column; 
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
-
-.gomb-kontener {
-    margin-top: 20px;
-    display: flex;
-    gap: 15px;
-}
-
 h1 {
-    font-size: 32px;
-    margin-bottom: 10px;
+  font: var(--h1);
 }
-
+h2 {
+  font: var(--h2);
+  margin: var(--spacing2) 0;
+}
 p {
-    color: #ccc;
-    margin-bottom: 30px;
+  margin: var(--spacing2) 0;
 }
-
-
+a {
+  color: var(--colorprimary);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--coloraccent);
+}
+.btn,
 button {
-    padding: 12px 25px;
-    border-radius: 25px;
-    cursor: pointer;
-    font-size: 15px;
-    margin: 5px;
+  all: unset;
+  display: inline-block;
+  margin: var(--spacing2) 0;
+  background: var(--colorsecondary);
+  padding: var(--spacing2) var(--spacing3);
+  color: var(--colorprimary);
+  border-radius: var(--spacing2);
+  border-bottom: solid var(--spacing1) var(--accent);
+  font: var(--p);
+  cursor: pointer;
+}
+.btn:hover,
+button:hover {
+  background: linear-gradient(180deg, var(--coloraccent), var(--coloraccent));
+  transition: 0.3s ease-in-out;
+}
+img {
+  width: 100%;
 }
 
-.fekete-gomb {
-    background-color: #000;
-    color: #fff;
-    border: 1px solid #333;
+/* Utility Classes */
+section {
+  width: 90%;
+  max-width: 1080px;
+  margin: 0 auto;
 }
-
-.keretes-gomb {
-    background-color: transparent;
-    color: #fff;
-    border: 1px solid #666;
+.center {
+  text-align: center;
+}
+.hidden {
+  display: none;
+}
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing4);
+  flex-wrap: wrap;
+}
+.flex > * {
+  flex: 1;
+  min-width: 400px;
+}
+.reverse {
+  flex-direction: row-reverse;
+}
+.padding1 {
+  padding: var(--spacing1) 0;
+}
+.padding2 {
+  padding: var(--spacing2) 0;
+}
+.padding3 {
+  padding: var(--spacing3) 0;
+}
+.padding4 {
+  padding: var(--spacing4) 0;
+}
+.padding5 {
+  padding: var(--spacing5) 0;
+}
+.padding6 {
+  padding: var(--spacing6) 0;
+}
+.padding7 {
+  padding: var(--spacing7) 0;
+}
+.margin1 {
+  margin: var(--spacing1) auto;
+}
+.margin2 {
+  margin: var(--spacing2) auto;
+}
+.margin3 {
+  margin: var(--spacing3) auto;
+}
+.margin4 {
+  margin: var(--spacing4) auto;
+}
+.margin5 {
+  margin: var(--spacing5) auto;
+}
+.margin6 {
+  margin: var(--spacing6) auto;
+}
+.margin7 {
+  margin: var(--spacing7) auto;
 }
 
 
@@ -157,8 +156,8 @@ footer {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #000;
-    color: #858585;
+    background-color: var(--colorprimary);
+    color: var(--colorshadow);
 
 }
 
@@ -167,17 +166,17 @@ footer ul {
 }
 
 footer h3 {
-    font-family: Arial, Helvetica, sans-serif;
-    color: #ffffffd3;
+    font-family: var(--ff);
+    color: var(--colorsecondary);
     font-size: 1rem;
 }
 
 footer a:visited {
-    color: #ffffffd3;
+    color: var(--colorsecondary);
 }
 
 footer a {
-    font-family: Archivo-Medium;
+    font-family: var(--ff2);
     font-size: 1rem;
     text-decoration: none;
     color: var(--colorsecondary);
@@ -200,7 +199,7 @@ footer a:hover {
     display: flex;
     flex-wrap: wrap;
     gap: 5vw;
-    border-top: 2px solid hwb(0 100% 0% / 0.827);
+    border-top: 2px solid var(--colorsecondary);
     padding-top: 20px;
 }
 
@@ -224,13 +223,13 @@ footer a:hover {
 .footer-button-container {
     display: flex;
     justify-content: space-between;
-    border-bottom: 2px solid hwb(0 100% 0% / 0.827);
+    border-bottom: 2px solid var(--colorsecondary);
     padding-bottom: 8px;
     margin: 30px 0px;
 }
 
 .footer-button-container input {
-    font-family: Archivo-SemiBold;
+    font-family: var(--ff);
     font-size: 1.15rem;
     background: transparent;
     color: var(--coloraccent);
@@ -241,7 +240,7 @@ footer a:hover {
 }
 
 .footer-button-container input:hover {
-    background-color: #576fcf20;
+    background-color: var(--colorshadow);
 }
 
 
