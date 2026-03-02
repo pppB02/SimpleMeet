@@ -1,0 +1,43 @@
+{% block head %}
+    <title>admin panel</title>
+    <link rel="stylesheet" href="{{ url_for('user.static',filename='css/login/styles.css') }}">
+{% endblock %}
+
+{% block body %}
+
+    <section>
+        <div class="flex-container">
+            <div class="box-50 login-frame">
+                <div class="">
+                    <div class="center">
+                        <h2>SimpleMeet for professionals</h2>
+                        <p>Create an account.</p>
+                    </div>
+
+                    <div class="input-fields">
+                        <form action="sign-up" method="post">
+                            <div class="input-field">
+                                <input type="text" name="name" id="name" placeholder="Name">
+                            </div>
+
+                            <div class="input-field">
+                                <input type="email" name="email" id="email" placeholder="Email">
+                            </div>
+
+                            <div class="input-field">
+                                <input type="password" name="password" id="password" placeholder="Password">
+                            </div>
+                            <div>
+                                <input type="submit" value="Create account">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="box-50">
+                <img class="box-100" src="{{ url_for('user.static',filename='imgs/login/login-img.jpg') }}" alt="">
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
