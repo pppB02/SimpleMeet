@@ -1,8 +1,10 @@
 import bcrypt
 
 def encrypt(password:str):
-    hashed = bcrypt.hashpw(password, bcrypt.gensalt())
-    return hashed
+    salt = bcrypt.gensalt()
+    password_hash = bcrypt.hashpw(password, salt)
+    return password_hash, salt
 
-def checkPass(password):
-    return bcrypt.checkpw(password,encrypt(password))
+def checkPass(plain_password,salt,bd_password)->bool:
+    password_hash = bcrypt.hashpw(plain_password, salt)
+    return True if bd_password==password_hash else False

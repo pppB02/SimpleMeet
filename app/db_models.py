@@ -13,6 +13,7 @@ class UserAccount(db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False)
     name = db.Column(db.String(255), nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
+    salt = db.Column(db.String(255), nullable=False)
     role = db.Column(
         db.Enum('customer', 'staff', 'business_admin'),
         nullable=False

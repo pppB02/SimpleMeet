@@ -15,17 +15,29 @@
                     </div>
 
                     <div class="input-fields">
-                        <div class="input-field">
-                            <input type="text" name="name" id="name" placeholder="Name">
-                        </div>
+                        <form action="login" method="post">
+                            <div class="input-field">
+                                <input type="text" name="name" id="name" placeholder="Name">
+                            </div>
 
-                        <div class="input-field">
-                            <input type="email" name="email" id="email" placeholder="Email">
-                        </div>
+                            <div class="input-field">
+                                <input type="email" name="email" id="email" placeholder="Email">
+                            </div>
 
-                        <div class="input-field">
-                            <input type="password" name="password" id="password" placeholder="Password">
-                        </div>
+                            <div class="input-field">
+                                <input type="password" name="password" id="password" placeholder="Password">
+                            </div>
+                            <div>
+                                <input type="submit" value="Login">
+                            </div>
+                            <div>
+                                {% if error != "" %}
+                                <p style="color: red;">{{ error }}</p>
+                                {% else %}
+                                <p class="hidden"></p>
+                                {% endif %}
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

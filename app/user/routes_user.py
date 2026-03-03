@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, url_for, request, redirect
 from app import db
-from .services.sign_up import service as signUpSrv
+from .services.sign_up import signUpSrv
+from .services.login import loginSrv
 
 
 user = Blueprint("user", __name__, static_folder="static", template_folder="templates", url_prefix="/user")
@@ -10,9 +11,12 @@ def login():
     if request.method == "POST":
         name = request.form.get('name')
         email = request.form.get('email')
-        password = request.form.get('password')
-
-    return render_template("login/login.html")
+        password = request.form.get('password').encode("utf-8")
+        print(name,email,password)
+        result = loginSrv(db,name,email,password)
+        return result
+    else:
+        return render_template("login/login.html", error="")
 
 @user.route("/sign-up", methods=['POST','GET'])
 def signUp():

@@ -1,15 +1,15 @@
-from flask import redirect, flash
+from flask import redirect, render_template
 from ...db_models import UserAccount
+from .passwordService import checkPass
 
-def main(db):
-    def encryptPassword(password):
-        pass
-
-    def searcInDB(name,email,password):
-        newUser = UserAccount(name=name, email=email, password=encryptPassword(password))
-        try:
-            db.session.add(newUser)
-            db.session.commit()
-            return redirect("/")
-        except:
-            return flash("Invalid credentials", "warning")
+def loginSrv(db, name, email, password):
+    user = UserAccount.query.filter_by(email=email).first()
+    print(user)
+    if user != None:
+        if checkPass(password,user.salt,user.password_hash):
+            print("login was succesfull")
+            return redirect("admin/")
+        else:
+            return render_template("login/login.html",error="wrong password")
+    else:
+        return "<p>This email address has not been registered yet. <a href='sign-up'>Sing up</a></p>"
