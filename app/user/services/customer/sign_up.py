@@ -1,4 +1,5 @@
 from flask import redirect
+from flask_login import login_user
 from ....db_models import UserAccount
 from ..passwordService import encrypt
 
@@ -9,7 +10,9 @@ def signUpSrv(db, username, email, password):
             try:
                 db.session.add(newUser)
                 db.session.commit()
-                return redirect("/")
+                login_user(newUser)
+                print("singing up was succesfull")
+                return redirect("dashboard")
             except Exception as e:
                 return f"There was an error: {e}"
     else:

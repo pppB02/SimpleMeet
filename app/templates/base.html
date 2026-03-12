@@ -19,8 +19,8 @@
         </nav>
 
         <div class="actions">
-            <button class="piacter">Piactér</button>
-            <button class="regisztracio">Regisztráció</button>
+            <a class="piacter" href="{{ url_for('user.login') }}">Bejelentkezés</a>
+            <a class="regisztracio" href="{{ url_for('user.signUp') }}">Regisztráció</a>
             <button class="menu">Menü ☰</button>
         </div>
     </header>

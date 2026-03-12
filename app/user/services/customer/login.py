@@ -1,5 +1,5 @@
 from flask import redirect, render_template
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user
 from ....db_models import UserAccount
 from ..passwordService import checkPass
 

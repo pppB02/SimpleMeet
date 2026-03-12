@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, url_for, request, redirect
-from flask_login import logout_user, login_required
+from flask_login import logout_user, login_required, current_user
 from app import db, login_manager
 from .services.customer.sign_up import signUpSrv
 from .services.customer.login import loginSrv
