@@ -36,13 +36,16 @@ body {
   color: var(--colorprimary);
 }
 h1 {
+  font-family: var(--ff);
   font: var(--h1);
 }
 h2 {
   font: var(--h2);
+  font-family: var(--ff);
   margin: var(--spacing2) 0;
 }
 p {
+  font-family: var(--ff);
   margin: var(--spacing2) 0;
 }
 a {
@@ -86,20 +89,6 @@ section {
 .hidden {
   display: none;
 }
-.flex {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing4);
-  flex-wrap: wrap;
-}
-.flex > * {
-  flex: 1;
-  min-width: 400px;
-}
-.reverse {
-  flex-direction: row-reverse;
-}
 .padding1 {
   padding: var(--spacing1) 0;
 }
@@ -142,3 +131,50 @@ section {
 .margin7 {
   margin: var(--spacing7) auto;
 }
+
+
+.flex-container{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.box-50{
+    width: 50%;
+}
+
+.box-100{
+    width: 100%;
+}
+
+.input-fields{
+  display: flex;
+  flex-direction: column;
+  gap: 1vw;
+}
+.input-field{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.input-field input{
+  width: 70%;
+  height: 5vh;
+  max-height: 46px;
+  font-size: var(--p);
+  /*font-family: var(--ff);*/
+  border: 1px solid var(--colorshadow);
+  border-radius: 8px;
+  outline: none;
+}
+
+/*
+
+.input-field input:focus, .input-field input:active{
+  outline: none;
+  transform: 100ms;
+  border-bottom: 2px solid var(--colorprimary);
+}
+*/
