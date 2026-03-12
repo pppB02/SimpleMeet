@@ -5,6 +5,6 @@ def encrypt(password:str):
     password_hash = bcrypt.hashpw(password, salt)
     return password_hash, salt
 
-def checkPass(plain_password,salt,bd_password)->bool:
+def checkPass(plain_password,salt,db_password)->bool:
     password_hash = bcrypt.hashpw(plain_password, salt)
-    return True if bd_password==password_hash else False
+    return True if db_password==password_hash else False

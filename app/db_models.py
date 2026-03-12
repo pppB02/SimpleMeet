@@ -1,17 +1,18 @@
 from app import db
 from datetime import datetime
+from flask_login import UserMixin
 
 
 # ======================
 # USER ACCOUNT
 # ======================
 
-class UserAccount(db.Model):
+class UserAccount(db.Model,UserMixin):
     __tablename__ = "user_account"
 
-    user_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
-    name = db.Column(db.String(255), nullable=False)
+    username = db.Column(db.String(255), nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     salt = db.Column(db.String(255), nullable=False)
     role = db.Column(
@@ -41,9 +42,9 @@ class Business(db.Model):
     email = db.Column(db.String(255))
     phone = db.Column(db.String(50))
 
-    admin_user_id = db.Column(
+    admin_id = db.Column(
         db.Integer,
-        db.ForeignKey("user_account.user_id"),
+        db.ForeignKey("user_account.id"),
         unique=True
     )
 
@@ -72,9 +73,9 @@ class Staff(db.Model):
         nullable=False
     )
 
-    user_id = db.Column(
+    id = db.Column(
         db.Integer,
-        db.ForeignKey("user_account.user_id"),
+        db.ForeignKey("user_account.id"),
         unique=True
     )
 
@@ -85,7 +86,7 @@ class Staff(db.Model):
     appointments = db.relationship("Appointment", back_populates="staff", cascade="all, delete")
 
     def __repr__(self):
-        return f"<Staff {self.user_id}>"
+        return f"<Staff {self.id}>"
 
 
 # ======================
@@ -97,9 +98,9 @@ class Customer(db.Model):
 
     customer_id = db.Column(db.Integer, primary_key=True)
 
-    user_id = db.Column(
+    id = db.Column(
         db.Integer,
-        db.ForeignKey("user_account.user_id"),
+        db.ForeignKey("user_account.id"),
         unique=True
     )
 
@@ -109,7 +110,7 @@ class Customer(db.Model):
     appointments = db.relationship("Appointment", back_populates="customer", cascade="all, delete")
 
     def __repr__(self):
-        return f"<Customer {self.user_id}>"
+        return f"<Customer {self.id}>"
 
 
 # ======================

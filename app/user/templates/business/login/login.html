@@ -1,6 +1,6 @@
 {% block head %}
     <title>admin panel</title>
-    <link rel="stylesheet" href="{{ url_for('user.static',filename='css/login/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('user.static',filename='customer/css/login/styles.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -11,11 +11,11 @@
                 <div class="">
                     <div class="center">
                         <h2>SimpleMeet for professionals</h2>
-                        <p>Create an account.</p>
+                        <p>Create an account or log in to manage your business.</p>
                     </div>
 
                     <div class="input-fields">
-                        <form action="sign-up" method="post">
+                        <form action="login" method="post">
                             <div class="input-field">
                                 <input type="text" name="name" id="name" placeholder="Name">
                             </div>
@@ -28,14 +28,21 @@
                                 <input type="password" name="password" id="password" placeholder="Password">
                             </div>
                             <div>
-                                <input type="submit" value="Create account">
+                                <input type="submit" value="Login">
+                            </div>
+                            <div>
+                                {% if error != "" %}
+                                <p style="color: red;">{{ error }}</p>
+                                {% else %}
+                                <p class="hidden"></p>
+                                {% endif %}
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
             <div class="box-50">
-                <img class="box-100" src="{{ url_for('user.static',filename='imgs/login/login-img.jpg') }}" alt="">
+                <img class="box-100" src="{{ url_for('user.static',filename='customer/imgs/login/login-img.jpg') }}" alt="">
             </div>
         </div>
     </section>
