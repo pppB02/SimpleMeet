@@ -7,10 +7,9 @@
 
 /* Variables */
 :root {
-    --colorprimary: black;
-    --colorsecondary: white; 
-    --coloraccent: #576fcf;
-    --colorshadow: #858585;
+    --hatter: white; 
+    --betuszin: #242325;
+    --kiemeloszin: #a855f7;
     --ff: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif";
     --ff2: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif";
     --p: 1rem/1.5em var(--ff);
@@ -32,44 +31,38 @@ html {
 body {
   text-wrap: balance;
   font: var(--p);
-  background: var(--colorsecondary);
-  color: var(--colorprimary);
+  background: var(--hatter);
+  color: var(--betuszin);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
 }
-h1 {
-  font: var(--h1);
-}
+
 h2 {
-  font: var(--h2);
   margin: var(--spacing2) 0;
+  line-height: 0.9em;
 }
 p {
   margin: var(--spacing2) 0;
 }
 a {
-  color: var(--colorprimary);
+  color: var(--betuszin);
   text-decoration: none;
 }
 a:hover {
-  color: var(--coloraccent);
+  color: var(--kiemeloszin);
 }
 .btn,
 button {
   all: unset;
   display: inline-block;
   margin: var(--spacing2) 0;
-  background: var(--colorsecondary);
+  background: var(--hatter);
   padding: var(--spacing2) var(--spacing3);
-  color: var(--colorprimary);
+  color: var(--betuszin);
   border-radius: var(--spacing2);
   border-bottom: solid var(--spacing1) var(--accent);
-  font: var(--p);
   cursor: pointer;
 }
-.btn:hover,
-button:hover {
-  background: linear-gradient(180deg, var(--coloraccent), var(--coloraccent));
-  transition: 0.3s ease-in-out;
-}
+
 img {
   width: 100%;
 }
@@ -142,7 +135,7 @@ footer {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--colorprimary);
+    background-color: var(--betuszin);
     color: var(--colorshadow);
 
 }
@@ -152,24 +145,23 @@ footer ul {
 }
 
 footer h3 {
-    font-family: var(--ff);
-    color: var(--colorsecondary);
+    color: var(--hatter);
     font-size: 1rem;
 }
 
 footer a:visited {
-    color: var(--colorsecondary);
+    color: var(--hatter);
 }
 
 footer a {
-    font-family: var(--ff2);
+  
     font-size: 1rem;
     text-decoration: none;
-    color: var(--colorsecondary);
+    color: var(--hatter);
 }
 
 footer a:hover {
-    color: var(--coloraccent);
+    color: var(--kiemeloszin);
     text-decoration: underline;
 }
 
@@ -185,7 +177,7 @@ footer a:hover {
     display: flex;
     flex-wrap: wrap;
     gap: 5vw;
-    border-top: 2px solid var(--colorsecondary);
+    border-top: 2px solid var(--hatter);
     padding-top: 20px;
 }
 
@@ -198,7 +190,7 @@ footer a:hover {
     margin: 0;
     margin-bottom: 20px;
     margin-top: 100px;
-    color: var(--colorsecondary);
+    color: var(--hatter);
 }
 
 .main-footer-section {
@@ -209,7 +201,7 @@ footer a:hover {
 .footer-button-container {
     display: flex;
     justify-content: space-between;
-    border-bottom: 2px solid var(--colorsecondary);
+    border-bottom: 2px solid var(--hatter);
     padding-bottom: 8px;
     margin: 30px 0px;
 }
@@ -218,8 +210,8 @@ footer a:hover {
     font-family: var(--ff);
     font-size: 1.15rem;
     background: transparent;
-    color: var(--coloraccent);
-    border: 2px solid var(--coloraccent);
+    color: var(--kiemeloszin);
+    border: 2px solid var(--kiemeloszin);
     border-radius: 5px;
     padding: 5px 30px;
     cursor: pointer;
@@ -254,7 +246,7 @@ footer a:hover {
 
 .footer-icon-container a:hover {
     transition: 0.3s;
-    background-color: var(--coloraccent);
+    background-color: var(--kiemeloszin);
 
 
 }

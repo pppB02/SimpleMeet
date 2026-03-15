@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <link rel="stylesheet" href="{{url_for('static',filename='css/index.css')}}">
+    <link rel="stylesheet" href="{{url_for('static',filename='index/index.css')}}">
 {% endblock %}
 
 {% block body %}
@@ -10,13 +10,89 @@
         <p>Egyszerű, rugalmas és hatékony foglalási szoftver vállalkozása számára.</p>
         
         <div class="gomb-kontener">
-            <button class="fekete-gomb">Vágj bele most</button>
+            <button class="fekete-gomb">Foglalj most</button>
             <button class="keretes-gomb">Áttekintés megtekintése</button>
         </div>
     </div>
 
     <div class="kep-kontener">
-        <img src="ChatGPT Image 2026. febr. 28. 15_58_04.png" alt="Naptár" class="fokep">
+        <img src="{{url_for('static',filename='index/images/business.webp')}}" alt="Naptár" class="fokep">
     </div>
+
+<section class="ajanlott">
+    <h2>Ajánlott</h2>
+
+    <div class="kartyak">
+
+        <a href="#" class="kartya">
+            <img src="{{url_for('static',filename='index/images/barber.png')}}" alt="Spa">
+
+            <div class="kartya-szoveg">
+                <h3>BarberShop</h3>
+                <p>Debrecen, Biga utca/20</p>
+                <span class="kategoria">Barber</span>
+            </div>
+        </a>
+
+        <a href="#" class="kartya">
+            <img src="{{url_for('static',filename='index/images/barber.png')}}" alt="Spa">
+
+            <div class="kartya-szoveg">
+                <h3>BarberShop</h3>
+                <p>Debrecen, Isiász Imre tér/4</p>
+                <span class="kategoria">Barber</span>
+            </div>
+        </a>
+
+        <a href="#" class="kartya">
+            <img src="{{url_for('static',filename='index/images/masszazs.png')}}" alt="Spa">
+
+            <div class="kartya-szoveg">
+                <h3>Vassa Spa at BOR Hotel</h3>
+                <p>Zlatibor, Zlatibor</p>
+                <span class="kategoria">Spa & szauna</span>
+            </div>
+        </a>
+
+
+
+    </div>
+</section>
+
+
+<section class="app-szekcio">
+
+    <div class="app-bal">
+
+        <p class="elerheto">Elérhető:  G</p>
+
+        <h2>Töltse le a SimpleMeet alkalmazást</h2>
+
+        <p class="app-leiras">
+            Foglalj felejthetetlen szépségápolási és
+            wellnessélményeket a Fresha mobilalkalmazással
+        </p>
+
+        <img src="{{url_for('static',filename='index/images/qr.png')}}" class="qr">
+
+    </div>
+
+
+    <div class="app-jobb">
+
+        <div class="telefon">
+
+            <video autoplay muted loop>
+                <source src="{{url_for('static',filename='index/videos/video1.mp4')}}" type="video/mp4">
+            </video>
+        </div>
+
+        <div class="telefon">
+            <img src="{{url_for('static',filename='index/images/kep1.webp')}}" alt="kep1">
+        </div>
+
+    </div>
+
+</section>
 
 {% endblock %}
