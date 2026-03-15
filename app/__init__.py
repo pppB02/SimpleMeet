@@ -23,7 +23,7 @@ def create_app():
     app.config['SESSION_PERMANENT']= False
 
     login_manager.init_app(app)
-    login_manager.login_view = "/user/login"
+    login_manager.login_view = "user.login"
 
     db.init_app(app)
 

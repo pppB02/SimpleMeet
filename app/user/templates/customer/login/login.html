@@ -1,5 +1,5 @@
 {% block head %}
-    <title>admin panel</title>
+    <title>Login</title>
     <link rel="stylesheet" href="{{ url_for('user.static',filename='customer/css/login/styles.css') }}">
 {% endblock %}
 
@@ -16,26 +16,42 @@
 
                     <div class="input-fields">
                         <form action="login" method="post">
-                            <div class="input-field">
-                                <input type="text" name="name" id="name" placeholder="Name">
-                            </div>
-
-                            <div class="input-field">
-                                <input type="email" name="email" id="email" placeholder="Email">
-                            </div>
-
-                            <div class="input-field">
-                                <input type="password" name="password" id="password" placeholder="Password">
-                            </div>
+                            {{ form.hidden_tag() }}
                             <div>
-                                <input type="submit" value="Login">
-                            </div>
-                            <div>
-                                {% if error != "" %}
-                                <p style="color: red;">{{ error }}</p>
+                                {{ form.email.label() }}
+
+                                {% if form.email.errors %}
+                                    {{ form.email() }}
+                                    <div>
+                                        {% for error in form.email.errors %}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
                                 {% else %}
-                                <p class="hidden"></p>
+                                    {{ form.email() }}
                                 {% endif %}
+                            </div>
+
+                            <div>
+                                {{ form.password.label() }}
+                                {% if form.password.errors %}
+                                    {{ form.password() }}
+                                    <div>
+                                        {% for error in form.password.errors %}
+                                            <span>{{error}}</span>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.password() }}
+                                {% endif %}
+                            </div>
+
+                            <div>
+                                {{ form.remember() }}
+                                {{ form.remember.label() }}
+                            </div>
+                            <div>
+                                {{ form.submit() }}
                             </div>
                         </form>
                     </div>
