@@ -5,7 +5,7 @@ from ..passwordService import checkPass
 
 def loginSrv(email, password, remember):
     user = UserAccount.query.filter_by(email=email).first()
-    if user and checkPass(password,user.salt,user.password_hash):
+    if user and checkPass(password,user.password_hash):
             login_user(user, remember=remember)
             print("login was succesfull")
             return None

@@ -24,7 +24,14 @@ class SingUpForm(FlaskForm):
         existing_user_email = UserAccount.query.filter_by(
             email=email.data).first()
         if existing_user_email:
-            raise ValidationError(f"That email has been already registered!")
+            raise ValidationError(f"Ezt az email címet már regisztrálták! <a href='{url_for('user.login')}'>Bejelentkezés</a>")
+        
+    def validate_username(self, username):
+        existing_user_username = UserAccount.query.filter_by(
+            username=username.data).first()
+        if existing_user_username:
+            raise ValidationError(f"Ez a felhasználónév foglalt!")
+
 
 class LoginForm(FlaskForm):
     email = StringField("Email",validators=[
@@ -38,9 +45,3 @@ class LoginForm(FlaskForm):
     
     submit = SubmitField("Login")
 
-    def validate_email(self, email):
-        existing_user_email = UserAccount.query.filter_by(
-            email=email.data).first()
-        print("existing_user_email", existing_user_email)
-        if not existing_user_email:
-            raise ValidationError(f"That email has not been registered yet! <a href='{url_for('user.signUp')}'>Sing up</a>")

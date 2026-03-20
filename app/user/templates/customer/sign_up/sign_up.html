@@ -1,6 +1,6 @@
 {% block head %}
     <title>Sign Up</title>
-    <link rel="stylesheet" href="{{ url_for('user.static',filename='customer/css/login/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('user.static',filename='customer/css/sign_up/styles.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -11,7 +11,17 @@
                 <div class="">
                     <div class="center">
                         <h2>SimpleMeet felhasználóknak</h2>
-                        <p>Create an account.</p>
+                        <p>Fiók létrerehozás</p>
+                    </div>
+
+                    <div>
+                        {% with messages = get_flashed_messages(with_categories=True) %}
+                            {% if messages %}
+                                {% for category,message in messages %}
+                                    <div>{{ message }}</div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
                     </div>
 
                     <div class="input-fields">
@@ -38,7 +48,7 @@
                                     {{ form.email() }}
                                     <div>
                                         {% for error in form.email.errors %}
-                                            <span>{{error}}</span>
+                                            <span>{{error | safe}} </span>
                                         {% endfor %}
                                     </div>
                                 {% else %}

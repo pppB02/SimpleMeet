@@ -153,6 +153,12 @@ section {
   flex-direction: column;
   gap: 1vw;
 }
+
+a{
+  text-decoration: underline;
+  color: var(--coloraccent);
+}
+
 .input-field{
   display: flex;
   justify-content: center;
