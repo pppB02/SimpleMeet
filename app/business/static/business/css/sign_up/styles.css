@@ -32,8 +32,8 @@ html {
 body {
   text-wrap: balance;
   font: var(--p);
-  background: var(--colorsecondary);
-  color: var(--colorprimary);
+  background: var(--colorprimary);
+  color: var(--colorsecondary);
 }
 h1 {
   font-family: var(--ff);
