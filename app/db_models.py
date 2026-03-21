@@ -2,7 +2,6 @@ from app import db
 from datetime import datetime
 from flask_login import UserMixin
 
-
 # ======================
 # USER ACCOUNT
 # ======================
@@ -13,8 +12,7 @@ class UserAccount(db.Model,UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
     username = db.Column(db.String(255), nullable=False)
-    password_hash = db.Column(db.String(255), nullable=False)
-    salt = db.Column(db.String(255), nullable=False)
+    password_hash = db.Column(db.String(100), nullable=False)
     role = db.Column(
         db.Enum('customer', 'staff', 'business_admin'),
         nullable=False

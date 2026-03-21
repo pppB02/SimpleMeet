@@ -1,16 +1,20 @@
 from flask import Blueprint, render_template, url_for, request, redirect, flash
 from flask_login import logout_user, current_user, login_required
-from .services.customer.forms import SingUpForm, LoginForm
+from ..user.services.customer.forms import SingUpForm, LoginForm
 from app import db, login_manager
-from .services.customer.sign_up import signUpSrv
-from .services.customer.login import loginSrv
+from ..user.services.customer.sign_up import signUpSrv
+from ..user.services.customer.login import loginSrv
 
-user = Blueprint("user", __name__, static_folder="static", template_folder="templates", url_prefix="/user")
+business = Blueprint("business", __name__, static_folder="static", template_folder="templates", url_prefix="/business")
 
-@user.route("/login", methods=['POST','GET'])
+@business.route("/")
+def index():
+    return redirect(url_for("business.login"))
+
+@business.route("/login", methods=['POST','GET'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('user.dashboard'))
+        return redirect(url_for('business.dashboard'))
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -22,14 +26,14 @@ def login():
             try:
                 loginSrv(email,password,remember)
                 next_page = request.args.get('next')
-                return redirect(next_page) if next_page else redirect(url_for('user.dashboard'))
+                return redirect(next_page) if next_page else redirect(url_for('business.dashboard'))
             except Exception as e:
                 flash("bad password or email","danger")
-                return render_template("customer/login/login.html", form=form)
+                return render_template("login/login.html", form=form)
     else:
-        return render_template("customer/login/login.html", form=form)
+        return render_template("login/login.html", form=form)
 
-@user.route("/logout", methods=['POST','GET'])
+@business.route("/logout", methods=['POST','GET'])
 @login_required
 def logout():
     logout_user()
@@ -40,10 +44,10 @@ def load_user(user_id):
     from ..db_models import UserAccount
     return UserAccount.query.get(int(user_id))
 
-@user.route("/sign-up", methods=['POST','GET'])
+@business.route("/sign-up", methods=['POST','GET'])
 def signUp():
     if current_user.is_authenticated:
-        return redirect(url_for('user.dashboard'))
+        return redirect(url_for('business.dashboard'))
     
     form = SingUpForm()
     if form.validate_on_submit():
@@ -53,15 +57,15 @@ def signUp():
             password = form.password.data
 
             try:
-                signUpSrv(db,username,email,password,"customer")
-                return redirect(url_for("user.dashboard"))
+                signUpSrv(db,username,email,password,"business_admin")
+                return redirect(url_for("business.dashboard"))
             except Exception as e:
                 print(e)
                 return "hiba"
     else:
-        return render_template("customer/sign_up/sign_up.html", form=form)
+        return render_template("sign_up/sign_up.html", form=form)
     
-@user.route("/dashboard")
+@business.route("/dashboard")
 @login_required
 def dashboard():
     return render_template("dashboard/dashboard.html")

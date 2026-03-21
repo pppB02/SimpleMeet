@@ -1,6 +1,6 @@
 {% block head %}
     <title>Sign Up</title>
-    <link rel="stylesheet" href="{{ url_for('user.static',filename='customer/css/sign_up/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('business.static',filename='business/css/sign_up/styles.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -10,7 +10,7 @@
             <div class="box-50 login-frame">
                 <div class="">
                     <div class="center">
-                        <h2>SimpleMeet felhasználóknak</h2>
+                        <h2>SimpleMeet vállalkozóknak</h2>
                         <p>Fiók létrerehozás</p>
                     </div>
 
@@ -92,7 +92,7 @@
                 </div>
             </div>
             <div class="box-50">
-                <img class="box-100" src="{{ url_for('user.static',filename='customer/imgs/login/login-img.jpg') }}" alt="">
+                <img class="box-100" src="{{ url_for('business.static',filename='business/imgs/login/login-img.jpg') }}" alt="">
             </div>
         </div>
     </section>

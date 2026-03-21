@@ -1,17 +1,13 @@
 from flask import redirect, render_template
-from flask_login import login_user
+from flask_login import login_user, current_user
 from ....db_models import UserAccount
 from ..passwordService import checkPass
 
-def loginSrv(db, name, email, password):
+def loginSrv(email, password, remember):
     user = UserAccount.query.filter_by(email=email).first()
-    print(user)
-    if user != None:
-        if checkPass(password,user.salt,user.password_hash):
-            login_user(user)
+    if user and checkPass(password,user.password_hash):
+            login_user(user, remember=remember)
             print("login was succesfull")
-            return redirect("dashboard")
-        else:
-            return render_template("login.html",error="wrong password")
+            return None
     else:
-        return "<p>This email address has not been registered yet. <a href='sign-up'>Sing up</a></p>"
+        raise Exception("bad password or email")
