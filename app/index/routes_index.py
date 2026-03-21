@@ -5,3 +5,7 @@ index = Blueprint("index", __name__, static_folder="index.static", template_fold
 @index.route("/")
 def site():
     return render_template("index.html")
+
+@index.route("/adatvedelem")
+def adatvedelem():
+    return render_template("adatvedelem.html")

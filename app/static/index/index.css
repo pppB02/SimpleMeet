@@ -1,7 +1,7 @@
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #0f1720;
-    color: white;
+    background-color: var(--hatter);
+    color: var(--betuszin);
     margin-top: 80px;
 }
 
@@ -17,7 +17,7 @@ body {
 
     padding: 20px 60px;
 
-    background-color: #0f1720;
+    background-color: var(--hatter);
     z-index: 1000;
 }
 
@@ -38,7 +38,7 @@ body {
 }
 
 .nav a:hover {
-    color: white;
+    color: var(--betuszin);
 }
 
 .actions {
@@ -53,30 +53,36 @@ button {
     font-size: 14px;
 }
 
-.piacter {
-    background: transparent;
-    border: 1px solid #334155;
-    color: white;
+.navigacios_gomb {
+    color: var(--betuszin);
+    padding: 16px 0px;
+    font-weight: bold;
 }
 
-.regisztracio {
-    background: rgb(22, 22, 22);
-    border: none;
-    color: white;
+.uzlettipusok{
+     color: var(--betuszin);
+    padding: 16px 0px;
+    
+}
+
+.uzlettipusok:hover{
+    text-decoration: underline; 
 }
 
 .menu {
-    background: transparent;
-    border: 1px solid #334155;
+    border-radius: 16px;
     color: white;
+    font-weight: bold;
+    background-color: var(--betuszin);
+    padding: 8px 16px;
 }
 
 
 
 
 .fejlec {
-    background-color: #1a1a1a;
-    color: white;
+    background-color: var(--hatter);
+    color: var(--betuszin);
     padding: 60px 20px 100px 20px;
     display: flex;           
     flex-direction: column; 
@@ -111,13 +117,115 @@ button {
 }
 
 .fekete-gomb {
-    background-color: #000;
+    background-color: var(--kiemeloszin);
     color: #fff;
-    border: 1px solid #333;
+    border: 1px solid var(--kiemeloszin);
 }
 
 .keretes-gomb {
-    background-color: transparent;
+    background-color: #000;
     color: #fff;
     border: 1px solid #666;
+}
+.keretes-gomb:hover{
+    background-color:#000 ;
+}
+
+.ajanlott{
+    padding: 40px 80px;
+}
+
+.ajanlott h2{
+    margin-bottom: 25px;
+    font-size: 24px;
+}
+
+.kartyak{
+    display: flex;
+    gap: 30px;
+}
+
+.kartya{
+    width: 350px;
+    text-decoration: none;
+    color: var(--betuszin);
+}
+
+.kartya img{
+    width: 100%;
+    border-radius: 15px;
+    margin-bottom: 10px;
+}
+
+.kartya-szoveg h3{
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.kartya-szoveg p{
+    font-size: 14px;
+    color: #aaa;
+    margin-bottom: 3px;
+}
+
+.kategoria{
+    font-size: 13px;
+    color: #888;
+}
+
+.app-szekcio{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 120px 80px;
+}
+
+.app-bal{
+    max-width: 500px;
+}
+
+.elerheto{
+    color: #aaa;
+    margin-bottom: 20px;
+}
+
+.app-bal h2{
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.app-leiras{
+    color: #bbb;
+    font-size: 18px;
+    margin-bottom: 40px;
+}
+
+.qr{
+    width: 140px;
+    border-radius: 10px;
+}
+
+
+.app-jobb{
+    display: flex;
+    gap: 40px
+}
+
+
+.telefon{
+    width: 260px;
+    height: 520px;
+
+    border-radius: 35px;
+    overflow: hidden;
+
+    border: 6px solid #222;
+}
+
+.telefon video,
+.telefon img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }

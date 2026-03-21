@@ -12,15 +12,12 @@
     <header class="header">
         <div class="logo">SimpleMeet</div>
 
-        <nav class="nav">
-            <a href="#">Üzlettípusok</a>
-            <a href="#">Funkciók</a>
-            <a href="#">Árképzés</a>
-        </nav>
+        
 
         <div class="actions">
-            <a class="piacter" href="{{ url_for('user.login') }}">Bejelentkezés</a>
-            <a class="regisztracio" href="{{ url_for('user.signUp') }}">Regisztráció</a>
+            <a class="uzlettipusok"  href="#">Üzlettípusok</a>
+            <a class="navigacios_gomb" href="{{ url_for('user.login') }}">Bejelentkezés</a>
+            <a class="navigacios_gomb" href="{{ url_for('user.signUp') }}">Regisztráció</a>
             <button class="menu">Menü ☰</button>
         </div>
     </header>
@@ -51,7 +48,7 @@
                         <h3 class="bebas-neue-regular">Jogi információk</h3>
                         <ul>
                             <li><a href="template.html">Felhasználási feltételek</a></li>
-                            <li><a href="privacy-policy.html">Adatvédelmi irányelvek</a></li>
+                            <li><a href="adatvedelem.html">Adatvédelmi irányelvek</a></li>
                             <li><a href="template.html">Cookie szabályzat</a></li>
                             <li><a href="template.html">Cookie beállítások</a></li>
                         </ul>
