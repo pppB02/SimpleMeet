@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, url_for, request, redirect, flash
 from flask_login import logout_user, current_user, login_required
 from ..user.services.customer.forms import SingUpForm, LoginForm
+from .services.onboarding.businessForm import NameAndWebsite
 from app import db, login_manager
 from ..user.services.customer.sign_up import signUpSrv
 from ..user.services.customer.login import loginSrv
@@ -58,7 +59,7 @@ def signUp():
 
             try:
                 signUpSrv(db,username,email,password,"business_admin")
-                return redirect(url_for("business.dashboard"))
+                return redirect(url_for("business.onboarding"))
             except Exception as e:
                 print(e)
                 return "hiba"
@@ -69,3 +70,20 @@ def signUp():
 @login_required
 def dashboard():
     return render_template("dashboard/dashboard.html")
+
+@business.route("/onboarding/business_name")
+@login_required
+def onboarding():
+    form = NameAndWebsite()
+    if form.validate_on_submit():
+        if request.method == "POST":
+            business_name = form.business_name.data
+            website = form.website.data
+
+            try:
+                #signUpSrv(db,username,email,password,"business_admin")
+                return redirect(url_for("business.onboarding"))
+            except Exception as e:
+                print(e)
+                return "hiba"
+    return render_template("onboarding/business_name.html",form=form)

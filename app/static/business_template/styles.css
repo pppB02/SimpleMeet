@@ -1,0 +1,125 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.main{
+    width: 70%;
+    max-width: 2048px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.question h1{
+    font-weight: bold;
+    font-size: 40px;
+}
+
+.hero{
+    width: 100%;
+    max-width: 638px;
+}
+
+
+.header{
+    width: 100%;
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.loading-bar{
+    width: 100%;
+    display: flex;
+    gap: 8px;
+}
+
+.bar{
+    width: 25%;
+    border-radius: 16px;
+    height: 8px;
+}
+
+.bar-active{
+    background-color: blueviolet;
+}
+
+.bar-inactive{
+    background-color: gray;
+}
+
+.move-buttons{
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.continue{
+    height: 48px;
+    width: 128px;
+    border: none;
+    border-radius: 8px;
+    background-color: #000;
+    color: #fff;
+    padding: 16px;
+    padding-top: 14px;
+    font-weight: bold;
+    font-size: 18px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.question{
+    margin-bottom: 32px;
+}
+
+.question p{
+    font-size: 18px;
+}
+
+.question p, h4{
+    color: gray;
+}
+
+.input-fields{
+    width: 100%;
+    
+}
+
+form{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.field{
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.field label{
+    width: 100%;
+    font-weight: bold;
+}
+
+.field input{
+    width: 100%;
+    height: 48px;
+    border-radius: 8px;
+    border: 1px solid;
+    font-size: 16px;
+    padding: 16px;
+    margin-top: 8px;
+}

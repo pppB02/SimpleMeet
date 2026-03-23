@@ -18,7 +18,7 @@
                         {% with messages = get_flashed_messages(with_categories=True) %}
                             {% if messages %}
                                 {% for category,message in messages %}
-                                    <div>{{ message }}</div>
+                                    <p>{{ message }}</p>
                                 {% endfor %}
                             {% endif %}
                         {% endwith %}
@@ -28,7 +28,7 @@
                         <form action="login" method="post">
                             {{ form.hidden_tag() }}
                             <div>
-                                {{ form.email.label() }}
+                                {{ form.email.label() }} <!-- email cim input lesz -->
 
                                 {% if form.email.errors %}
                                     {{ form.email() }}

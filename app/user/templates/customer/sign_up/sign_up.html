@@ -28,7 +28,7 @@
                         <form action="" method="POST">
                             {{ form.hidden_tag() }}
                             <div>
-                                {{ form.username.label() }}
+                                {{ form.username.label(class="fityma") }}
                                 {% if form.username.errors %}
                                     {{ form.username() }}
                                     <div>
@@ -45,7 +45,7 @@
                                 {{ form.email.label() }}
 
                                 {% if form.email.errors %}
-                                    {{ form.email() }}
+                                    {{ form.email(class="") }} 
                                     <div>
                                         {% for error in form.email.errors %}
                                             <span>{{error | safe}} </span>

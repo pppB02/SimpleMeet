@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='business_template/styles.css') }}">
+    <title>SimpleMeet - Business Account</title>
+</head>
+<body>
+    <div class="main">
+        <div class="header">
+            <div class="loading-bar">
+                {% block loaddingBar %}
+                {% endblock %}
+            </div>
+            <div class="move-buttons">
+                <div class="back"></div>
+                {% block continueBtn %}
+                {% endblock %}
+            </div>
+        </div>
+
+        <div class="hero">
+            <div class="question">
+                <h4>Accoutn setup</h4>
+                {% block question %}
+                {% endblock %}
+            </div>
+
+            <div class="input-fields">
+                <form action="" method="POST">
+                    {% block form %}
+                    {% endblock %}
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
