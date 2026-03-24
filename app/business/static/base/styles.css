@@ -29,7 +29,6 @@ body{
 
 .hero{
     width: 100%;
-    max-width: 638px;
 }
 
 
@@ -83,6 +82,7 @@ body{
 
 .question{
     margin-bottom: 32px;
+    max-width: 638px;
 }
 
 .question p{
@@ -92,10 +92,9 @@ body{
 .question p, h4{
     color: gray;
 }
-
+/* max-width: 638px; */
 .input-fields{
     width: 100%;
-    
 }
 
 form{
@@ -122,4 +121,52 @@ form{
     font-size: 16px;
     padding: 16px;
     margin-top: 8px;
+}
+
+
+img{
+    width: 40px;
+    height: 40px;
+}
+
+label{
+    cursor: pointer;
+}
+
+.categories-options{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 16px;
+}
+
+.category{
+    width: 33%;
+    max-width: 308px;
+    
+}
+
+.category > input{
+    display: none;
+
+}
+
+
+.category > label{
+    display: block;
+    width: 100%;
+    border: 2px solid gray;
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.category input:checked + label{
+    border: 2px solid blueviolet;
+}
+
+.category p{
+    font-weight: bold;
+    margin-top: 16px;
+    font-size: 16px;
 }

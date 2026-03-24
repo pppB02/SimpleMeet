@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='business_template/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('business.static', filename='base/styles.css') }}">
     <title>SimpleMeet - Business Account</title>
 </head>
 <body>
@@ -15,8 +15,6 @@
             </div>
             <div class="move-buttons">
                 <div class="back"></div>
-                {% block continueBtn %}
-                {% endblock %}
             </div>
         </div>
 
@@ -28,8 +26,10 @@
             </div>
 
             <div class="input-fields">
-                <form action="" method="POST">
+                <form method="POST">
                     {% block form %}
+                    {% endblock %}
+                    {% block continueBtn %}
                     {% endblock %}
                 </form>
             </div>

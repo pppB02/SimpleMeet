@@ -1,10 +1,10 @@
-{% extends template_fort_business_setup %}
+{% extends "base/template_for_business_setup.html" %}
 
 {% block loaddingBar %}
-    <div class="bar-active"></div>
-    <div class="bar-active"></div>
-    <div class="bar-inactive"></div>
-    <div class="bar-inactive"></div>
+    <div class="bar bar-active"></div>
+    <div class="bar bar-active"></div>
+    <div class="bar bar-inactive"></div>
+    <div class="bar bar-inactive"></div>
 {% endblock %}
 
 
@@ -21,32 +21,19 @@
 {% endblock %}
 
 {% block form %}
-{{ form.hidden_tag() }}
-    <div class="field">
-        <div>{{ form.business_name.label(class="") }}</div>
-        {% if form.business_name.errors %}
-            <div>{{ form.business_name() }}</div>
-            <div>
-                {% for error in form.business_name.errors %}
-                    <span>{{error}}</span>
-                {% endfor %}
+    {{ form.hidden_tag() }}
+    <div class="categories-options">
+        {% for subfield in form.categories %}
+            <div class="category">
+                {{ subfield }}
+                <label for="{{ subfield.id }}">
+                    <img src="{{ url_for('business.static',filename='business/imgs/categories-icons/') }}{{subfield.data}}.png" alt="{{ subfield.data }}">
+                    <p>{{ subfield.label.text }}</p>
+                </label>
+                    
+                    
             </div>
-        {% else %}
-            <div>{{ form.business_name() }}</div>
-        {% endif %}
+        {% endfor %}
     </div>
-
-    <div class="field">
-        <div>{{ form.website.label(class="") }}</div>
-        {% if form.website.errors %}
-            {{ form.website() }}
-            <div>
-                {% for error in form.website.errors %}
-                    <span>{{error}}</span>
-                {% endfor %}
-            </div>
-        {% else %}
-            {{ form.website() }}
-        {% endif %}
-    </div>
+    
 {% endblock %}

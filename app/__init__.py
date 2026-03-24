@@ -31,4 +31,12 @@ def create_app():
     app.register_blueprint(business)
     app.register_blueprint(index)
 
+    from jinja2 import ChoiceLoader, FileSystemLoader
+
+    # Az alapértelmezett loader mellé felveszünk egy újat
+    app.jinja_loader = ChoiceLoader([
+        FileSystemLoader('business'),
+        app.jinja_loader, # Megtartjuk az eredeti Flask loadert is
+    ])
+
     return app
