@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <link rel="stylesheet" href="{{url_for('static',filename='index/index.css')}}">
+    <link rel="stylesheet" href="{{url_for('index.static',filename='index/index.css')}}">
 {% endblock %}
 
 {% block body %}
@@ -16,7 +16,7 @@
     </div>
 
     <div class="kep-kontener">
-        <img src="{{url_for('static',filename='index/images/business.webp')}}" alt="Naptár" class="fokep">
+        <img src="{{url_for('index.static',filename='index/images/business.webp')}}" alt="Naptár" class="fokep">
     </div>
 
 <section class="ajanlott">
@@ -25,7 +25,7 @@
     <div class="kartyak">
 
         <a href="#" class="kartya">
-            <img src="{{url_for('static',filename='index/images/barber.png')}}" alt="Spa">
+            <img src="{{url_for('index.static',filename='index/images/barber.png')}}" alt="Spa">
 
             <div class="kartya-szoveg">
                 <h3>BarberShop</h3>
@@ -35,7 +35,7 @@
         </a>
 
         <a href="#" class="kartya">
-            <img src="{{url_for('static',filename='index/images/barber.png')}}" alt="Spa">
+            <img src="{{url_for('index.static',filename='index/images/barber.png')}}" alt="Spa">
 
             <div class="kartya-szoveg">
                 <h3>BarberShop</h3>
@@ -45,7 +45,7 @@
         </a>
 
         <a href="#" class="kartya">
-            <img src="{{url_for('static',filename='index/images/masszazs.png')}}" alt="Spa">
+            <img src="{{url_for('index.static',filename='index/images/masszazs.png')}}" alt="Spa">
 
             <div class="kartya-szoveg">
                 <h3>Vassa Spa at BOR Hotel</h3>
@@ -73,7 +73,7 @@
             wellnessélményeket a Fresha mobilalkalmazással
         </p>
 
-        <img src="{{url_for('static',filename='index/images/qr.png')}}" class="qr">
+        <img src="{{url_for('index.static',filename='index/images/qr.png')}}" class="qr">
 
     </div>
 
@@ -83,12 +83,12 @@
         <div class="telefon">
 
             <video autoplay muted loop>
-                <source src="{{url_for('static',filename='index/videos/video1.mp4')}}" type="video/mp4">
+                <source src="{{url_for('index.static',filename='index/videos/video1.mp4')}}" type="video/mp4">
             </video>
         </div>
 
         <div class="telefon">
-            <img src="{{url_for('static',filename='index/images/kep1.webp')}}" alt="kep1">
+            <img src="{{url_for('index.static',filename='index/images/kep1.webp')}}" alt="kep1">
         </div>
 
     </div>

@@ -16,11 +16,11 @@ def create_app():
     from app.business.routes_business import business
     from app.index.routes_index import index
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SECRET KEY'] = os.getenv("DB_PASSWORD")
-    app.config['SESSION_TYPE'] = 'filesystem'
-    #app.config['SESSION_PERMANENT']= "simplemeet.webhop.me"
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config["SECRET KEY"] = os.getenv("DB_PASSWORD")
+    app.config["SESSION_TYPE"] = "filesystem"
+    #app.config["SESSION_PERMANENT"]= "simplemeet.webhop.me"
 
     login_manager.init_app(app)
     login_manager.login_view = "/"
@@ -33,10 +33,11 @@ def create_app():
 
     from jinja2 import ChoiceLoader, FileSystemLoader
 
-    # Az alapértelmezett loader mellé felveszünk egy újat
     app.jinja_loader = ChoiceLoader([
-        FileSystemLoader('business'),
-        app.jinja_loader, # Megtartjuk az eredeti Flask loadert is
+        FileSystemLoader("index"),
+        FileSystemLoader("business"),
+        app.jinja_loader, # Flask loader
     ])
 
+    print(app.url_map)
     return app
