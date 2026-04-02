@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, url_for, request, redirect, flash
 from flask_login import logout_user, current_user, login_required
 from ..user.services.customer.forms import SingUpForm, LoginForm
-from .services.onboarding.businessForm import BusinessRegistration
+from .services.onboarding.businessForm import Reg_Name, Reg_ServiceType
 from app import db, login_manager
 from ..user.services.customer.sign_up import signUpSrv
 from ..user.services.customer.login import loginSrv
@@ -74,10 +74,15 @@ def dashboard():
 @business.route("/onboarding", methods=['POST','GET'])
 #@login_required
 def onboarding():
-    form = BusinessRegistration()
-    if form.validate_on_submit():
-        if request.method == "POST":
-            print("hello")
-            return render_template("onboarding/service_types.html",form=form)
+    form_name = Reg_Name()
+    form_service = Reg_ServiceType()
+
+    if request.method == "POST":
+        print("post")
+        if form_name.validate_on_submit():
+            return render_template("onboarding/service_types.html",form=form_service)
+        else:
+            return render_template("onboarding/service_types.html",form=form_service)
+        
             
-    return render_template("onboarding/business_name.html",form=form)
+    return render_template("onboarding/business_name.html",form=form_name)

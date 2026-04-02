@@ -6,200 +6,90 @@ from flask_login import UserMixin
 # USER ACCOUNT
 # ======================
 
-class UserAccount(db.Model,UserMixin):
-    __tablename__ = "user_account"
-
+class UserAccount(db.Model):
+    __tablename__ = 'user_account'
+    
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
     username = db.Column(db.String(255), nullable=False)
-    password_hash = db.Column(db.String(100), nullable=False)
-    role = db.Column(
-        db.Enum('customer', 'staff', 'business_admin'),
-        nullable=False
-    )
+    password_hash = db.Column(db.String(255), nullable=False)
+    role = db.Column(db.Enum('customer', 'staff', 'business_admin'), default="customer")
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    customer = db.relationship("Customer", back_populates="user", uselist=False)
-    staff = db.relationship("Staff", back_populates="user", uselist=False)
-    business = db.relationship("Business", back_populates="admin", uselist=False)
-
-    def __repr__(self):
-        return f"<UserAccount {self.email} ({self.role})>"
-
+    # Kapcsolatok
+    appointments = db.relationship('Appointment', backref='user', lazy=True)
+    managed_business = db.relationship('Business', backref='admin', uselist=False)
+    staff_profile = db.relationship('Staff', backref='user_info', uselist=False)
 
 # ======================
 # BUSINESS
 # ======================
 
 class Business(db.Model):
-    __tablename__ = "business"
-
-    business_id = db.Column(db.Integer, primary_key=True)
-    business_name = db.Column(db.String(255), nullable=False)
+    __tablename__ = 'business'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
     address = db.Column(db.String(255))
-    email = db.Column(db.String(255))
-    phone = db.Column(db.String(50))
+    website = db.Column(db.String(255))
+    categories = db.Column(db.Enum("barber","hair-salon","nail","spa"))
+    admin_user_id = db.Column(db.Integer, db.ForeignKey('user_account.id'), nullable=False)
 
-    admin_id = db.Column(
-        db.Integer,
-        db.ForeignKey("user_account.id"),
-        unique=True
-    )
-
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-    admin = db.relationship("UserAccount", back_populates="business")
-    staff_members = db.relationship("Staff", back_populates="business", cascade="all, delete")
-    services = db.relationship("Service", back_populates="business", cascade="all, delete")
-
-    def __repr__(self):
-        return f"<Business {self.business_name}>"
-
+    # Kapcsolatok
+    staff_members = db.relationship('Staff', backref='employer', lazy=True)
 
 # ======================
 # STAFF
 # ======================
 
 class Staff(db.Model):
-    __tablename__ = "staff"
+    __tablename__ = 'staff'
+    
+    id = db.Column(db.BigInteger, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user_account.id'), nullable=False)
+    business_id = db.Column(db.Integer, db.ForeignKey('business.id'), nullable=False)
+    services = db.Column(db.JSON)  # JSON formátumú szolgáltatás lista
 
-    staff_id = db.Column(db.Integer, primary_key=True)
-
-    business_id = db.Column(
-        db.Integer,
-        db.ForeignKey("business.business_id"),
-        nullable=False
-    )
-
-    id = db.Column(
-        db.Integer,
-        db.ForeignKey("user_account.id"),
-        unique=True
-    )
-
-    business = db.relationship("Business", back_populates="staff_members")
-    user = db.relationship("UserAccount", back_populates="staff")
-
-    availabilities = db.relationship("Availability", back_populates="staff", cascade="all, delete")
-    appointments = db.relationship("Appointment", back_populates="staff", cascade="all, delete")
-
-    def __repr__(self):
-        return f"<Staff {self.id}>"
-
-
-# ======================
-# CUSTOMER
-# ======================
-
-class Customer(db.Model):
-    __tablename__ = "customer"
-
-    customer_id = db.Column(db.Integer, primary_key=True)
-
-    id = db.Column(
-        db.Integer,
-        db.ForeignKey("user_account.id"),
-        unique=True
-    )
-
-    phone = db.Column(db.String(50))
-
-    user = db.relationship("UserAccount", back_populates="customer")
-    appointments = db.relationship("Appointment", back_populates="customer", cascade="all, delete")
-
-    def __repr__(self):
-        return f"<Customer {self.id}>"
-
+    # Kapcsolatok
+    days = db.relationship('Day', backref='staff_member', lazy=True)
+    appointments = db.relationship('Appointment', backref='staff_member', lazy=True)
 
 # ======================
 # SERVICE
 # ======================
 
 class Service(db.Model):
-    __tablename__ = "service"
-
-    service_id = db.Column(db.Integer, primary_key=True)
-
-    business_id = db.Column(
-        db.Integer,
-        db.ForeignKey("business.business_id"),
-        nullable=False
-    )
-
+    __tablename__ = 'service'
+    
+    id = db.Column(db.BigInteger, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
-    duration_minutes = db.Column(db.Integer, nullable=False)
-    price = db.Column(db.Numeric(10, 2))
-
-    business = db.relationship("Business", back_populates="services")
-    appointments = db.relationship("Appointment", back_populates="service", cascade="all, delete")
-
-    def __repr__(self):
-        return f"<Service {self.name} ({self.duration_minutes} min)>"
-
-
-# ======================
-# AVAILABILITY
-# ======================
-
-class Availability(db.Model):
-    __tablename__ = "availability"
-
-    availability_id = db.Column(db.Integer, primary_key=True)
-
-    staff_id = db.Column(
-        db.Integer,
-        db.ForeignKey("staff.staff_id"),
-        nullable=False
-    )
-
-    day_of_week = db.Column(db.Integer, nullable=False)  # 0-6
-    start_time = db.Column(db.Time, nullable=False)
-    end_time = db.Column(db.Time, nullable=False)
-
-    staff = db.relationship("Staff", back_populates="availabilities")
-
-    def __repr__(self):
-        return f"<Availability Staff:{self.staff_id} Day:{self.day_of_week}>"
-
+    description = db.Column(db.Text)
+    price = db.Column(db.BigInteger)
+    duration = db.Column(db.BigInteger) # 30 perc
 
 # ======================
 # APPOINTMENT
 # ======================
 
 class Appointment(db.Model):
-    __tablename__ = "appointment"
+    __tablename__ = 'appointment'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user_account.id'), nullable=False)
+    staff_id = db.Column(db.BigInteger, db.ForeignKey('staff.id'), nullable=False)
+    arrival_time = db.Column(db.Time, nullable=False)
+    complete_time = db.Column(db.Time, nullable=False)
 
-    appointment_id = db.Column(db.Integer, primary_key=True)
+# ======================
+# DAY
+# ======================
 
-    customer_id = db.Column(
-        db.Integer,
-        db.ForeignKey("customer.customer_id"),
-        nullable=False
-    )
-
-    staff_id = db.Column(
-        db.Integer,
-        db.ForeignKey("staff.staff_id"),
-        nullable=False
-    )
-
-    service_id = db.Column(
-        db.Integer,
-        db.ForeignKey("service.service_id"),
-        nullable=False
-    )
-
-    start_time = db.Column(db.DateTime, nullable=False)
-    end_time = db.Column(db.DateTime, nullable=False)
-
-    status = db.Column(
-        db.Enum('booked', 'cancelled', 'completed'),
-        default='booked'
-    )
-
-    customer = db.relationship("Customer", back_populates="appointments")
-    staff = db.relationship("Staff", back_populates="appointments")
-    service = db.relationship("Service", back_populates="appointments")
-
-    def __repr__(self):
-        return f"<Appointment {self.start_time} ({self.status})>"
+class Day(db.Model):
+    __tablename__ = 'day'
+    
+    id = db.Column(db.BigInteger, primary_key=True)
+    staff_id = db.Column(db.BigInteger, db.ForeignKey('staff.id'), nullable=False)
+    name = db.Column(db.String(50)) # Pl. "Hétfő"
+    open_time = db.Column(db.Time)
+    close_time = db.Column(db.Time)
+    booked_appointment = db.Column(db.JSON) # JSON lista a foglalt időpontokról
