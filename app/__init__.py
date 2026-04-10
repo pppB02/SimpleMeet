@@ -34,9 +34,9 @@ def create_app():
     from jinja2 import ChoiceLoader, FileSystemLoader
 
     app.jinja_loader = ChoiceLoader([
-        FileSystemLoader("index"),
         FileSystemLoader("business"),
-        app.jinja_loader, # Flask loader
+        FileSystemLoader("index"),
+        app.jinja_loader # Flask loader
     ])
 
     print(app.url_map)

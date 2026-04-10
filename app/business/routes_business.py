@@ -1,10 +1,11 @@
-from flask import Blueprint, render_template, url_for, request, redirect, flash
+from flask import Blueprint, render_template, url_for, request, redirect, flash, session
 from flask_login import logout_user, current_user, login_required
 from ..user.services.customer.forms import SingUpForm, LoginForm
-from .services.onboarding.businessForm import Reg_Name, Reg_ServiceType
+from .services.onboarding.businessForm import Reg_NameAndWeb, Reg_ServiceType, Reg_Location
 from app import db, login_manager
 from ..user.services.customer.sign_up import signUpSrv
 from ..user.services.customer.login import loginSrv
+from .services.onboarding.finishSetup import FinishSetup
 
 business = Blueprint("business", __name__, static_folder="static", template_folder="templates", url_prefix="/business")
 
@@ -74,15 +75,62 @@ def dashboard():
 @business.route("/onboarding", methods=['POST','GET'])
 #@login_required
 def onboarding():
-    form_name = Reg_Name()
-    form_service = Reg_ServiceType()
+    return redirect(url_for("business.businessName"))
 
-    if request.method == "POST":
-        print("post")
-        if form_name.validate_on_submit():
-            return render_template("onboarding/service_types.html",form=form_service)
-        else:
-            return render_template("onboarding/service_types.html",form=form_service)
+
+@business.route("/onboarding/business-name", methods=['POST','GET'])
+@login_required
+def businessName():
+    form = Reg_NameAndWeb()
+    if form.validate_on_submit():
+        session['onboarding_data'] = {
+            'name': form.name.data,
+            'website': form.website.data
+        }
+        return redirect(url_for("business.businessServiceType"))
         
             
-    return render_template("onboarding/business_name.html",form=form_name)
+    return render_template("onboarding/business_name.html",form=form)
+
+@business.route("/onboarding/service-type", methods=['POST','GET'])
+@login_required
+def businessServiceType():
+    form = Reg_ServiceType()
+    if form.validate_on_submit():
+        onboarding_data = session.get('onboarding_data', {})
+        onboarding_data['categories'] = form.categories.data
+        session['onboarding_data'] = onboarding_data
+
+        return redirect(url_for("business.businessLocation"))
+        
+            
+    return render_template("onboarding/service_types.html",form=form)
+
+
+@business.route("/onboarding/location", methods=['POST','GET'])
+@login_required
+def businessLocation():
+    form = Reg_Location()
+    if form.validate_on_submit():
+        onboarding_data = session.get('onboarding_data', {})
+        onboarding_data['location'] = form.location.data
+        session['onboarding_data'] = onboarding_data
+
+        print(onboarding_data)
+
+        setup = FinishSetup(db,onboarding_data,current_user.get_id())
+
+        try:
+            setup.checkData()
+            setup.SaveData()
+        except Exception as e:
+            print(str(e))
+            return render_template("onboarding/setup_finished.html",error=str(e))
+
+
+        session.pop('onboarding_data', None)
+        return render_template("onboarding/setup_finished.html",error="")
+        
+            
+    return render_template("onboarding/location.html",form=form)
+

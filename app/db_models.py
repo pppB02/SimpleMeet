@@ -6,7 +6,7 @@ from flask_login import UserMixin
 # USER ACCOUNT
 # ======================
 
-class UserAccount(db.Model):
+class UserAccount(db.Model,UserMixin):
     __tablename__ = 'user_account'
     
     id = db.Column(db.Integer, primary_key=True)
@@ -30,9 +30,9 @@ class Business(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
-    address = db.Column(db.String(255))
+    location = db.Column(db.String(255))
     website = db.Column(db.String(255))
-    categories = db.Column(db.Enum("barber","hair-salon","nail","spa"))
+    categories = db.Column(db.Enum("barber-shop","hair-salon","finger-nail","spa"))
     admin_user_id = db.Column(db.Integer, db.ForeignKey('user_account.id'), nullable=False)
 
     # Kapcsolatok

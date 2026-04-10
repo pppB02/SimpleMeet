@@ -5,8 +5,8 @@ from wtforms.validators import DataRequired, Length, ValidationError, Optional
 from ....db_models import Business
 import re
 
-class Reg_Name(FlaskForm):
-    business_name = StringField("Business name",validators=[DataRequired()])
+class Reg_NameAndWeb(FlaskForm):
+    name = StringField("Business name",validators=[DataRequired()])
     
     website = StringField("Website", validators=[Optional()],
                            render_kw={"placeholder": "www.yourwebsite.com"})
@@ -14,10 +14,10 @@ class Reg_Name(FlaskForm):
     
     submit = SubmitField("Continue")
 
-    def validate_businessName(self, business_name):
-        existing_business_name = Business.query.filter_by(
-            business_name=business_name.data).first()
-        if existing_business_name:
+    def validate_businessName(self, name):
+        existing_name = Business.query.filter_by(
+            name=name.data).first()
+        if existing_name:
             print("Ez a név már foglalt!")
             raise ValidationError(f"Ez a név már foglalt!")
 
@@ -31,11 +31,21 @@ class Reg_Name(FlaskForm):
 
 class Reg_ServiceType(FlaskForm):
     categories = RadioField(validators=[DataRequired()],choices=[("barber-shop","Barber"),
-                                     ("finger-with-nail","Nails"),
+                                     ("finger-nail","Nails"),
                                      ("hair-salon","Hair salon"),
                                      ("spa","Medspa")
                                      ])
     
     submit = SubmitField("Continue")
+
+
+class Reg_Location(FlaskForm):
+    location = StringField("Where's your business located?",validators=[DataRequired()])
+    
+    submit = SubmitField("Continue")
+
+    def validate_location(self, location):
+        # TODO: Location validation somehow
+        pass
 
 

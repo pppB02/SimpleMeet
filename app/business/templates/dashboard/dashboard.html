@@ -6,7 +6,23 @@
     <title>dashboard</title>
 </head>
 <body>
-    <h1>Üdvözöljuk {{ current_user.username }}</h1>
-    <a href="{{ url_for('user.logout') }}">logout</a>
+    <!-- <h1>Üdvözöljuk {{ current_user.username }}</h1>
+    <a href="{{ url_for('user.logout') }}">logout</a> -->
+
+    <div class="container">
+        <header>
+            <div class="container">
+                <div class="logo"></div>
+                <div class="header-btns"></div>
+            </div>
+        </header>
+        <div class="container">
+            <div class="side-bar"></div>
+            <div class="hero">
+                {% block hero %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
 </body>
 </html>

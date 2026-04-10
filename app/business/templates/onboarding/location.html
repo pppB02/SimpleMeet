@@ -1,0 +1,36 @@
+{% extends "base/template_for_business_setup.html" %}
+
+{% block loaddingBar %}
+    <div class="bar bar-active"></div>
+    <div class="bar bar-active"></div>
+    <div class="bar bar-active"></div>
+    <div class="bar bar-inactive"></div>
+{% endblock %}
+
+{% block continueBtn %}
+    <div>
+        {{ form.submit(class="continue") }}
+    </div>
+{% endblock %}
+
+{% block question %}
+    <h1>Set your business physical location</h1>
+    <p>Add your primary business location so your clients can easily find you.</p>
+{% endblock %}
+
+{% block form %}
+{{ form.hidden_tag() }}
+    <div class="field">
+        <div>{{ form.location.label(class="") }}</div>
+        {% if form.location.errors %}
+            <div>{{ form.location() }}</div>
+            <div>
+                {% for error in form.location.errors %}
+                    <span>{{error}}</span>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div>{{ form.location() }}</div>
+        {% endif %}
+    </div>
+{% endblock %}
