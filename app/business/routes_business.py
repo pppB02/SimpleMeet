@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, url_for, request, redirect, flash, session
-from flask_login import logout_user, current_user, login_required
+from flask_login import logout_user, current_user
+from ..web_helper import role_required
 from ..user.services.customer.forms import SingUpForm, LoginForm
 from .services.onboarding.businessForm import Reg_NameAndWeb, Reg_ServiceType, Reg_Location
 from app import db, login_manager
@@ -15,7 +16,7 @@ def index():
 
 @business.route("/login", methods=['POST','GET'])
 def login():
-    if current_user.is_authenticated:
+    if current_user.is_authenticated and "business_admin" == "business_admin":
         return redirect(url_for('business.dashboard'))
 
     form = LoginForm()
@@ -26,7 +27,7 @@ def login():
             remember = form.remember.data
 
             try:
-                loginSrv(email,password,remember)
+                loginSrv(email,password,remember,"business_admin")
                 next_page = request.args.get('next')
                 return redirect(next_page) if next_page else redirect(url_for('business.dashboard'))
             except Exception as e:
@@ -36,7 +37,7 @@ def login():
         return render_template("login/login.html", form=form)
 
 @business.route("/logout", methods=['POST','GET'])
-@login_required
+@role_required("business_admin","business.login")
 def logout():
     logout_user()
     return redirect("/")
@@ -60,7 +61,7 @@ def signUp():
 
             try:
                 signUpSrv(db,username,email,password,"business_admin")
-                return redirect(url_for("business.onboarding"))
+                return redirect(url_for("business.dashboard"))
             except Exception as e:
                 print(e)
                 return "hiba"
@@ -68,17 +69,13 @@ def signUp():
         return render_template("sign_up/sign_up.html", form=form)
     
 @business.route("/dashboard",methods=['POST','GET'])
+@role_required("business_admin","business.login")
 def dashboard():
     return render_template("BDashboard/dashboard.html")
 
-@business.route("/onboarding", methods=['POST','GET'])
-#@login_required
-def onboarding():
-    return redirect(url_for("business.businessName"))
-
 
 @business.route("/onboarding/business-name", methods=['POST','GET'])
-@login_required
+@role_required("business_admin","business.login")
 def businessName():
     form = Reg_NameAndWeb()
     if form.validate_on_submit():
@@ -92,7 +89,7 @@ def businessName():
     return render_template("onboarding/business_name.html",form=form)
 
 @business.route("/onboarding/service-type", methods=['POST','GET'])
-@login_required
+@role_required("business_admin","business.login")
 def businessServiceType():
     form = Reg_ServiceType()
     if form.validate_on_submit():
@@ -107,7 +104,7 @@ def businessServiceType():
 
 
 @business.route("/onboarding/location", methods=['POST','GET'])
-@login_required
+@role_required("business_admin","business.login")
 def businessLocation():
     form = Reg_Location()
     if form.validate_on_submit():
