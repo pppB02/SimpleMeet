@@ -67,10 +67,9 @@ def signUp():
     else:
         return render_template("sign_up/sign_up.html", form=form)
     
-@business.route("/dashboard")
-@login_required
+@business.route("/dashboard",methods=['POST','GET'])
 def dashboard():
-    return render_template("dashboard/dashboard.html")
+    return render_template("BDashboard/dashboard.html")
 
 @business.route("/onboarding", methods=['POST','GET'])
 #@login_required
