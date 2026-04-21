@@ -11,7 +11,8 @@ user = Blueprint("user", __name__, static_folder="static", template_folder="temp
 @user.route("/login", methods=['POST','GET'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('user.dashboard'))
+        if current_user.role == "customer":
+            return redirect(url_for('user.dashboard'))
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -44,7 +45,8 @@ def load_user(user_id):
 @user.route("/sign-up", methods=['POST','GET'])
 def signUp():
     if current_user.is_authenticated:
-        return redirect(url_for('user.dashboard'))
+        if current_user.role == "customer":
+            return redirect(url_for('user.dashboard'))
     
     form = SingUpForm()
     if form.validate_on_submit():

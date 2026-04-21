@@ -3,10 +3,12 @@ from flask_login import logout_user, current_user
 from ..web_helper import role_required
 from ..user.services.customer.forms import SingUpForm, LoginForm
 from .services.onboarding.businessForm import Reg_NameAndWeb, Reg_ServiceType, Reg_Location
+from .services.dashboard.forms import MemberProfile
 from app import db, login_manager
 from ..user.services.customer.sign_up import signUpSrv
 from ..user.services.customer.login import loginSrv
 from .services.onboarding.finishSetup import FinishSetup
+from .services.dashboard.TeamHandler import MemberAdd
 
 business = Blueprint("business", __name__, static_folder="static", template_folder="templates", url_prefix="/business")
 
@@ -16,8 +18,9 @@ def index():
 
 @business.route("/login", methods=['POST','GET'])
 def login():
-    if current_user.is_authenticated and "business_admin" == "business_admin":
-        return redirect(url_for('business.dashboard'))
+    if current_user.is_authenticated:
+        if current_user.role == "business_admin":
+            return redirect(url_for('business.dashboard'))
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -50,7 +53,8 @@ def load_user(user_id):
 @business.route("/sign-up", methods=['POST','GET'])
 def signUp():
     if current_user.is_authenticated:
-        return redirect(url_for('business.dashboard'))
+        if current_user.role == "business_admin":
+            return redirect(url_for('business.dashboard'))
     
     form = SingUpForm()
     if form.validate_on_submit():
@@ -61,7 +65,7 @@ def signUp():
 
             try:
                 signUpSrv(db,username,email,password,"business_admin")
-                return redirect(url_for("business.dashboard"))
+                return redirect(url_for("business.businessName"))
             except Exception as e:
                 print(e)
                 return "hiba"
@@ -130,3 +134,21 @@ def businessLocation():
             
     return render_template("onboarding/location.html",form=form)
 
+
+@business.route("/dashboard/team", methods=['POST','GET'])
+@role_required("business_admin","business.login")
+def Team():
+    form = MemberProfile()
+    if form.validate_on_submit():
+        print("Email sendingNN")
+        email = form.email.data
+        name = form.name.data
+
+        print("Email sending")
+
+        MemberAdd(email=email,name=name,business_owner_id=current_user.id)
+    else:
+        print("nemjo")
+        print(form.errors)
+
+    return render_template("BDashboard/team.html",form=form)

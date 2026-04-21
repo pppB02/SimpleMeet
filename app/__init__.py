@@ -2,10 +2,12 @@ from dotenv import load_dotenv, find_dotenv
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_mail import Mail
 import os
 
 db = SQLAlchemy()
 login_manager = LoginManager()
+mail = Mail()
 load_dotenv(find_dotenv())
 
 def create_app():
@@ -21,9 +23,18 @@ def create_app():
     app.config["SECRET KEY"] = os.getenv("DB_PASSWORD")
     app.config["SESSION_TYPE"] = "filesystem"
     #app.config["SESSION_PERMANENT"]= "simplemeet.webhop.me"
+    app.config["MAIL_SERVER"] = "smtp.gmail.com"
+    app.config["MAIL_PORT"] = "465"
+    app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
+    app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
+    app.config["MAIL_USE_TLS"] = False
+    app.config["MAIL_USE_SSL"] = True
+  
 
     login_manager.init_app(app)
     login_manager.login_view = "/"
+
+    mail.init_app(app)
 
     db.init_app(app)
 
