@@ -42,15 +42,6 @@ def create_app():
     app.register_blueprint(business)
     app.register_blueprint(index)
 
-    from jinja2 import ChoiceLoader, FileSystemLoader
-
-    app.jinja_loader = ChoiceLoader([
-        FileSystemLoader("user"),
-        FileSystemLoader("business"),
-        FileSystemLoader("index"),
-        app.jinja_loader # Flask loader
-    ])
-
     print(app.url_map)
     print(business.root_path)
     return app
