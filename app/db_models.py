@@ -14,6 +14,7 @@ class UserAccount(db.Model,UserMixin):
     username = db.Column(db.String(255), nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     role = db.Column(db.Enum('customer', 'staff', 'business_admin'), default="customer")
+    has_business = db.Column(db.Boolean, nullable=False, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Kapcsolatok
@@ -45,7 +46,7 @@ class Business(db.Model):
 class Staff(db.Model):
     __tablename__ = 'staff'
     
-    id = db.Column(db.BigInteger, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user_account.id'), nullable=False)
     business_id = db.Column(db.Integer, db.ForeignKey('business.id'), nullable=False)
     services = db.Column(db.JSON)  # JSON formátumú szolgáltatás lista
@@ -65,7 +66,7 @@ class Service(db.Model):
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
     price = db.Column(db.BigInteger)
-    duration = db.Column(db.BigInteger) # 30 perc
+    duration = db.Column(db.BigInteger)
 
 # ======================
 # APPOINTMENT

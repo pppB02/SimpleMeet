@@ -1,16 +1,21 @@
+from app import db, login_manager
+from ..db_models import Staff, Business
 from flask import Blueprint, render_template, url_for, request, redirect, flash, session
 from flask_login import logout_user, current_user
-from ..web_helper import role_required
+from ..web_helper import role_required, business_required
 from ..user.services.customer.forms import SingUpForm, LoginForm
 from .services.onboarding.businessForm import Reg_NameAndWeb, Reg_ServiceType, Reg_Location
-from .services.dashboard.forms import MemberProfile
-from app import db, login_manager
+from .services.dashboard.forms import MemberProfile, ConfirmInviteForm
 from ..user.services.customer.sign_up import signUpSrv
 from ..user.services.customer.login import loginSrv
 from .services.onboarding.finishSetup import FinishSetup
-from .services.dashboard.TeamHandler import MemberAdd
+from .services.dashboard.TeamHandler import MemberAdd, confirmInvite, verify_token
 
 business = Blueprint("business", __name__, static_folder="static", template_folder="templates", url_prefix="/business")
+
+# ======================
+# BUSINESS LOGIN
+# ======================
 
 @business.route("/")
 def index():
@@ -71,12 +76,10 @@ def signUp():
                 return "hiba"
     else:
         return render_template("sign_up/sign_up.html", form=form)
-    
-@business.route("/dashboard",methods=['POST','GET'])
-@role_required("business_admin","business.login")
-def dashboard():
-    return render_template("BDashboard/dashboard.html")
 
+# ======================
+# BUSINESS SETUP
+# ======================
 
 @business.route("/onboarding/business-name", methods=['POST','GET'])
 @role_required("business_admin","business.login")
@@ -106,7 +109,6 @@ def businessServiceType():
             
     return render_template("onboarding/service_types.html",form=form)
 
-
 @business.route("/onboarding/location", methods=['POST','GET'])
 @role_required("business_admin","business.login")
 def businessLocation():
@@ -129,21 +131,60 @@ def businessLocation():
 
 
         session.pop('onboarding_data', None)
-        return render_template("onboarding/setup_finished.html",error="")
+        return render_template("dashboard/",error="")
         
             
     return render_template("onboarding/location.html",form=form)
 
+# ======================
+# INVITE TEAM LINK
+# ======================
 
-@business.route("/dashboard/team", methods=['POST','GET'])
-@role_required("business_admin","business.login")
-def Team():
+@business.route("/confirm-invite/<token>",methods=['POST','GET'])
+@role_required("customer","user.login")
+def confirmInviteSite(token):
+    datas = verify_token(token)
+    if not datas:
+        return "Invalid or expired token"
+    
+    form = ConfirmInviteForm()
+    if form.validate_on_submit():
+        if form.agreeTerms.data:
+            try:
+                confirmInvite(current_user.email,datas)
+            except Exception as e:
+                print(e)
+
+    return render_template("confirm_invite/confirm_invite.html",form=form)
+
+# ======================
+# DASHBOARD
+# ======================
+
+@business.route("/dashboard",methods=['POST','GET'])
+@business_required()
+def dashboard():
+    return render_template("BDashboard/dashboard.html")
+
+@business.route("/dashboard/team-members", methods=['POST','GET'])
+@business_required()
+def team():
+    business = Business.query.filter_by(admin_user_id=current_user.id).first()
+    print(business.id)
+    membersTable = Staff.query.filter_by(business_id=business.id).all()
+
+    print(membersTable)
+
+    return render_template("BDashboard/team/team.html",membersTable=membersTable)
+
+
+@business.route("/dashboard/team-add-member", methods=['POST','GET'])
+@business_required()
+def teamMembers():
     form = MemberProfile()
     if form.validate_on_submit():
-        print("Email sendingNN")
         email = form.email.data
         name = form.name.data
-
         print("Email sending")
 
         MemberAdd(email=email,name=name,business_owner_id=current_user.id)
@@ -151,4 +192,4 @@ def Team():
         print("nemjo")
         print(form.errors)
 
-    return render_template("BDashboard/team.html",form=form)
+    return render_template("BDashboard/team/team_add_member.html",form=form)

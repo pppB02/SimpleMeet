@@ -1,4 +1,4 @@
-from ....db_models import Business
+from ....db_models import Business, UserAccount
 
 class FinishSetup():
     def __init__(self,db,sessionData,admin_user_id):
@@ -30,10 +30,14 @@ class FinishSetup():
                                location=self.location,
                                admin_user_id=self.admin_user_id)
         
+        admin_user = UserAccount.query.get(self.admin_user_id)
+        admin_user.has_business = True
+
         try:
             self.db.session.add(newBusiness)
             self.db.session.commit()
             print("Business data saved")
+            
             return None
         except Exception as e:
             raise e
