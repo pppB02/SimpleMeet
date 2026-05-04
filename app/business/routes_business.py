@@ -21,6 +21,10 @@ business = Blueprint("business", __name__, static_folder="static", template_fold
 def index():
     return redirect(url_for("business.login"))
 
+@business.route("/felhasznalo_fodrasz_oldal")
+def fodrasz():
+    return render_template("temp_for_servies/szolgaltatas_minta.html")
+
 @business.route("/login", methods=['POST','GET'])
 def login():
     if current_user.is_authenticated:
