@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, url_for, request, redirect, flash
-from flask_login import logout_user, current_user, login_required
+from flask_login import logout_user, current_user
+from ..web_helper import role_required
 from .services.customer.forms import SingUpForm, LoginForm
 from app import db, login_manager
 from .services.customer.sign_up import signUpSrv
@@ -10,7 +11,8 @@ user = Blueprint("user", __name__, static_folder="static", template_folder="temp
 @user.route("/login", methods=['POST','GET'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('user.dashboard'))
+        if current_user.role == "customer":
+            return redirect(url_for('user.dashboard'))
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -20,7 +22,7 @@ def login():
             remember = form.remember.data
 
             try:
-                loginSrv(email,password,remember)
+                loginSrv(email,password,remember,"customer")
                 next_page = request.args.get('next')
                 return redirect(next_page) if next_page else redirect(url_for('user.dashboard'))
             except Exception as e:
@@ -30,7 +32,7 @@ def login():
         return render_template("customer/login/login.html", form=form)
 
 @user.route("/logout", methods=['POST','GET'])
-@login_required
+@role_required("customer","user.login")
 def logout():
     logout_user()
     return redirect("/")
@@ -43,7 +45,8 @@ def load_user(user_id):
 @user.route("/sign-up", methods=['POST','GET'])
 def signUp():
     if current_user.is_authenticated:
-        return redirect(url_for('user.dashboard'))
+        if current_user.role == "customer":
+            return redirect(url_for('user.dashboard'))
     
     form = SingUpForm()
     if form.validate_on_submit():
@@ -62,6 +65,6 @@ def signUp():
         return render_template("customer/sign_up/sign_up.html", form=form)
     
 @user.route("/dashboard")
-@login_required
+@role_required("customer","user.login")
 def dashboard():
     return render_template("dashboard/dashboard.html")

@@ -21,16 +21,16 @@
 {% block form %}
 {{ form.hidden_tag() }}
     <div class="field">
-        <div>{{ form.business_name.label(class="") }}</div>
-        {% if form.business_name.errors %}
-            <div>{{ form.business_name() }}</div>
+        <div>{{ form.name.label(class="") }}</div>
+        {% if form.name.errors %}
+            <div>{{ form.name() }}</div>
             <div>
-                {% for error in form.business_name.errors %}
+                {% for error in form.name.errors %}
                     <span>{{error}}</span>
                 {% endfor %}
             </div>
         {% else %}
-            <div>{{ form.business_name() }}</div>
+            <div>{{ form.name() }}</div>
         {% endif %}
     </div>
 

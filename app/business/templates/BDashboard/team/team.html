@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        tr:nth-child(even) {
+            background-color: #D6EEEE;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <table>
+        {% for member in membersTable %}
+        <tr>
+            <td>{{ member.id }}</td>
+            <td>{{ member.user_id }}</td>
+            <td>{{ member.business_id }}</td>
+            <td>{{ member.services }}</td>
+            <td>{{ member.status }}</td> 
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
