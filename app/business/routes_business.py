@@ -188,8 +188,5 @@ def teamMembers():
         print("Email sending")
 
         MemberAdd(email=email,name=name,business_owner_id=current_user.id)
-    else:
-        print("nemjo")
-        print(form.errors)
 
     return render_template("BDashboard/team/team_add_member.html",form=form)
