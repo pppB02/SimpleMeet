@@ -23,7 +23,7 @@ def index():
 
 @business.route("/felhasznalo_fodrasz_oldal")
 def fodrasz():
-    return render_template("temp_for_servies/szolgaltatas_minta.html")
+    return render_template("temp_for_services/szolgaltatas_minta.html")
 
 @business.route("/login", methods=['POST','GET'])
 def login():
