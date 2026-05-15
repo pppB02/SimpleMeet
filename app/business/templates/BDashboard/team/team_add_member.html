@@ -6,7 +6,7 @@
     <title>Team</title>
 </head>
 <body>
-    <form action="" method="POST">
+    <form action="" method="POST" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         <div>
             {{ form.name.label() }}
@@ -35,6 +35,24 @@
                 {{ form.email() }}
             {% endif %}
         </div>
+
+         <div>
+            {{ form.hidden_tag() }}
+            {{ form.photo.label() }}
+            {% if form.photo.errors %}
+                {{ form.photo() }}
+                <div>
+                    {% for error in form.photo.errors %}
+                        <span>{{error}}</span>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.photo() }}
+            {% endif %}
+        </div>
+        {% if filename %}
+            <img src="{{ url_for('index.get_file',filename=filename) }}" width="300">
+        {% endif %}
 
         <div>
             {{ form.submit() }}

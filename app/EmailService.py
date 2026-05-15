@@ -20,5 +20,3 @@ def send_email(to_send, subject, html):
     #response = requests.post(url, json=payload, headers=headers)
     #print(response.status_code, response.text)
     print("sent")
-
-send_email()

@@ -7,7 +7,6 @@ html { scroll-behavior: smooth; }
 
 body {
     font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif;
-    background-color: #FAFAFA;
     color: #0A0A0A;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
@@ -252,8 +251,6 @@ section > .container > h2 {
 .services {
     padding: 4rem 0;
     background: #fff;
-    border-top: 1px solid #E4E4E7;
-    border-bottom: 1px solid #E4E4E7;
 }
 @media (min-width: 640px) { .services { padding: 6rem 0; } }
 
@@ -404,7 +401,6 @@ section > .container > h2 {
    ======================================================== */
 .hours {
     padding: 4rem 0;
-    background: #F4F4F5;
 }
 @media (min-width: 640px) { .hours { padding: 6rem 0; } }
 
@@ -437,8 +433,6 @@ section > .container > h2 {
 .features {
     padding: 4rem 0;
     background: #fff;
-    border-top: 1px solid #E4E4E7;
-    border-bottom: 1px solid #E4E4E7;
 }
 @media (min-width: 640px) { .features { padding: 6rem 0; } }
 

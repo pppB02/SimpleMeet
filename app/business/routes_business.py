@@ -1,6 +1,8 @@
-from app import db, login_manager
+from app import db, login_manager, photos
 from ..db_models import Staff, Business
-from flask import Blueprint, render_template, url_for, request, redirect, flash, session
+import secrets
+from PIL import Image
+from flask import Blueprint, render_template, url_for, request, redirect, flash, session, current_app
 from flask_login import logout_user, current_user
 from ..web_helper import role_required, business_required
 from ..user.services.customer.forms import SingUpForm, LoginForm
@@ -20,10 +22,6 @@ business = Blueprint("business", __name__, static_folder="static", template_fold
 @business.route("/")
 def index():
     return redirect(url_for("business.login"))
-
-@business.route("/felhasznalo_fodrasz_oldal")
-def fodrasz():
-    return render_template("temp_for_services/szolgaltatas_minta.html")
 
 @business.route("/login", methods=['POST','GET'])
 def login():
@@ -135,13 +133,13 @@ def businessLocation():
 
 
         session.pop('onboarding_data', None)
-        return render_template("dashboard/",error="")
+        return redirect(url_for("business.dashboard"))
         
             
     return render_template("onboarding/location.html",form=form)
 
 # ======================
-# INVITE TEAM LINK
+# CONFIRM TEAM LINK
 # ======================
 
 @business.route("/confirm-invite/<token>",methods=['POST','GET'])
@@ -175,6 +173,7 @@ def dashboard():
 def team():
     business = Business.query.filter_by(admin_user_id=current_user.id).first()
     print(business.id)
+    print(business.public_id)
     membersTable = Staff.query.filter_by(business_id=business.id).all()
 
     print(membersTable)
@@ -186,11 +185,21 @@ def team():
 @business_required()
 def teamMembers():
     form = MemberProfile()
+    filename = None
+
     if form.validate_on_submit():
+        filename = secrets.token_hex(8)
+
+        output_size = (125,125)
+        i = Image.open(form.photo.data)
+        i.thumbnail(output_size)
+
+        filename = photos.save(i,name=filename,storage=current_app.config["UPLOADED_PHOTOS_DEST"])
+        print(filename)
         email = form.email.data
         name = form.name.data
-        print("Email sending")
 
-        MemberAdd(email=email,name=name,business_owner_id=current_user.id)
+        MemberAdd(email=email,name=name,business_owner_id=current_user.id,pfp=filename)
 
-    return render_template("BDashboard/team/team_add_member.html",form=form)
+
+    return render_template("BDashboard/team/team_add_member.html",form=form,filename=filename)

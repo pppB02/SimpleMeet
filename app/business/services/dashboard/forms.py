@@ -1,7 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, BooleanField, StringField
+from wtforms import SubmitField, BooleanField, StringField, FileField
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms.validators import DataRequired
 from ....db_models import UserAccount
+from app import photos
 
 class MemberProfile(FlaskForm):
     name = StringField("Name",validators=[
@@ -10,7 +12,12 @@ class MemberProfile(FlaskForm):
     email = StringField("Email",validators=[
                                         DataRequired()])
     
-    submit = SubmitField("Sing Up")
+    photo = FileField("Kép", validators=[
+        FileAllowed(photos, "Csak képek!"),
+        FileRequired("File kell")
+    ])
+    
+    submit = SubmitField("Send link")
 
     # def validate_email(self, email):
     #     # existing_user_email = UserAccount.query.filter_by(

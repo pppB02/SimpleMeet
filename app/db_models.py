@@ -35,6 +35,8 @@ class Business(db.Model):
     website = db.Column(db.String(255))
     categories = db.Column(db.Enum("barber-shop","hair-salon","finger-nail","spa"))
     admin_user_id = db.Column(db.Integer, db.ForeignKey('user_account.id'), nullable=False)
+    public_id = db.Column(db.String(255), nullable=False)
+    slug = db.Column(db.String(255), nullable=False)
 
     # Kapcsolatok
     staff_members = db.relationship('Staff', backref='employer', lazy=True)
@@ -50,6 +52,7 @@ class Staff(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user_account.id'), nullable=False)
     business_id = db.Column(db.Integer, db.ForeignKey('business.id'), nullable=False)
     services = db.Column(db.JSON)  # JSON formátumú szolgáltatás lista
+    pfp_name = db.Column(db.String(255), nullable=False)
 
     # Kapcsolatok
     days = db.relationship('Day', backref='staff_member', lazy=True)
@@ -94,3 +97,17 @@ class Day(db.Model):
     open_time = db.Column(db.Time)
     close_time = db.Column(db.Time)
     booked_appointment = db.Column(db.JSON) # JSON lista a foglalt időpontokról
+
+class OpeningHour(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    day_of_week = db.Column(db.Integer)  # 0 = hétfő, 6 = vasárnap
+    open_time = db.Column(db.Time)
+    close_time = db.Column(db.Time)
+
+    business_id = db.Column(db.Integer, db.ForeignKey('business.id'))
+    business = db.relationship("Business", backref="opening_hours")
+
+class StaffIviteLinks(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(255))
+    token = db.Column(db.String(255))
