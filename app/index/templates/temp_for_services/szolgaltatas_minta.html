@@ -104,12 +104,18 @@
 
                 <!-- Panel: Alap -->
                 <div>
-                    {% for staff in staffs %}
+                    {% if staff %}
+                        {% for staff in staffs %}
+                            <div>
+                                <h1>{{ staff.name }}</h1>
+                                <img src="{{ url_for('index.get_file',filename=staff.pfp_name or default.png) }}" width="300">
+                            </div>
+                        {% endfor %}
+                    {% else %}
                         <div>
-                            <h1>{{ staff.name }}</h1>
-                            <img src="{{ url_for('index.get_file',filename=staff.pfp_name or default.png) }}" width="300">
+                            <small>Csapattagok nem találhatóak!</small>
                         </div>
-                    {% endfor %}
+                    {% endif %}
                 </div>
         </section>
 

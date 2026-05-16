@@ -1,8 +1,6 @@
 from functools import wraps
 from flask import redirect, url_for
 from flask_login import current_user
-import re
-from .db_models import UserAccount
 
 def role_required(role,return_page):
     def decorator(f):
@@ -38,14 +36,3 @@ def business_required():
             return f(*args, **kwargs)
         return decorated_function
     return decorator
-
-
-def is_safe_input(text):
-    # < > (XSS), ' " (SQLi), ; (SQL command chaining), -- (SQL comment)
-    # \ (Escape character), / (Path traversal)
-    dangerous_pattern = r"[<>'\"\;\\/\-\-]"
-
-    if re.search(dangerous_pattern, text):
-        return False
-    
-    return True

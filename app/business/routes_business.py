@@ -7,7 +7,7 @@ from flask_login import logout_user, current_user
 from ..web_helper import role_required, business_required
 from ..user.services.customer.forms import SingUpForm, LoginForm
 from .services.onboarding.businessForm import Reg_NameAndWeb, Reg_ServiceType, Reg_Location
-from .services.dashboard.forms import MemberProfile, ConfirmInviteForm
+from .services.dashboard.forms import MemberProfile, ConfirmInviteForm, openHours
 from ..user.services.customer.sign_up import signUpSrv
 from ..user.services.customer.login import loginSrv
 from .services.onboarding.finishSetup import FinishSetup
@@ -201,5 +201,13 @@ def teamMembers():
 
         MemberAdd(email=email,name=name,business_owner_id=current_user.id,pfp=filename)
 
+# ======================
+# SETTINGS
+# ======================
 
-    return render_template("BDashboard/team/team_add_member.html",form=form,filename=filename)
+@business.route("/dashboard/hours", methods=['POST','GET'])
+#@business_required()
+def hours():
+    form = openHours()
+    days = ["mon","tue","wen","thu","fri","sat","sun"]
+    return render_template("BDashboard/hours/hours.html",form=form,days=days)
