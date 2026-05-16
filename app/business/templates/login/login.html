@@ -1,12 +1,15 @@
 {% block head %}
     <title>Login</title>
-    <link rel="stylesheet" href="{{ url_for('business.static',filename='css/login/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('business.static',filename='css/sign_up/styles.css') }}">
 {% endblock %}
 
 {% block body %}
 
     <section>
         <div class="flex-container">
+            <div class="box-50">
+                <img class="box-100" src="{{ url_for('business.static',filename='imgs/login/levelll.png') }}" alt="level">
+            </div>
             <div class="box-50 login-frame">
                 <div class="">
                     <div class="center">
@@ -70,9 +73,7 @@
                     </div>
                 </div>
             </div>
-            <div class="box-50">
-                <img class="box-100" src="{{ url_for('user.static',filename='customer/imgs/login/login-img.jpg') }}" alt="">
-            </div>
+            
         </div>
     </section>
 
