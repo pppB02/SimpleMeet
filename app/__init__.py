@@ -19,7 +19,7 @@ def create_app():
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
     app.config["SESSION_TYPE"] = "filesystem"
-    app.config["UPLOADED_PHOTOS_DEST"] = "/uploads"
+    app.config["UPLOADED_PHOTOS_DEST"] = os.path.join(app.root_path, 'uploads')
     #app.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024  # 2MB
 
     configure_uploads(app, photos)

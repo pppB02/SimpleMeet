@@ -4,7 +4,7 @@ from ..db_models import Business, Staff, UserAccount
 index = Blueprint("index", __name__, static_folder="static", template_folder="templates",static_url_path="/index/static")
 
 
-@index.route("/uploads/<filename>")
+@index.route("/get_file/<filename>")
 def get_file(filename):
     return send_from_directory(current_app.config["UPLOADED_PHOTOS_DEST"],filename)
 
@@ -36,4 +36,6 @@ def business_site(slug):
         print(staff.id)
         print(staff.pfp_name)
     
+    print(staffsDatas)
+
     return render_template("temp_for_services/szolgaltatas_minta.html", business=business, staffs=staffsDatas)

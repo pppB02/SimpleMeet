@@ -1,17 +1,16 @@
-from app import db, login_manager, photos
+from app import db, login_manager
 from ..db_models import Staff, Business
-import secrets
-from PIL import Image
 from flask import Blueprint, render_template, url_for, request, redirect, flash, session, current_app
 from flask_login import logout_user, current_user
 from ..web_helper import role_required, business_required
 from ..user.services.customer.forms import SingUpForm, LoginForm
 from .services.onboarding.businessForm import Reg_NameAndWeb, Reg_ServiceType, Reg_Location
-from .services.dashboard.forms import MemberProfile, ConfirmInviteForm, openHours
+from .services.dashboard.forms import MemberProfile, ConfirmInviteForm, openHours, NewSerciceForm
 from ..user.services.customer.sign_up import signUpSrv
 from ..user.services.customer.login import loginSrv
 from .services.onboarding.finishSetup import FinishSetup
 from .services.dashboard.TeamHandler import MemberAdd, confirmInvite, verify_token
+from ..web_helper import save_photo
 
 business = Blueprint("business", __name__, static_folder="static", template_folder="templates", url_prefix="/business")
 
@@ -188,18 +187,18 @@ def teamMembers():
     filename = None
 
     if form.validate_on_submit():
-        filename = secrets.token_hex(8)
-
-        output_size = (125,125)
-        i = Image.open(form.photo.data)
-        i.thumbnail(output_size)
-
-        filename = photos.save(i,name=filename,storage=current_app.config["UPLOADED_PHOTOS_DEST"])
-        print(filename)
+        photo = form.photo.data
         email = form.email.data
         name = form.name.data
 
+        filename = save_photo(photo)
+
+        if not filename:
+            filename = "default.png"
+
         MemberAdd(email=email,name=name,business_owner_id=current_user.id,pfp=filename)
+    
+    return render_template("BDashboard/team/team_add_member.html",form=form, filename=filename)
 
 # ======================
 # SETTINGS
@@ -211,3 +210,20 @@ def hours():
     form = openHours()
     days = ["mon","tue","wen","thu","fri","sat","sun"]
     return render_template("BDashboard/hours/hours.html",form=form,days=days)
+
+# ======================
+# CATALOG
+# ======================
+
+@business.route("/dashboard/catalog", methods=['POST','GET'])
+@business_required()
+def catalog():
+    form = ""
+    return render_template("BDashboard/hours/hours.html",form=form)
+
+
+@business.route("/dashboard/new-service", methods=['POST','GET'])
+#@business_required()
+def newService():
+    form = NewSerciceForm()
+    return render_template("BDashboard/service/newService.html",form=form)

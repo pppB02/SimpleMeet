@@ -1,6 +1,8 @@
 from functools import wraps
-from flask import redirect, url_for
+from flask import redirect, url_for, current_app
 from flask_login import current_user
+import os, secrets
+from PIL import Image
 
 def role_required(role,return_page):
     def decorator(f):
@@ -36,3 +38,35 @@ def business_required():
             return f(*args, **kwargs)
         return decorated_function
     return decorator
+
+def save_photo(photo):
+    ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
+
+    def allowed_file(filename):
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    
+    print(allowed_file(photo.filename))
+    print(photo)
+
+    if photo and allowed_file(photo.filename):
+        ext = photo.filename.rsplit('.', 1)[1].lower()
+        random_hex = secrets.token_hex(8)
+        secure_name = f"{random_hex}.{ext}"
+
+        print(secure_name)
+        
+        filepath = os.path.join(current_app.config['UPLOADED_PHOTOS_DEST'], secure_name)
+        print(filepath)
+        output_size = (125, 125)
+        i = Image.open(photo)
+        i.thumbnail(output_size)
+        
+        print(current_app.config['UPLOADED_PHOTOS_DEST'])
+
+        os.makedirs(current_app.config['UPLOADED_PHOTOS_DEST'], exist_ok=True)
+        
+        i.save(filepath, optimize=True, quality=85)
+        
+        return secure_name
+    else: 
+        return None

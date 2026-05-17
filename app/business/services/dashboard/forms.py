@@ -1,9 +1,25 @@
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, BooleanField, StringField, FileField, IntegerField
+from wtforms import SubmitField, BooleanField, StringField, FileField, IntegerField, SelectField, DecimalField
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from wtforms.validators import DataRequired,NumberRange, InputRequired
 from ....db_models import UserAccount
 from app import photos
+
+lapos_choices = []
+
+for ossz_perc in range(5, 721, 5):
+    ora = ossz_perc // 60
+    perc = ossz_perc % 60
+
+    if ora == 0:
+        megjelenes = f"{perc} perc"
+    elif perc == 0:
+        megjelenes = f"{ora} óra"
+    else:
+        megjelenes = f"{ora} óra {perc} perc"
+        
+    lapos_choices.append((str(ossz_perc), megjelenes))
+
 
 class MemberProfile(FlaskForm):
     name = StringField("Name",validators=[
@@ -74,3 +90,48 @@ class openHours(FlaskForm):
 
     submit = SubmitField("Sing Up")
 
+
+
+class NewSerciceForm(FlaskForm):
+    name = StringField("Name",validators=[
+                                        DataRequired()])
+    
+    serviceType = SelectField("Válassz egy típust:",choices={
+        "Barber":[
+            ("beard-trimming","Szakál Vágás"),
+            ("mens-haircut","Férfi hajvágás"),
+            ("mens-shaving","Férfi borotválkozás")
+        ],
+
+        "Spa":[
+            ("relaxation-massages","Relaxációs masszázsok"),
+            ("body-treatments-and-rituals","Testkezelések és rituálék"),
+            ("premium-skincare","Prémium arcápolás")
+        ],
+
+        "Kézápolás":[
+            ("aesthetic-and-classic-manicure","Esztétikai és klasszikus manikűr"),
+            ("nail-application","Tartós lakkozás és műkörömépítés"),
+            ("SPA-Hand-Treatment","SPA kézápolás")
+        ],
+
+        "Hajszalon":[
+            ("haircuts-and-styling","Hajvágás és styling"),
+            ("hair-coloring","hajfestés és színváltoztatás"),
+            ("corrective-treatments","hajszerkezet-javító kezelések")
+        ]
+
+    })
+
+    # menuCategory = SelectField()
+    
+    duration = SelectField(
+        'Időtartam kiválasztása:', 
+        choices=lapos_choices
+    )
+
+    # priceType = SelectField()
+
+    # price = DecimalField
+
+    submit = SubmitField("Send link")
