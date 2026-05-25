@@ -44,11 +44,12 @@ def business_site(slug):
     serviceDatas = {}
     
     print(services)
-    for service in services:
-        serviceDatas[service.serviceType] = [service]
 
-        #servicesDatas.append({"name":service.name,"description":service.description,"price":service.price,"duration":service.duration})
-    print(serviceDatas)
+    for service in services:
+        if service.serviceType in serviceDatas:
+            serviceDatas[service.serviceType].append(service)
+        else:
+            serviceDatas[service.serviceType] = [service]
 
     for i in serviceDatas:
         print(serviceDatas[i])
