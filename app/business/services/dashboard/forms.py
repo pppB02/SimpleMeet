@@ -1,9 +1,10 @@
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, BooleanField, StringField, FileField, IntegerField, SelectField, DecimalField
+from wtforms import SubmitField, BooleanField, StringField, FileField, IntegerField, SelectField, DecimalField, RadioField, TextAreaField
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms.validators import DataRequired,NumberRange, InputRequired
+from wtforms.validators import DataRequired,NumberRange, InputRequired, Length, ValidationError
 from ....db_models import UserAccount
 from app import photos
+from flask_login import current_user
 
 lapos_choices = []
 
@@ -35,12 +36,11 @@ class MemberProfile(FlaskForm):
     
     submit = SubmitField("Send link")
 
-    # def validate_email(self, email):
-    #     # existing_user_email = UserAccount.query.filter_by(
-    #     #     email=email.data).first()
-    #     # if existing_user_email:
-    #     #     raise ValidationError(f"Ezt az email címet már regisztrálták!")
-    #     pass
+    def validate_email(self, email:str):
+        print("current_user.email",current_user.email)
+        print(email == current_user.email)
+        if email.data.strip() == current_user.email:
+            raise ValidationError(f"Saját email címedre nem küldhetsz meghívót!")
 
 
 class ConfirmInviteForm(FlaskForm):
@@ -92,11 +92,23 @@ class openHours(FlaskForm):
 
 
 
-class NewSerciceForm(FlaskForm):
-    name = StringField("Name",validators=[
+class NewServiceForm(FlaskForm):
+    def __init__(self, teamMembersData, *args, **kwargs):
+        super(NewServiceForm, self).__init__(*args, **kwargs)
+        
+        if teamMembersData:
+            self.teamMembers.choices = [
+                (str(member.id), str(UserAccount.query.filter_by(id=member.user_id).first().username))
+                for member in teamMembersData
+                ]
+        else:
+            self.teamMembers.render_kw = {'disabled': 'disabled',"style":"pointer-events: none;", "tabindex":"-1"}
+            self.teamMembers.choices = [('0', 'Nem található munkatárs!')]
+
+    name = StringField("Szolgáltatás neve",validators=[
                                         DataRequired()])
     
-    serviceType = SelectField("Válassz egy típust:",choices={
+    serviceType = SelectField("Szolgáltatás típusa:",validators=[DataRequired()],choices={
         "Barber":[
             ("beard-trimming","Szakál Vágás"),
             ("mens-haircut","Férfi hajvágás"),
@@ -124,14 +136,23 @@ class NewSerciceForm(FlaskForm):
     })
 
     # menuCategory = SelectField()
+
+    description = TextAreaField('Leírása', validators=[
+        DataRequired(message="Kérjük, írj egy rövid leírást!"),
+        Length(min=10, max=1000, message="A leírásnak 10 és 1000 karakter között kell lennie.")
+    ])
     
     duration = SelectField(
-        'Időtartam kiválasztása:', 
+        'Időtartam',
+        validators=[DataRequired()],
         choices=lapos_choices
     )
 
-    # priceType = SelectField()
+    priceType = SelectField("Ár típusa", validators=[DataRequired()], choices=[("Fixed", "Fix ár")])
 
-    # price = DecimalField
+    price = IntegerField("Ár",validators=[DataRequired(),NumberRange(min=1,max=500000,message="Az árnak %(min)s és %(max)s Ft között kell lennie!")])
 
-    submit = SubmitField("Send link")
+    teamMembers = RadioField()
+    
+
+    submit = SubmitField("Mentés")

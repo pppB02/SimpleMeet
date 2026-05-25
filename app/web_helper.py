@@ -70,3 +70,15 @@ def save_photo(photo):
         return secure_name
     else: 
         return None
+    
+
+def time_format(osszes_perc):
+    ora = osszes_perc // 60
+    perc = osszes_perc % 60
+    
+    if ora > 0 and perc > 0:
+        return f"{ora} óra {perc} perc"
+    elif ora > 0:
+        return f"{ora} óra"
+    else:
+        return f"{perc} perc"

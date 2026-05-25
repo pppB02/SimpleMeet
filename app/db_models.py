@@ -40,6 +40,7 @@ class Business(db.Model):
 
     # Kapcsolatok
     staff_members = db.relationship('Staff', backref='employer', lazy=True)
+    service = db.relationship('Service', backref='service_provider', lazy=True)
 
 # ======================
 # STAFF
@@ -65,11 +66,14 @@ class Staff(db.Model):
 class Service(db.Model):
     __tablename__ = 'service'
     
-    id = db.Column(db.BigInteger, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), nullable=False)
+    business_id = db.Column(db.Integer, db.ForeignKey('business.id'), nullable=False)
+    serviceType = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text)
-    price = db.Column(db.BigInteger)
-    duration = db.Column(db.BigInteger)
+    price = db.Column(db.Integer)
+    duration = db.Column(db.Integer)
+    price_type = db.Column(db.Enum("Fixed"), default="Fixed")
 
 # ======================
 # APPOINTMENT

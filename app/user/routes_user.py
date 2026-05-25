@@ -20,7 +20,7 @@ def login():
             email = form.email.data
             password = form.password.data
             remember = form.remember.data
-
+            
             try:
                 loginSrv(email,password,remember,"customer")
                 next_page = request.args.get('next')
@@ -57,7 +57,8 @@ def signUp():
 
             try:
                 signUpSrv(db,username,email,password,"customer")
-                return redirect(url_for("user.dashboard"))
+                next_page = request.args.get('next')
+                return redirect(next_page) if next_page else redirect(url_for('user.dashboard'))
             except Exception as e:
                 print(e)
                 return "hiba"

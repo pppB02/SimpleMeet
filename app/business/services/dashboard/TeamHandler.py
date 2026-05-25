@@ -6,9 +6,6 @@ import os
 def MemberAdd(email, name, business_owner_id, pfp):
     business = Business.query.filter_by(
             admin_user_id=business_owner_id).first()
-    
-    print(business)
-    print(business.id)
 
     if StaffIviteLinks.query.filter_by(email=email).first():
         print("An invite already sent to this email")

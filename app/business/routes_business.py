@@ -1,11 +1,12 @@
 from app import db, login_manager
 from ..db_models import Staff, Business
+from .services.ServicesHandler import addServie, addMembersToServie
 from flask import Blueprint, render_template, url_for, request, redirect, flash, session, current_app
 from flask_login import logout_user, current_user
 from ..web_helper import role_required, business_required
 from ..user.services.customer.forms import SingUpForm, LoginForm
 from .services.onboarding.businessForm import Reg_NameAndWeb, Reg_ServiceType, Reg_Location
-from .services.dashboard.forms import MemberProfile, ConfirmInviteForm, openHours, NewSerciceForm
+from .services.dashboard.forms import MemberProfile, ConfirmInviteForm, openHours, NewServiceForm
 from ..user.services.customer.sign_up import signUpSrv
 from ..user.services.customer.login import loginSrv
 from .services.onboarding.finishSetup import FinishSetup
@@ -142,8 +143,15 @@ def businessLocation():
 # ======================
 
 @business.route("/confirm-invite/<token>",methods=['POST','GET'])
-@role_required("customer","user.login")
+#@role_required("customer","user.login")
 def confirmInviteSite(token):
+    print(current_user.is_authenticated)
+    if not current_user.is_authenticated:
+        return redirect(url_for("user.login", next=request.url))
+    
+    if current_user.role != "customer":
+        return redirect(url_for("user.login"))
+
     datas = verify_token(token)
     if not datas:
         return "Invalid or expired token"
@@ -194,7 +202,7 @@ def teamMembers():
         filename = save_photo(photo)
 
         if not filename:
-            filename = "default.png"
+            filename = "default.jpg"
 
         MemberAdd(email=email,name=name,business_owner_id=current_user.id,pfp=filename)
     
@@ -223,7 +231,27 @@ def catalog():
 
 
 @business.route("/dashboard/new-service", methods=['POST','GET'])
-#@business_required()
+@business_required()
 def newService():
-    form = NewSerciceForm()
+    business = Business.query.filter_by(admin_user_id=current_user.id).first()
+    print(business)
+    teamMembersData = Staff.query.filter_by(business_id=business.id).all()
+    print(teamMembersData)
+    form = NewServiceForm(teamMembersData=teamMembersData)
+
+    if form.validate_on_submit():
+        datas = {
+            "business_id":business.id,
+            "name": form.name.data,
+            "serviceType": form.serviceType.data,
+            "description": form.description.data,
+            "duration": form.duration.data,
+            "price_type": form.priceType.data,
+            "price": form.price.data,
+        }
+
+        ServiceId = addServie(datas)
+        print(ServiceId)
+        addMembersToServie(teamMembersData,ServiceId)
+    
     return render_template("BDashboard/service/newService.html",form=form)

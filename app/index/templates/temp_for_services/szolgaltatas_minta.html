@@ -8,6 +8,31 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{url_for('index.static', filename='temp_for_services/f.css')}}">
+
+    <style>
+        /* Panelek: alapból eltűntetve, :checked-re láthatóvá */
+        .cat-panel {
+            display: none;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        {% for serviceType in serviceDatas %}
+        #cat-{{serviceType}}:checked ~ .cat-tabs label[for="cat-{{serviceType}}"] {
+            background: #0A0A0A;
+            color: #fff;
+            border-color: #0A0A0A;
+        }
+        {% endfor %}
+
+        {% for serviceType in serviceDatas %}
+        #cat-{{serviceType}}:checked ~ .panel-{{serviceType}}{
+            display: flex;
+        }
+        {% endfor %}
+
+
+    </style>
 </head>
 <body>
 
@@ -38,15 +63,11 @@
         <section class="hero">
             <div class="container hero-grid">
                 <div class="hero-text">
-                    <span class="badge-status">
-                        <span class="dot"></span> Nyitva 20:00-ig
-                    </span>
                     <h1>{{ business.name }}</h1>
                     <p class="lead">Minőség és professzionalizmus egy helyen</p>
 
                     <div class="hero-meta">
                         <span class="meta-item"><span class="star">★</span> <strong>4.9</strong> (128)</span>
-                        <span class="meta-item">{{ business.location }}</span>
                         <span class="meta-item">Nyitva 20:00-ig</span>
                     </div>
 
@@ -62,61 +83,69 @@
             </div>
         </section>
 
-        <!-- =============== SZOLGÁLTATÁSOK =============== -->
+<!-- =============== SZOLGÁLTATÁSOK =============== -->
         <section id="szolgaltatasok" class="services">
             <div class="container">
                 <p class="section-kicker">Szolgáltatások</p>
                 <h2>Fedezze fel kínálatunkat</h2>
 
-                <!-- CSS-only kategória-váltás rejtett radio inputokkal -->
-                <input type="radio" name="cat" id="cat-alap" class="cat-input" checked>
+                {% if serviceDatas %}
+                    {% for serviceType in serviceDatas %}
+                        <input type="radio" name="cat" id="cat-{{ serviceType }}" class="cat-input" {{ 'checked' if loop.first }}>
+                    {% endfor %}
 
-                <div class="cat-tabs">
-                    <label for="cat-alap" class="cat-pill">Alap szolgáltatások</label>
-                </div>
+                    <div class="cat-tabs">
+                        {% for serviceType in serviceDatas %}
+                            <label for="cat-{{ serviceType }}" class="cat-pill">{{ serviceType }}</label>
+                        {% endfor %}
+                    </div>
 
-                <!-- Panel: Alap -->
-                <div class="cat-panel panel-alap">
-                    <article class="service-card">
-                        <div class="svc-info">
-                            <h3>Alap szolgáltatás I.</h3>
-                            <p>Rövid leírás a szolgáltatásról.</p>
-                            <p class="svc-meta">45 perc <span>•</span> <strong>9 500 Ft-tól</strong></p>
+                    <!-- Panel: Kiemelt -->
+                    {% for serviceType in serviceDatas %}
+                        <div class="cat-panel panel-{{ serviceType }}">
+                            {% for service in serviceDatas[serviceType] %}
+                                <article class="service-card">
+                                    <div class="svc-info">
+                                        <h3>{{ service.name }}</h3>
+                                        <p>{{ service.description }}</p>
+                                        <p class="svc-meta">{{ time_format(service.duration) }} <span>•</span> <strong>{{ service.price }} Ft</strong></p>
+                                    </div>
+                                    <a href="#csapat" class="btn btn-primary">Foglalás →</a>
+                                </article>
+                            {% endfor %}
                         </div>
-                        <a href="#kapcsolat" class="btn btn-primary">Foglalás →</a>
-                    </article>
-                    <article class="service-card">
-                        <div class="svc-info">
-                            <h3>Alap szolgáltatás II.</h3>
-                            <p>Rövid leírás a szolgáltatásról.</p>
-                            <p class="svc-meta">1 óra <span>•</span> <strong>14 000 Ft-tól</strong></p>
-                        </div>
-                        <a href="#kapcsolat" class="btn btn-primary">Foglalás →</a>
-                    </article>
-                </div>
+                    {% endfor %}
+                {% else %}
+                    <div>
+                        <small>Nincs elérhető szolgáltatás</small>
+                    </div>
+                {% endif %}
+            </div>
         </section>
 
+        
         <!-- =============== CSAPAT =============== -->
-        <section id="szolgaltatasok" class="services">
+        <section id="csapat" class="services">
             <div class="container">
                 <p class="section-kicker">Csapat</p>
                 <h2>Csapatunk tagjai</h2>
 
                 <!-- Panel: Alap -->
                 <div>
-                    
+                    {% if staffs %}
                         {% for staff in staffs %}
-                            {% if staff %}
+                            
                                 <div>
                                     <h1>{{ staff.name }}</h1>
                                     <img src="{{ url_for('index.get_file',filename=staff.pfp_name or default.png) }}" width="300">
                                 </div>
-                            {% else %}
-                                <div>
-                                    <small>Csapattagok nem találhatóak!</small>
-                                </div>
-                            {% endif %}
+                       
                         {% endfor %}
+                    {% else %}
+                        <div>
+                            <small>Csapattagok nem találhatóak!</small>
+                        </div>
+                    {% endif %}
                     
                 </div>
         </section>
