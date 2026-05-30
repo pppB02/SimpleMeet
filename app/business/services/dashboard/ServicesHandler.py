@@ -1,5 +1,5 @@
 from app import db
-from ...db_models import Service,Staff
+from ....db_models import Service,Staff
 
 def addMembersToServie(members: list[Staff], ServiceId: int):
     service = Service.query.filter_by(id=ServiceId).first()

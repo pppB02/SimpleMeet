@@ -25,34 +25,21 @@ def business_site(slug):
                 return slug[len(slug)+i+1:len(slug):1]
             
     public_id = get_public_id()
-    print(public_id)
 
     business = Business.query.filter_by(public_id=public_id).first_or_404()
 
     staffs = Staff.query.filter_by(business_id=business.id).all()
     staffDatas = []
-    print(staffs)
     for staff in staffs:
         staffUser = UserAccount.query.filter_by(id=staff.user_id).first()
         staffDatas.append({"name":staffUser.username,"pfp_name":staff.pfp_name})
-    
-    print(staffDatas)
-
 
     services = Service.query.filter_by(business_id=business.id).all()
-
     serviceDatas = {}
-    
-    print(services)
-
     for service in services:
         if service.serviceType in serviceDatas:
             serviceDatas[service.serviceType].append(service)
         else:
             serviceDatas[service.serviceType] = [service]
-
-    for i in serviceDatas:
-        print(serviceDatas[i])
-        print(i)
 
     return render_template("temp_for_services/szolgaltatas_minta.html", business=business, staffs=staffDatas,serviceDatas=serviceDatas, time_format=time_format)

@@ -1,16 +1,16 @@
 from app import db, login_manager
 from ..db_models import Staff, Business
-from .services.ServicesHandler import addServie, addMembersToServie
 from flask import Blueprint, render_template, url_for, request, redirect, flash, session, current_app
 from flask_login import logout_user, current_user
 from ..web_helper import role_required, business_required
 from ..user.services.customer.forms import SingUpForm, LoginForm
 from .services.onboarding.businessForm import Reg_NameAndWeb, Reg_ServiceType, Reg_Location
-from .services.dashboard.forms import MemberProfile, ConfirmInviteForm, openHours, NewServiceForm
+from .services.dashboard.forms import MemberProfile, ConfirmInviteForm, openHours, NewServiceForm, AboutBusinessForm
 from ..user.services.customer.sign_up import signUpSrv
 from ..user.services.customer.login import loginSrv
 from .services.onboarding.finishSetup import FinishSetup
 from .services.dashboard.TeamHandler import MemberAdd, confirmInvite, verify_token
+from .services.dashboard.ServicesHandler import addServie, addMembersToServie
 from ..web_helper import save_photo
 
 business = Blueprint("business", __name__, static_folder="static", template_folder="templates", url_prefix="/business")
@@ -255,3 +255,26 @@ def newService():
         addMembersToServie(teamMembersData,ServiceId)
     
     return render_template("BDashboard/service/newService.html",form=form)
+
+# ======================
+# ABOUT BUSINESS
+# ======================
+
+@business.route("/dashboard/about-business", methods=['POST','GET'])
+@business_required()
+def aboutBusiness():
+    form = AboutBusinessForm()
+    savedTags = []
+    if form.validate_on_submit():
+        raw_tags = request.form.get('selected_tags_submit', '')
+        print(raw_tags)
+        if raw_tags:
+            final_tags_list = raw_tags.split(',')
+            savedTags = final_tags_list
+        else:
+            final_tags_list = []
+            
+        print("A kiválasztott tulajdonságok:", final_tags_list)
+        return render_template("BDashboard/about_business/about-business.html", form=form, final_tags_list=final_tags_list)
+        
+    return render_template("BDashboard/about_business/about-business.html",form=form,final_tags_list=savedTags)

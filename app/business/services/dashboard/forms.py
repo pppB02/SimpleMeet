@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, BooleanField, StringField, FileField, IntegerField, SelectField, DecimalField, RadioField, TextAreaField
+from wtforms import SubmitField, BooleanField, StringField, FileField, IntegerField, SelectField, DecimalField, RadioField, TextAreaField, SelectMultipleField
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms.validators import DataRequired,NumberRange, InputRequired, Length, ValidationError
+from wtforms.validators import DataRequired,NumberRange, InputRequired, Length, ValidationError, Optional
 from ....db_models import UserAccount
 from app import photos
 from flask_login import current_user
@@ -50,7 +50,6 @@ class ConfirmInviteForm(FlaskForm):
 
     submit = SubmitField("Sing Up")
 
-
 class openHours(FlaskForm):
     
     # Monday
@@ -89,8 +88,6 @@ class openHours(FlaskForm):
     sunClosed = BooleanField("Closed", default=False)
 
     submit = SubmitField("Sing Up")
-
-
 
 class NewServiceForm(FlaskForm):
     def __init__(self, teamMembersData, *args, **kwargs):
@@ -154,5 +151,56 @@ class NewServiceForm(FlaskForm):
 
     teamMembers = RadioField()
     
+
+    submit = SubmitField("Mentés")
+
+class AboutBusinessForm(FlaskForm):
+    #desciption = StringField("Name",validators=[DataRequired()])
+    
+    further_info = SelectField(
+        "További információk (több is választható):",
+        validators=[Optional()],
+        choices = {
+            "Foglalás": [
+                ("instant-confirmation", "Azonnali megerősítés"),
+                ("online-booking", "Online foglalás")
+            ],
+            "Kényelem és Elérhetőség": [
+                ("wheelchair-accessible", "Akadálymentesített"),
+                ("kid-friendly", "Gyerekbarát"),
+                ("pet-friendly", "Állatbarát"),
+                ("free-wifi", "Ingyenes Wi-Fi"),
+                ("air-conditioned", "Légkondicionált helyiség"),
+                ("bike-parking", "Kerékpártároló"),
+                ("on-site-parking", "Parkolás a helyszínen"),
+                ("easy-public-transport", "Tömegközlekedéssel könnyen megközelíthető"),
+                ("ev-charging", "Elektromos autó töltési lehetőség")
+            ],
+            "Fizetés és Árazás": [
+                ("credit-card", "Bankkártyás fizetés"),
+                ("szep-card", "SZÉP kártya elfogadóhely"),
+                ("cashless-only", "Készpénzmentes hely"),
+                ("free-consultation", "Ingyenes konzultáció")
+            ],
+            "Szolgáltatás jellege": [
+                ("open-on-weekends", "Hétvégén is nyitva"),
+                ("on-site-services", "Kiszállással is vállal munkát"),
+                ("own-webshop", "Saját webshop")
+            ],
+            "Nyelvtudás": [
+                ("english-speaking", "Angolul beszélő személyzet"),
+                ("german-speaking", "Németül beszélő személyzet")
+            ],
+            "Értékek": [
+                ("eco-friendly", "Környezetbarát"),
+                ("lgbtq-friendly", "LMBTQ+ barát hely")
+            ]
+        }
+    )
+    
+    # photo = FileField("Kép", validators=[
+    #     FileAllowed(photos, "Csak képek!"),
+    #     FileRequired("File kell")
+    # ])
 
     submit = SubmitField("Mentés")
