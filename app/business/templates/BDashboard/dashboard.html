@@ -1,34 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('business.static',filename='css/dashboard/team/styles.css') }}">
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('business.static',filename='css/dashboard/team/styles.css') }}"
+    />
     <title>Dashboard</title>
-</head>
-<body>
-    <!-- <h1>Üdvözöljuk {{ current_user.username }}</h1>
-    <a href="{{ url_for('user.logout') }}">logout</a> -->
-
+  </head>
+  <body>
     <div class="container">
-        <header>
-            <div class="logo"><h1>SimpleMeet</h1></div>
-                <div class="header-btns">
-                    <a href="">pf</a>
-            </div>
-        </header>
-        <div class="hero">
-            <div class="side-bar">
-                <a href="">calendar</a>
-                <a href="{{ url_for('business.teamMembers') }}">team</a>
-                <a href="{{ url_for('business.catalog') }}">settings</a>
-                <a href="">settings</a>
-            </div>
-            <div class="content">
-                {% block hero %}
-                {% endblock %}
-            </div>
+      <header>
+        <div class="logo"><h1>SimpleMeet</h1></div>
+        <div class="header-btns">
+          <a href="{{ url_for('business.logout') }}">Kijelentkezés</a>
         </div>
+      </header>
+
+      <div class="hero">
+        <div class="side-bar">
+          <a href="{{ url_for('business.appointments') }}">Foglalások</a>
+          <a href="{{ url_for('business.teamMembers') }}">Új csapattag</a>
+          <a href="{{ url_for('business.team') }}">Csapat</a>
+          <a href="{{ url_for('business.catalog') }}">Szolgáltatások</a>
+          <a href="{{ url_for('business.hours') }}">Nyitvatartás</a>
+        </div>
+
+        <div class="content">
+          {% block hero %}
+          <h2>Üdv, {{ current_user.username }}</h2>
+          <p>Foglalások száma: {{ appointments_count or 0 }}</p>
+          <p>Csapattagok száma: {{ staff_count or 0 }}</p>
+          <p>Szolgáltatások száma: {{ service_count or 0 }}</p>
+          {% endblock %}
+        </div>
+      </div>
     </div>
-</body>
+  </body>
 </html>

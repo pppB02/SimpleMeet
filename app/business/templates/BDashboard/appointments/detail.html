@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Foglalás részletek</title>
+  </head>
+  <body>
+    <h1>Foglalás #{{ appointment.id }}</h1>
+
+    <p><strong>Üzlet:</strong> {{ business.name }}</p>
+    <p><strong>Vendég:</strong> {{ appointment.user.username }}</p>
+    <p><strong>Szolgáltatás:</strong> {{ appointment.service_item.name }}</p>
+    <p>
+      <strong>Munkatárs:</strong> {{ appointment.staff_member.user_info.username
+      }}
+    </p>
+    <p><strong>Kezdés:</strong> {{ appointment.start_at }}</p>
+    <p><strong>Vége:</strong> {{ appointment.end_at }}</p>
+    <p><strong>Státusz:</strong> {{ appointment.status }}</p>
+    <p><strong>Megjegyzés:</strong> {{ appointment.notes or "-" }}</p>
+
+    <div style="margin-top: 16px">
+      <form
+        method="post"
+        action="{{ url_for('business.appointment_confirm', appointment_id=appointment.id) }}"
+        style="display: inline"
+      >
+        <button type="submit">Visszaigazolás</button>
+      </form>
+
+      <form
+        method="post"
+        action="{{ url_for('business.appointment_complete', appointment_id=appointment.id) }}"
+        style="display: inline"
+      >
+        <button type="submit">Kész</button>
+      </form>
+
+      <form
+        method="post"
+        action="{{ url_for('business.appointment_cancel', appointment_id=appointment.id) }}"
+        style="display: inline"
+      >
+        <button type="submit">Lemondás</button>
+      </form>
+    </div>
+
+    <p>
+      <a href="{{ url_for('business.appointments') }}">Vissza a listához</a>
+    </p>
+  </body>
+</html>

@@ -1,5 +1,6 @@
 from app import db
-from ....db_models import Service,Staff
+from ...db_models import Service, Staff
+
 
 def addMembersToServie(members: list[Staff], ServiceId: int):
     service = Service.query.filter_by(id=ServiceId).first()
@@ -9,29 +10,23 @@ def addMembersToServie(members: list[Staff], ServiceId: int):
 
     try:
         for member in members:
-            MemberServices = member.services or {}
-
-            MemberServices[str(service.id)] = service.name
-            member.services = MemberServices
-
-            print(f"New service added")
+            if service not in member.services:
+                member.services.append(service)
 
         db.session.commit()
-
+        return True
     except Exception as e:
         db.session.rollback()
-        print(e)
-        raise
+        raise e
 
-def addServie(datas:dict):
+
+def addServie(datas: dict):
     newService = Service(**datas)
     try:
         db.session.add(newService)
         db.session.flush()
         db.session.commit()
-        print("Service added and saved!")
         return newService.id
     except Exception as e:
-        print(str(e))
-        #db.session.rollback()
-        
+        db.session.rollback()
+        raise e

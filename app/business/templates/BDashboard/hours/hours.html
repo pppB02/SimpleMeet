@@ -1,127 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hours</title>
-</head>
-<body>
-    <form action="" method="POST" enctype="multipart/form-data">
-        {{ form.hidden_tag() }}
-        <!-- Monday -->
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nyitvatartás</title>
+  </head>
+  <body>
+    <form action="" method="POST">
+      {{ form.hidden_tag() }} {% set days = [ ("mon", "Hétfő"), ("tue", "Kedd"),
+      ("wed", "Szerda"), ("thu", "Csütörtök"), ("fri", "Péntek"), ("sat",
+      "Szombat"), ("sun", "Vasárnap") ] %} {% for prefix, label in days %}
+      <fieldset style="margin-bottom: 16px">
+        <legend>{{ label }}</legend>
+
         <div>
-            {% if form.monOpenHour.errors or form.monOpenMin.errors %}
-                {{ form.monOpenHour() }}
-                {{ form.monOpenMin() }}
-                <div>
-                    {% for error in form.monOpenHour.errors %}<span>{{ error }}</span>{% endfor %}
-                    {% for error in form.monOpenMin.errors %}<span>{{ error }}</span>{% endfor %}
-                </div>
-            {% else %}
-                {{ form.monOpenHour() }}
-                {{ form.monOpenMin() }}
-            {% endif %}
-            {{ form.monOpenHour.label }} / {{ form.monOpenMin.label }}
+          {{ form[prefix ~ 'OpenHour'].label }} {{ form[prefix ~ 'OpenHour']()
+          }} {{ form[prefix ~ 'OpenMin'].label }} {{ form[prefix ~ 'OpenMin']()
+          }}
         </div>
 
-        <!-- Tuesday -->
         <div>
-            {% if form.tueOpenHour.errors or form.tueOpenMin.errors %}
-                {{ form.tueOpenHour() }}
-                {{ form.tueOpenMin() }}
-                <div>
-                    {% for error in form.tueOpenHour.errors %}<span>{{ error }}</span>{% endfor %}
-                    {% for error in form.tueOpenMin.errors %}<span>{{ error }}</span>{% endfor %}
-                </div>
-            {% else %}
-                {{ form.tueOpenHour() }}
-                {{ form.tueOpenMin() }}
-            {% endif %}
-            {{ form.tueOpenHour.label }} / {{ form.tueOpenMin.label }}
+          {{ form[prefix ~ 'CloseHour'].label }} {{ form[prefix ~ 'CloseHour']()
+          }} {{ form[prefix ~ 'CloseMin'].label }} {{ form[prefix ~
+          'CloseMin']() }}
         </div>
 
-        <!-- Wednesday -->
         <div>
-            {% if form.wedOpenHour.errors or form.wedOpenMin.errors %}
-                {{ form.wedOpenHour() }}
-                {{ form.wedOpenMin() }}
-                <div>
-                    {% for error in form.wedOpenHour.errors %}<span>{{ error }}</span>{% endfor %}
-                    {% for error in form.wedOpenMin.errors %}<span>{{ error }}</span>{% endfor %}
-                </div>
-            {% else %}
-                {{ form.wedOpenHour() }}
-                {{ form.wedOpenMin() }}
-            {% endif %}
-            {{ form.wedOpenHour.label }} / {{ form.wedOpenMin.label }}
+          {{ form[prefix ~ 'Closed']() }} {{ form[prefix ~ 'Closed'].label }}
         </div>
+      </fieldset>
+      {% endfor %}
 
-        <!-- Thursday -->
-        <div>
-            {% if form.thuOpenHour.errors or form.thuOpenMin.errors %}
-                {{ form.thuOpenHour() }}
-                {{ form.thuOpenMin() }}
-                <div>
-                    {% for error in form.thuOpenHour.errors %}<span>{{ error }}</span>{% endfor %}
-                    {% for error in form.thuOpenMin.errors %}<span>{{ error }}</span>{% endfor %}
-                </div>
-            {% else %}
-                {{ form.thuOpenHour() }}
-                {{ form.thuOpenMin() }}
-            {% endif %}
-            {{ form.thuOpenHour.label }} / {{ form.thuOpenMin.label }}
-        </div>
-
-        <!-- Friday -->
-        <div>
-            {% if form.friOpenHour.errors or form.friOpenMin.errors %}
-                {{ form.friOpenHour() }}
-                {{ form.friOpenMin() }}
-                <div>
-                    {% for error in form.friOpenHour.errors %}<span>{{ error }}</span>{% endfor %}
-                    {% for error in form.friOpenMin.errors %}<span>{{ error }}</span>{% endfor %}
-                </div>
-            {% else %}
-                {{ form.friOpenHour() }}
-                {{ form.friOpenMin() }}
-            {% endif %}
-            {{ form.friOpenHour.label }} / {{ form.friOpenMin.label }}
-        </div>
-
-        <!-- Saturday -->
-        <div>
-            {% if form.satOpenHour.errors or form.satOpenMin.errors %}
-                {{ form.satOpenHour() }}
-                {{ form.satOpenMin() }}
-                <div>
-                    {% for error in form.satOpenHour.errors %}<span>{{ error }}</span>{% endfor %}
-                    {% for error in form.satOpenMin.errors %}<span>{{ error }}</span>{% endfor %}
-                </div>
-            {% else %}
-                {{ form.satOpenHour() }}
-                {{ form.satOpenMin() }}
-            {% endif %}
-            {{ form.satOpenHour.label }} / {{ form.satOpenMin.label }}
-        </div>
-
-        <!-- Sunday -->
-        <div>
-            {% if form.sunOpenHour.errors or form.sunOpenMin.errors %}
-                {{ form.sunOpenHour() }}
-                {{ form.sunOpenMin() }}
-                <div>
-                    {% for error in form.sunOpenHour.errors %}<span>{{ error }}</span>{% endfor %}
-                    {% for error in form.sunOpenMin.errors %}<span>{{ error }}</span>{% endfor %}
-                </div>
-            {% else %}
-                {{ form.sunOpenHour() }}
-                {{ form.sunOpenMin() }}
-            {% endif %}
-            {{ form.sunOpenHour.label }} / {{ form.sunOpenMin.label }}
-        </div>
-        <div>
-            {{ form.submit() }}
-        </div>
+      <div>{{ form.submit() }}</div>
     </form>
-</body>
+  </body>
 </html>

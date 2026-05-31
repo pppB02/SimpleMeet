@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Foglalások</title>
+  </head>
+  <body>
+    <h1>{{ business.name }} – Foglalások</h1>
+
+    <p>
+      <a href="{{ url_for('business.dashboard') }}">Vissza a dashboardra</a>
+    </p>
+
+    <table border="1" cellpadding="8" cellspacing="0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Vendég</th>
+          <th>Szolgáltatás</th>
+          <th>Munkatárs</th>
+          <th>Kezdés</th>
+          <th>Vége</th>
+          <th>Státusz</th>
+          <th>Részletek</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for appointment in appointments %}
+        <tr>
+          <td>{{ appointment.id }}</td>
+          <td>{{ appointment.user.username }}</td>
+          <td>{{ appointment.service_item.name }}</td>
+          <td>{{ appointment.staff_member.user_info.username }}</td>
+          <td>{{ appointment.start_at }}</td>
+          <td>{{ appointment.end_at }}</td>
+          <td>{{ appointment.status }}</td>
+          <td>
+            <a
+              href="{{ url_for('business.appointment_detail', appointment_id=appointment.id) }}"
+              >Megnyitás</a
+            >
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>
