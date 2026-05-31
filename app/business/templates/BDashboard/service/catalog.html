@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Szolgáltatások</title>
+  </head>
+  <body>
+    <h1>{{ business.name }} – Szolgáltatások</h1>
+
+    <p><a href="{{ url_for('business.newService') }}">Új szolgáltatás</a></p>
+
+    <table border="1" cellpadding="8" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Név</th>
+          <th>Típus</th>
+          <th>Időtartam</th>
+          <th>Ár</th>
+          <th>Aktív</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for service in services %}
+        <tr>
+          <td>{{ service.name }}</td>
+          <td>{{ service.serviceType }}</td>
+          <td>{{ service.duration }} perc</td>
+          <td>{{ service.price }} Ft</td>
+          <td>{{ "igen" if service.is_active else "nem" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>

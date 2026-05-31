@@ -1,26 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <style>
-        tr:nth-child(even) {
-            background-color: #D6EEEE;
-        }
-    </style>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Csapat</title>
+  </head>
+  <body>
     <table>
+      <thead>
+        <tr>
+          <th>Staff ID</th>
+          <th>Felhasználó</th>
+          <th>Kép</th>
+          <th>Szolgáltatások</th>
+          <th>Akciók</th>
+        </tr>
+      </thead>
+      <tbody>
         {% for member in membersTable %}
         <tr>
-            <td>{{ member.id }}</td>
-            <td>{{ member.user_id }}</td>
-            <td>{{ member.business_id }}</td>
-            <td>{{ member.services }}</td>
-            <td>{{ member.status }}</td> 
+          <td>{{ member.id }}</td>
+          <td>{{ member.user_info.username }}</td>
+          <td>
+            {% if member.pfp_name %}
+            <img
+              src="{{ url_for('index.get_file', filename=member.pfp_name) }}"
+              alt=""
+              width="48"
+            />
+            {% endif %}
+          </td>
+          <td>
+            {% if member.services %} {% for service in member.services %}
+            <div>{{ service.name }} ({{ service.serviceType }})</div>
+            {% endfor %} {% else %}
+            <small>Nincs hozzárendelt szolgáltatás</small>
+            {% endif %}
+          </td>
+          <td>{{ member.business_id }}</td>
         </tr>
         {% endfor %}
+      </tbody>
     </table>
-</body>
+  </body>
 </html>

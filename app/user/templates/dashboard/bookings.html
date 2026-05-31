@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      {% if is_staff %}Staff foglalások{% else %}Saját foglalások{% endif %}
+    </title>
+  </head>
+  <body>
+    <h1>
+      {% if is_staff %}Staff foglalások{% else %}Saját foglalások{% endif %}
+    </h1>
+
+    <p><a href="{{ url_for('user.dashboard') }}">Vissza a dashboardra</a></p>
+
+    {% if appointments %}
+    <table border="1" cellpadding="8" cellspacing="0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Üzlet</th>
+          <th>Szolgáltatás</th>
+          <th>Munkatárs</th>
+          <th>Kezdés</th>
+          <th>Vége</th>
+          <th>Státusz</th>
+          <th>Megnyitás</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for appointment in appointments %}
+        <tr>
+          <td>{{ appointment.id }}</td>
+          <td>{{ appointment.business_item.name }}</td>
+          <td>{{ appointment.service_item.name }}</td>
+          <td>{{ appointment.staff_member.user_info.username }}</td>
+          <td>{{ appointment.start_at }}</td>
+          <td>{{ appointment.end_at }}</td>
+          <td>{{ appointment.status }}</td>
+          <td>
+            {% if is_staff %}
+            <a
+              href="{{ url_for('user.staff_booking_detail', appointment_id=appointment.id) }}"
+              >Részletek</a
+            >
+            {% else %}
+            <a
+              href="{{ url_for('user.customer_booking_detail', appointment_id=appointment.id) }}"
+              >Részletek</a
+            >
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <p>Nincsenek foglalások.</p>
+    {% endif %}
+  </body>
+</html>

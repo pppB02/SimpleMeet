@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimpleMeet</title>
+</head>
+<body>
+    <div>
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+
+            <div>
+                {{ form.name.label() }}
+                {% if form.name.errors %}
+                    {{ form.name() }}
+                    <div>
+                        {% for error in form.name.errors %}
+                            <span>{{error}}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.name() }}
+                {% endif %}
+            </div>
+
+            <div>
+                {{ form.serviceType.label() }}
+                {% if form.serviceType.errors %}
+                    {{ form.serviceType() }}
+                    <div>
+                        {% for error in form.serviceType.errors %}
+                            <span>{{error}}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.serviceType() }}
+                {% endif %}
+            </div>
+
+            <div>
+                {{ form.description.label() }}
+                {% if form.description.errors %}
+                    {{ form.description() }}
+                    <div>
+                        {% for error in form.description.errors %}
+                            <span>{{error}}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.description() }}
+                {% endif %}
+            </div>
+
+            <div>
+                {{ form.duration.label() }}
+                {% if form.duration.errors %}
+                    {{ form.duration() }}
+                    <div>
+                        {% for error in form.duration.errors %}
+                            <span>{{error}}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.duration() }}
+                {% endif %}
+            </div>
+
+            <div>
+                {{ form.priceType.label() }}
+                {% if form.priceType.errors %}
+                    {{ form.priceType() }}
+                    <div>
+                        {% for error in form.priceType.errors %}
+                            <span>{{error}}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.priceType() }}
+                {% endif %}
+            </div>
+
+            <div>
+                {{ form.price.label() }}
+                {% if form.price.errors %}
+                    {{ form.price() }}
+                    <div>
+                        {% for error in form.price.errors %}
+                            <span>{{error}}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.price() }}
+                {% endif %}
+            </div>
+
+            <div>
+                {% for subfield in form.teamMembers %}
+                <div class="category">
+                    {{ subfield }}
+                    <label for="{{ subfield.id }}">{{ subfield.label.text }}</label>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div>
+                {{ form.submit() }}
+            </div>
+
+        </form>
+    </div>
+</body>
+</html>

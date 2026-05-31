@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form method="POST">
+      {{ form.hidden_tag() }}
+
+      <div class="form-group">
+        {{ form.further_info.label }} <br />
+        {{ form.further_info(class="form-control") }}
+      </div>
+
+      <div class="tags-container" id="tags-container"></div>
+
+      <input
+        type="hidden"
+        name="selected_tags_submit"
+        id="hidden-tags-input"
+        value="{{ final_tags_list | join(',') if final_tags_list else '' }}"
+      />
+
+      <br />
+      <button type="submit">Mentés</button>
+    </form>
+  </body>
+</html>
+
+<style>
+  .tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
+  }
+  .tag {
+    background-color: #28a745;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tag .remove-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+  }
+</style>
+
+<script>
+  const selectEl = document.getElementById("further_info");
+  const containerEl = document.getElementById("tags-container");
+  const hiddenInputEl = document.getElementById("hidden-tags-input");
+
+  let selectedValues =
+    "{{ final_tags_list | join(',') if final_tags_list else '' }}"
+      .split(",")
+      .filter(Boolean);
+
+  function createTagHTML(val, text) {
+    const tag = document.createElement("div");
+    tag.classList.add("tag");
+    tag.setAttribute("data-value", val);
+    tag.innerHTML = `<span>${text}</span><button type="button" class="remove-btn" onclick="removeTag('${val}')">&times;</button>`;
+    containerEl.appendChild(tag);
+  }
+
+  function initPreselectedTags() {
+    selectedValues.forEach((val) => {
+      const option = Array.from(selectEl.options).find(
+        (opt) => opt.value === val,
+      );
+      if (option) {
+        option.disabled = true;
+        createTagHTML(val, option.text);
+      }
+    });
+  }
+
+  selectEl.addEventListener("change", function () {
+    const selectedOption = selectEl.options[selectEl.selectedIndex];
+    const val = selectedOption.value;
+    const text = selectedOption.text;
+
+    if (val && !selectedValues.includes(val)) {
+      selectedValues.push(val);
+      selectedOption.disabled = true;
+
+      createTagHTML(val, text);
+      hiddenInputEl.value = selectedValues.join(",");
+    }
+    selectEl.value = "";
+  });
+
+  window.removeTag = function (value) {
+    selectedValues = selectedValues.filter((item) => item !== value);
+
+    const tagEl = containerEl.querySelector(`[data-value="${value}"]`);
+    if (tagEl) tagEl.remove();
+
+    const optionToEnable = Array.from(selectEl.options).find(
+      (opt) => opt.value === value,
+    );
+    if (optionToEnable) optionToEnable.disabled = false;
+
+    hiddenInputEl.value = selectedValues.join(",");
+  };
+
+  document.addEventListener("DOMContentLoaded", function () {
+    initPreselectedTags();
+  });
+</script>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ business.name }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('index.static', filename='temp_for_services/f.css')}}">
+
+    <style>
+        /* Panelek: alapból eltűntetve, :checked-re láthatóvá */
+        .cat-panel {
+            display: none;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        {% for serviceType in serviceDatas %}
+        #cat-{{serviceType}}:checked ~ .cat-tabs label[for="cat-{{serviceType}}"] {
+            background: #0A0A0A;
+            color: #fff;
+            border-color: #0A0A0A;
+        }
+        {% endfor %}
+
+        {% for serviceType in serviceDatas %}
+        #cat-{{serviceType}}:checked ~ .panel-{{serviceType}}{
+            display: flex;
+        }
+        {% endfor %}
+
+
+    </style>
+</head>
+<body>
+
+    <!-- =============== HEADER =============== -->
+    <header class="site-header">
+        <div class="container header-inner">
+            <a href="#top" class="logo">SimpleMeet</a>
+
+            <!-- Mobilmenü kapcsoló (CSS-only: rejtett checkbox + :checked) -->
+            <input type="checkbox" id="menu-toggle" class="menu-toggle-input">
+            <label for="menu-toggle" class="menu-toggle-btn" aria-label="Menü">
+                <span></span><span></span><span></span>
+            </label>
+
+            <nav class="main-nav">
+                <a href="#szolgaltatasok">Szolgáltatások</a>
+                <a href="#rolunk">Rólunk</a>
+                <a href="#nyitvatartas">Nyitvatartás</a>
+            </nav>
+
+            <a href="#szolgaltatasok" class="btn btn-primary header-cta">Foglalás</a>
+        </div>
+    </header>
+
+    <main id="top">
+
+        <!-- =============== HERO =============== -->
+        <section class="hero">
+            <div class="container hero-grid">
+                <div class="hero-text">
+                    <h1>{{ business.name }}</h1>
+                    <p class="lead">Minőség és professzionalizmus egy helyen</p>
+
+                    <div class="hero-meta">
+                        <span class="meta-item"><span class="star">★</span> <strong>4.9</strong> (128)</span>
+                        <span class="meta-item">Nyitva 20:00-ig</span>
+                    </div>
+
+                    <div class="hero-actions">
+                        <a href="#szolgaltatasok" class="btn btn-primary">Foglalás most</a>
+                        <a href="#rolunk" class="btn btn-secondary">Rólunk</a>
+                    </div>
+                </div>
+
+                <div class="hero-image">
+                    <!-- IDE KELL A KÉP -->
+                </div>
+            </div>
+        </section>
+
+<!-- =============== SZOLGÁLTATÁSOK =============== -->
+        <section id="szolgaltatasok" class="services">
+            <div class="container">
+                <p class="section-kicker">Szolgáltatások</p>
+                <h2>Fedezze fel kínálatunkat</h2>
+
+                {% if serviceDatas %}
+                    {% for serviceType in serviceDatas %}
+                        <input type="radio" name="cat" id="cat-{{ serviceType }}" class="cat-input" {{ 'checked' if loop.first }}>
+                    {% endfor %}
+
+                    <div class="cat-tabs">
+                        {% for serviceType in serviceDatas %}
+                            <label for="cat-{{ serviceType }}" class="cat-pill">{{ serviceType }}</label>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Panel: Kiemelt -->
+                    {% for serviceType in serviceDatas %}
+                        <div class="cat-panel panel-{{ serviceType }}">
+                            {% for service in serviceDatas[serviceType] %}
+                                <article class="service-card">
+                                    <div class="svc-info">
+                                        <h3>{{ service.name }}</h3>
+                                        <p>{{ service.description }}</p>
+                                        <p class="svc-meta">{{ time_format(service.duration) }} <span>•</span> <strong>{{ service.price }} Ft</strong></p>
+                                    </div>
+                                    <a href="#csapat" class="btn btn-primary">Foglalás →</a>
+                                </article>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div>
+                        <small>Nincs elérhető szolgáltatás</small>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+
+        
+        <!-- =============== CSAPAT =============== -->
+        <section id="csapat" class="services">
+            <div class="container">
+                <p class="section-kicker">Csapat</p>
+                <h2>Csapatunk tagjai</h2>
+
+                <!-- Panel: Alap -->
+                <div>
+                    {% if staffs %}
+                        {% for staff in staffs %}
+                            
+                                <div>
+                                    <h1>{{ staff.name }}</h1>
+                                    <img src="{{ url_for('index.get_file',filename=staff.pfp_name or default.png) }}" width="300">
+                                </div>
+                       
+                        {% endfor %}
+                    {% else %}
+                        <div>
+                            <small>Csapattagok nem találhatóak!</small>
+                        </div>
+                    {% endif %}
+                    
+                </div>
+        </section>
+
+        <!-- =============== NYITVATARTÁS =============== -->
+        <section id="nyitvatartas" class="hours">
+            <div class="container hours-grid">
+                <div>
+                    <p class="section-kicker">Nyitvatartás</p>
+                    <h2>Nyitvatartási idő</h2>
+                    <p class="muted">Látogasson el hozzánk az alábbi időpontokban, vagy foglaljon időpontot online a weboldalon.</p>
+                </div>
+                <ul class="hours-list">
+                    <li><span>Hétfő</span><span>8:00 – 20:00</span></li>
+                    <li><span>Kedd</span><span>8:00 – 20:00</span></li>
+                    <li><span>Szerda</span><span>8:00 – 20:00</span></li>
+                    <li><span>Csütörtök</span><span>8:00 – 20:00</span></li>
+                    <li><span>Péntek</span><span>8:00 – 20:00</span></li>
+                    <li><span>Szombat</span><span>9:00 – 18:00</span></li>
+                    <li><span>Vasárnap</span><span>Zárva</span></li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- =============== RÓLUNK =============== -->
+        <section id="rolunk" class="about">
+            <div class="container about-grid">
+                <div>
+                    <p class="section-kicker">Rólunk</p>
+                    <h2>Ismerje meg a csapatot és a szemléletünket</h2>
+                    <p>Csapatunk több éves tapasztalattal és megújult szemlélettel várja Önt. Célunk, hogy minden vendégünk számára nyugodt, átgondolt és magas színvonalú élményt nyújtsunk.</p>
+                    <p>Hiszünk abban, hogy a minőségi szolgáltatás részletekből áll össze: a figyelemből, a tiszta környezetből és a pontos munkából. Ez a hozzáállás vezet bennünket nap mint nap.</p>
+                </div>
+                <div class="about-image">
+                    <!-- IDE KELL A KÉP -->
+                </div>
+            </div>
+        </section>
+
+        <!-- =============== FEATURES =============== -->
+        <section class="features">
+            <div class="container">
+                <p class="section-kicker">További információ</p>
+                <h2>Amit érdemes tudni</h2>
+                <div class="badge-list">
+                    <span class="badge">✓ Azonnali megerősítés</span>
+                    <span class="badge">✓ Online foglalás</span>
+                    <span class="badge">✓ Akadálymentesített</span>
+                    <span class="badge">✓ Gyerekbarát</span>
+                    <span class="badge">✓ Parkolás a helyszínen</span>
+                    <span class="badge">✓ Bankkártyás fizetés</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- =============== FOOTER =============== -->
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p class="logo">SimpleMeet</p>
+            <p class="muted small">© 2026 SimpleMeet. Minden jog fenntartva.</p>
+        </div>
+    </footer>
+
+</body>
+</html>

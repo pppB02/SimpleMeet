@@ -1,12 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dashboard</title>
-</head>
-<body>
-    <h1>Üdvözöljuk {{ current_user.username }}</h1>
-    <a href="{{ url_for('user.logout') }}">logout</a>
-</body>
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+  </head>
+  <body>
+    <h1>Üdvözöljük {{ current_user.username }}</h1>
+
+    <nav>
+      <a href="{{ url_for('user.customer_bookings') }}">Saját foglalásaim</a>
+
+      {% if current_user.staff_profile %}
+      <a href="{{ url_for('user.staff_dashboard') }}">Staff dashboard</a>
+      {% endif %}
+
+      <a href="{{ url_for('user.logout') }}">Kilépés</a>
+    </nav>
+
+    {% if appointments is defined %}
+    <h2>Legutóbbi foglalások</h2>
+    <ul>
+      {% for appointment in appointments %}
+      <li>
+        <a
+          href="{% if is_staff %}{{ url_for('user.staff_booking_detail', appointment_id=appointment.id) }}{% else %}{{ url_for('user.customer_booking_detail', appointment_id=appointment.id) }}{% endif %}"
+        >
+          #{{ appointment.id }} – {{ appointment.start_at }} – {{
+          appointment.status }}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </body>
 </html>

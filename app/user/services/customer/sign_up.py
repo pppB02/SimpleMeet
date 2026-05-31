@@ -1,15 +1,22 @@
-from flask import redirect, render_template
 from flask_login import login_user
 from ....db_models import UserAccount
 from ..passwordService import encrypt
 
-def signUpSrv(db, username, email, password,role):
-    newUser = UserAccount(username=username, email=email, password_hash=encrypt(password), role=role)
+
+def signUpSrv(db, username, email, password, role):
+    newUser = UserAccount(
+        username=username,
+        email=email,
+        password_hash=encrypt(password),
+        role=role
+    )
+
     try:
         db.session.add(newUser)
         db.session.commit()
         login_user(newUser)
-        print("sing up was succesfull")
+        print("sign up was successfull")
         return None
     except Exception as e:
-        return e
+        db.session.rollback()
+        raise e

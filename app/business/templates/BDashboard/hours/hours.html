@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nyitvatartás</title>
+  </head>
+  <body>
+    <form action="" method="POST">
+      {{ form.hidden_tag() }} {% set days = [ ("mon", "Hétfő"), ("tue", "Kedd"),
+      ("wed", "Szerda"), ("thu", "Csütörtök"), ("fri", "Péntek"), ("sat",
+      "Szombat"), ("sun", "Vasárnap") ] %} {% for prefix, label in days %}
+      <fieldset style="margin-bottom: 16px">
+        <legend>{{ label }}</legend>
+
+        <div>
+          {{ form[prefix ~ 'OpenHour'].label }} {{ form[prefix ~ 'OpenHour']()
+          }} {{ form[prefix ~ 'OpenMin'].label }} {{ form[prefix ~ 'OpenMin']()
+          }}
+        </div>
+
+        <div>
+          {{ form[prefix ~ 'CloseHour'].label }} {{ form[prefix ~ 'CloseHour']()
+          }} {{ form[prefix ~ 'CloseMin'].label }} {{ form[prefix ~
+          'CloseMin']() }}
+        </div>
+
+        <div>
+          {{ form[prefix ~ 'Closed']() }} {{ form[prefix ~ 'Closed'].label }}
+        </div>
+      </fieldset>
+      {% endfor %}
+
+      <div>{{ form.submit() }}</div>
+    </form>
+  </body>
+</html>
