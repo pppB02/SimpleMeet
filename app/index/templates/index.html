@@ -1,98 +1,116 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block head %}
+<link
+  rel="stylesheet"
+  href="{{url_for('index.static',filename='index/index.css')}}"
+/>
+{% endblock %} {% block body %}
+<div class="fejlec">
+  <h1>A szalonok és gyógyfürdők első számú szoftvere</h1>
+  <p>Egyszerű, rugalmas és hatékony foglalási szoftver vállalkozása számára.</p>
 
-{% block head %}
-    <link rel="stylesheet" href="{{url_for('index.static',filename='index/index.css')}}">
-{% endblock %}
+  <div class="gomb-kontener">
+    <button class="fekete-gomb">Foglalj most</button>
+    <button class="keretes-gomb">Áttekintés megtekintése</button>
+  </div>
+</div>
 
-{% block body %}
-    <div class="fejlec">
-        <h1>A szalonok és gyógyfürdők első számú szoftvere</h1>
-        <p>Egyszerű, rugalmas és hatékony foglalási szoftver vállalkozása számára.</p>
-        
-        <div class="gomb-kontener">
-            <button class="fekete-gomb">Foglalj most</button>
-            <button class="keretes-gomb">Áttekintés megtekintése</button>
-        </div>
-    </div>
-
-    <div class="kep-kontener">
-        <img src="{{url_for('index.static',filename='index/images/business.webp')}}" alt="Naptár" class="fokep">
-    </div>
+<div class="kep-kontener">
+  <img
+    src="{{url_for('index.static',filename='index/images/business.webp')}}"
+    alt="Naptár"
+    class="fokep"
+  />
+</div>
 
 <section class="ajanlott">
-    <h2>Ajánlott</h2>
+  <h2>Kiemelt üzletek</h2>
 
-    <div class="kartyak">
-
-        <a href="#" class="kartya">
-            <img src="{{url_for('index.static',filename='index/images/barber.png')}}" alt="Spa">
-
-            <div class="kartya-szoveg">
-                <h3>BarberShop</h3>
-                <p>Debrecen, Biga utca/20</p>
-                <span class="kategoria">Barber</span>
-            </div>
-        </a>
-
-        <a href="#" class="kartya">
-            <img src="{{url_for('index.static',filename='index/images/barber.png')}}" alt="Spa">
-
-            <div class="kartya-szoveg">
-                <h3>BarberShop</h3>
-                <p>Debrecen, Isiász Imre tér/4</p>
-                <span class="kategoria">Barber</span>
-            </div>
-        </a>
-
-        <a href="#" class="kartya">
-            <img src="{{url_for('index.static',filename='index/images/masszazs.png')}}" alt="Spa">
-
-            <div class="kartya-szoveg">
-                <h3>Vassa Spa at BOR Hotel</h3>
-                <p>Zlatibor, Zlatibor</p>
-                <span class="kategoria">Spa & szauna</span>
-            </div>
-        </a>
-
-
-
-    </div>
+  <div class="kartyak">
+    {% for business in featured_businesses %} {% if
+    business.about_business_image %}
+    <a
+      class="kartya"
+      href="{{ url_for('index.business_site', slug=business.slug ~ '-' ~ business.public_id) }}"
+      class="kartya"
+    >
+      <img
+        class="business-thumbnail"
+        src="{{ url_for('index.get_file', filename=business.about_business_image) }}"
+        alt="{{ business.name }}"
+      />
+      {% else %}
+      <img
+        class="business-thumbnail"
+        src="{{ url_for('index.static', filename='index/images/default-business.jpg') }}"
+        alt="{{ business.name }}"
+      />
+      {% endif %}
+      <div class="kartya-szoveg">
+        <h3>{{ business.name }}</h3>
+        <p>{{ business.location or '' }}</p>
+        <span class="kategoria">{{ business.categories }}</span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
 </section>
 
+<!-- <section class="about-highlight">
+  <h2>Rólunk</h2>
+
+  {% for business in featured_businesses[:1] %}
+  <div class="about-card">
+    {% if business.about_team_image %}
+    <img
+      src="{{ url_for('index.get_file', filename=business.about_team_image) }}"
+      alt="Csapatkép"
+      style="max-width: 420px; width: 100%; border-radius: 16px"
+    />
+    {% else %}
+    <img
+      src="{{ url_for('index.static', filename='index/images/default-business.jpg') }}"
+      alt="{{ business.name }}"
+    />
+    {% endif %}
+
+    <div>
+      <h3>{{ business.name }}</h3>
+      <p>{{ business.about_description }}</p>
+    </div>
+  </div>
+  {% endfor %}
+</section> -->
 
 <section class="app-szekcio">
+  <div class="app-bal">
+    <p class="elerheto">Elérhető:  G</p>
+    <h2>Töltse le a SimpleMeet alkalmazást</h2>
+    <p class="app-leiras">
+      Foglalj felejthetetlen szépségápolási és wellnessélményeket a Fresha
+      mobilalkalmazással
+    </p>
+    <img
+      src="{{url_for('index.static',filename='index/images/qr.png')}}"
+      class="qr"
+    />
+  </div>
 
-    <div class="app-bal">
-
-        <p class="elerheto">Elérhető:  G</p>
-
-        <h2>Töltse le a SimpleMeet alkalmazást</h2>
-
-        <p class="app-leiras">
-            Foglalj felejthetetlen szépségápolási és
-            wellnessélményeket a Fresha mobilalkalmazással
-        </p>
-
-        <img src="{{url_for('index.static',filename='index/images/qr.png')}}" class="qr">
-
+  <div class="app-jobb">
+    <div class="telefon">
+      <video autoplay muted loop>
+        <source
+          src="{{url_for('index.static',filename='index/videos/video1.mp4')}}"
+          type="video/mp4"
+        />
+      </video>
     </div>
 
-
-    <div class="app-jobb">
-
-        <div class="telefon">
-
-            <video autoplay muted loop>
-                <source src="{{url_for('index.static',filename='index/videos/video1.mp4')}}" type="video/mp4">
-            </video>
-        </div>
-
-        <div class="telefon">
-            <img src="{{url_for('index.static',filename='index/images/kep1.webp')}}" alt="kep1">
-        </div>
-
+    <div class="telefon">
+      <img
+        src="{{url_for('index.static',filename='index/images/kep1.webp')}}"
+        alt="kep1"
+      />
     </div>
-
+  </div>
 </section>
-
 {% endblock %}

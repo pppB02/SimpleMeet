@@ -1,3 +1,5 @@
+import re
+
 from flask_wtf import FlaskForm
 from wtforms import (
     SubmitField,
@@ -16,6 +18,7 @@ from wtforms.validators import (
     NumberRange,
     InputRequired,
     Length,
+    Optional,
     ValidationError,
 )
 from ....db_models import UserAccount
@@ -178,3 +181,94 @@ class NewServiceForm(FlaskForm):
 
     teamMembers = RadioField()
     submit = SubmitField("Mentés")
+
+class BusinessEditForm(FlaskForm):
+    name = StringField("Business name", validators=[DataRequired(), Length(min=2, max=255)])
+    location = StringField("Location", validators=[Optional(), Length(max=255)])
+    website = StringField("Website", validators=[Optional()], render_kw={"placeholder": "www.yourwebsite.com"})
+    submit = SubmitField("Mentés")
+
+    def validate_name(self, name):
+        existing = UserAccount.query.filter_by(username=name.data).first()
+        # ez csak példa volt; ezt business szinten fogjuk használni a route-ban is
+        return True
+
+    def validate_website(self, website):
+        pattern = re.compile(r'^(https?:\/\/)?(www\.)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/\S*)?$')
+        if website.data and not pattern.match(website.data):
+            raise ValidationError("Érvénytelen link!")
+
+
+class AboutBusinessForm(FlaskForm):
+    about_description = TextAreaField(
+        "Rólunk",
+        validators=[
+            DataRequired(message="Kérlek írj egy bemutatkozást az üzletről."),
+            Length(min=20, max=2000, message="A leírás 20 és 2000 karakter között legyen.")
+        ]
+    )
+
+    about_business_image = FileField(
+        "Üzletről kép",
+        validators=[FileAllowed(photos, "Csak képek tölthetők fel!")]
+    )
+
+    about_team_image = FileField(
+        "Csapatkép",
+        validators=[FileAllowed(photos, "Csak képek tölthetők fel!")]
+    )
+
+    further_info = SelectField(
+        "További információk:",
+        validators=[Optional()],
+        choices={
+            "Foglalás": [
+                ("instant-confirmation", "Azonnali megerősítés"),
+                ("online-booking", "Online foglalás")
+            ],
+            "Kényelem és Elérhetőség": [
+                ("wheelchair-accessible", "Akadálymentesített"),
+                ("kid-friendly", "Gyerekbarát"),
+                ("pet-friendly", "Állatbarát"),
+                ("free-wifi", "Ingyenes Wi-Fi"),
+                ("air-conditioned", "Légkondicionált helyiség"),
+                ("bike-parking", "Kerékpártároló"),
+                ("on-site-parking", "Parkolás a helyszínen"),
+                ("easy-public-transport", "Tömegközlekedéssel könnyen megközelíthető"),
+                ("ev-charging", "Elektromos autó töltési lehetőség")
+            ],
+            "Fizetés és Árazás": [
+                ("credit-card", "Bankkártyás fizetés"),
+                ("szep-card", "SZÉP kártya elfogadóhely"),
+                ("cashless-only", "Készpénzmentes hely"),
+                ("free-consultation", "Ingyenes konzultáció")
+            ],
+            "Szolgáltatás jellege": [
+                ("open-on-weekends", "Hétvégén is nyitva"),
+                ("on-site-services", "Kiszállással is vállal munkát"),
+                ("own-webshop", "Saját webshop")
+            ],
+            "Nyelvtudás": [
+                ("english-speaking", "Angolul beszélő személyzet"),
+                ("german-speaking", "Németül beszélő személyzet")
+            ],
+            "Értékek": [
+                ("eco-friendly", "Környezetbarát"),
+                ("lgbtq-friendly", "LMBTQ+ barát hely")
+            ]
+        }
+    )
+
+    submit = SubmitField("Mentés")
+
+
+class UserProfileForm(FlaskForm):
+    username = StringField("Felhasználónév", validators=[DataRequired(), Length(min=2, max=255)])
+    email = StringField("Email", validators=[DataRequired(), Length(min=5, max=255)])
+    photo = FileField("Profilkép", validators=[FileAllowed(photos, "Csak képek tölthetők fel!")])
+    submit = SubmitField("Mentés")
+
+    def validate_email(self, email):
+        existing = UserAccount.query.filter(UserAccount.email == email.data, UserAccount.id != current_user.id).first()
+        if existing:
+            raise ValidationError("Ez az email cím már foglalt!")

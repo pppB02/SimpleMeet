@@ -1,0 +1,993 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ business.name }} | Foglalás</title>
+    <meta name="description" content="Időpontfoglalás a SimpleMeet rendszerében." />
+    <style>
+      :root{
+        --bg:#f6f7fb;
+        --card:#ffffff;
+        --text:#0f172a;
+        --muted:#64748b;
+        --line:#e2e8f0;
+        --accent:#0f172a;
+        --accent-2:#111827;
+        --success:#0f9d58;
+        --soft:#f8fafc;
+        --soft-2:#eef2ff;
+        --shadow: 0 16px 45px rgba(15,23,42,.08);
+        --radius: 22px;
+      }
+      *{box-sizing:border-box}
+      html{scroll-behavior:smooth}
+      body{
+        margin:0;
+        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: linear-gradient(180deg,#f9fafb 0%, #f6f7fb 100%);
+        color:var(--text);
+        line-height:1.5;
+      }
+      a{color:inherit;text-decoration:none}
+      img{max-width:100%;display:block}
+      button,input,select,textarea{font:inherit}
+      .page{
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 24px 16px 56px;
+      }
+      .hero{
+        display:grid;
+        grid-template-columns: 1.35fr .85fr;
+        gap: 18px;
+        align-items: stretch;
+        margin-bottom: 18px;
+      }
+      .hero-card,.card{
+        background: rgba(255,255,255,.9);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(226,232,240,.9);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+      .hero-card{
+        padding: 28px;
+        position: relative;
+        overflow:hidden;
+      }
+      .hero-card::before{
+        content:"";
+        position:absolute;
+        inset:auto -120px -120px auto;
+        width:260px;height:260px;
+        border-radius:999px;
+        background: radial-gradient(circle, rgba(15,23,42,.08) 0%, rgba(15,23,42,0) 70%);
+        pointer-events:none;
+      }
+      .eyebrow{
+        display:inline-flex;
+        gap:8px;
+        align-items:center;
+        padding: 7px 12px;
+        border-radius:999px;
+        background: var(--soft);
+        border: 1px solid var(--line);
+        color:var(--muted);
+        font-size:.85rem;
+        font-weight:600;
+        margin-bottom: 16px;
+      }
+      .eyebrow .dot{
+        width:8px;height:8px;border-radius:999px;background:var(--success);
+      }
+      h1,h2,h3,h4{margin:0}
+      h1{
+        font-size: clamp(2rem, 4vw, 3.55rem);
+        line-height: 1.03;
+        letter-spacing: -.04em;
+        margin-bottom: 12px;
+      }
+      .lead{
+        color:var(--muted);
+        max-width: 62ch;
+        font-size: 1rem;
+        margin-bottom: 18px;
+      }
+      .meta-grid{
+        display:flex;
+        flex-wrap:wrap;
+        gap: 12px;
+        margin-bottom: 22px;
+      }
+      .meta{
+        display:flex;
+        align-items:center;
+        gap:8px;
+        padding: 10px 14px;
+        border-radius: 14px;
+        background: var(--soft);
+        border: 1px solid var(--line);
+        font-size: .93rem;
+        color:var(--text);
+      }
+      .hero-actions{
+        display:flex;
+        flex-wrap:wrap;
+        gap:10px;
+      }
+      .btn{
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        gap:8px;
+        height: 46px;
+        padding: 0 18px;
+        border-radius: 14px;
+        border: 1px solid transparent;
+        cursor:pointer;
+        transition: transform .18s ease, background .18s ease, border-color .18s ease, color .18s ease;
+        font-weight: 600;
+        text-decoration:none;
+      }
+      .btn:hover{transform: translateY(-1px)}
+      .btn-primary{
+        background: var(--accent);
+        color:#fff;
+      }
+      .btn-primary:hover{background:#1f2937}
+      .btn-secondary{
+        background:#fff;
+        border-color: var(--line);
+        color:var(--text);
+      }
+      .btn-secondary:hover{background:var(--soft)}
+      .btn-ghost{
+        background:transparent;
+        border-color:var(--line);
+        color:var(--text);
+      }
+      .layout{
+        display:grid;
+        grid-template-columns: minmax(0, 1.25fr) minmax(320px, .75fr);
+        gap: 18px;
+        align-items:start;
+      }
+      .card{
+        padding: 22px;
+      }
+      .stack{display:grid;gap:18px}
+      .section-head{
+        display:flex;
+        align-items:flex-end;
+        justify-content:space-between;
+        gap:12px;
+        margin-bottom: 16px;
+      }
+      .section-head h2{
+        font-size: 1.45rem;
+        letter-spacing:-.03em;
+      }
+      .section-head p{
+        margin:0;
+        color:var(--muted);
+        font-size:.92rem;
+      }
+      .stepper{
+        display:grid;
+        grid-template-columns: repeat(4, minmax(0,1fr));
+        gap: 10px;
+        margin-bottom: 18px;
+      }
+      .step{
+        padding: 12px 14px;
+        border-radius: 16px;
+        border:1px solid var(--line);
+        background: var(--soft);
+        color:var(--muted);
+        font-size:.9rem;
+        font-weight:600;
+      }
+      .step.active{
+        background: var(--soft-2);
+        border-color: #c7d2fe;
+        color:#1e1b4b;
+      }
+      .step.done{
+        background:#ecfdf5;
+        border-color:#bbf7d0;
+        color:#14532d;
+      }
+      .services-tabs{
+        display:flex;
+        gap:10px;
+        overflow:auto;
+        padding-bottom: 6px;
+        margin-bottom: 18px;
+        scrollbar-width: none;
+      }
+      .services-tabs::-webkit-scrollbar{display:none}
+      .tab{
+        flex:0 0 auto;
+        padding:10px 14px;
+        border-radius:999px;
+        border:1px solid var(--line);
+        background:#fff;
+        color:var(--muted);
+        cursor:pointer;
+        font-weight:600;
+        transition: .18s ease;
+      }
+      .tab:hover{background:var(--soft)}
+      .tab.active{
+        background: var(--accent);
+        border-color: var(--accent);
+        color:#fff;
+      }
+      .service-list{
+        display:grid;
+        gap: 12px;
+      }
+      .service-card{
+        border:1px solid var(--line);
+        background:#fff;
+        border-radius: 18px;
+        padding: 16px;
+        display:grid;
+        grid-template-columns: minmax(0,1fr) auto;
+        gap:14px;
+        align-items:start;
+        transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+      }
+      .service-card:hover{transform: translateY(-1px); box-shadow: 0 12px 24px rgba(15,23,42,.06)}
+      .service-card.selected{
+        border-color:#94a3b8;
+        box-shadow: 0 12px 26px rgba(15,23,42,.08);
+        background: linear-gradient(180deg,#ffffff 0%, #f8fafc 100%);
+      }
+      .service-card h3{
+        font-size:1.05rem;
+        margin-bottom:4px;
+      }
+      .service-desc{
+        margin:0 0 8px 0;
+        color:var(--muted);
+        font-size:.92rem;
+      }
+      .service-meta{
+        display:flex;
+        flex-wrap:wrap;
+        gap:8px;
+        color:var(--muted);
+        font-size:.9rem;
+      }
+      .pill{
+        display:inline-flex;
+        align-items:center;
+        gap:6px;
+        padding: 6px 10px;
+        border-radius:999px;
+        background: var(--soft);
+        border: 1px solid var(--line);
+      }
+      .radio-wrap{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        padding-top: 2px;
+      }
+      .radio-wrap input{width:18px;height:18px; accent-color: var(--accent)}
+      .radio-wrap label{
+        font-weight:700;
+        cursor:pointer;
+        user-select:none;
+      }
+      .hint{
+        color:var(--muted);
+        font-size:.9rem;
+      }
+      .field-grid{
+        display:grid;
+        grid-template-columns: repeat(2, minmax(0,1fr));
+        gap: 14px;
+      }
+      .field{
+        display:grid;
+        gap:8px;
+      }
+      .field label{
+        font-size:.9rem;
+        font-weight:700;
+        color:#334155;
+      }
+      .field input,
+      .field select,
+      .field textarea{
+        width:100%;
+        padding: 13px 14px;
+        border-radius: 14px;
+        border:1px solid var(--line);
+        background:#fff;
+        color:var(--text);
+        outline:none;
+        transition:border-color .18s ease, box-shadow .18s ease;
+      }
+      .field textarea{resize:vertical; min-height: 110px}
+      .field input:focus,
+      .field select:focus,
+      .field textarea:focus{
+        border-color:#94a3b8;
+        box-shadow: 0 0 0 4px rgba(148,163,184,.14);
+      }
+      .slot-grid{
+        display:grid;
+        grid-template-columns: repeat(auto-fill, minmax(116px,1fr));
+        gap: 10px;
+      }
+      .slot{
+        border:1px solid var(--line);
+        background:#fff;
+        border-radius: 14px;
+        padding: 12px 10px;
+        text-align:center;
+        cursor:pointer;
+        transition: .18s ease;
+        font-weight: 700;
+      }
+      .slot:hover{background:var(--soft)}
+      .slot.active{
+        background: var(--accent);
+        border-color: var(--accent);
+        color:#fff;
+      }
+      .slot .small{
+        display:block;
+        margin-top:4px;
+        font-size:.78rem;
+        font-weight:500;
+        opacity:.8;
+      }
+      .notice{
+        border-radius: 16px;
+        border:1px solid #facc15;
+        background:#fefce8;
+        color:#713f12;
+        padding: 14px 16px;
+      }
+      .notice.success{
+        border-color:#86efac;
+        background:#ecfdf5;
+        color:#14532d;
+      }
+      .notice.error{
+        border-color:#fecaca;
+        background:#fef2f2;
+        color:#7f1d1d;
+      }
+      .sidebar{
+        position:sticky;
+        top: 18px;
+      }
+      .summary{
+        display:grid;
+        gap:12px;
+      }
+      .summary-box{
+        border:1px solid var(--line);
+        border-radius: 18px;
+        background: var(--soft);
+        padding: 14px;
+      }
+      .summary-title{
+        font-size:.83rem;
+        text-transform:uppercase;
+        letter-spacing:.08em;
+        color:var(--muted);
+        margin-bottom: 8px;
+      }
+      .summary-line{
+        display:flex;
+        justify-content:space-between;
+        gap: 12px;
+        padding: 8px 0;
+        border-top:1px dashed #dbe2ea;
+      }
+      .summary-line:first-of-type{border-top:0;padding-top:0}
+      .summary-line strong{font-weight:700}
+      .summary-empty{
+        color:var(--muted);
+        font-size:.92rem;
+      }
+      .actions{
+        display:flex;
+        flex-wrap:wrap;
+        gap:10px;
+        margin-top: 6px;
+      }
+      .muted{color:var(--muted)}
+      .hidden{display:none !important}
+      .footer{
+        text-align:center;
+        margin-top: 22px;
+        color:var(--muted);
+        font-size:.92rem;
+      }
+      @media (max-width: 1100px){
+        .hero, .layout{grid-template-columns:1fr}
+        .sidebar{position:static}
+      }
+      @media (max-width: 720px){
+        .page{padding: 14px 12px 40px}
+        .hero-card, .card{padding: 18px}
+        .field-grid{grid-template-columns:1fr}
+        .stepper{grid-template-columns:1fr 1fr}
+        .service-card{grid-template-columns:1fr}
+      }
+    </style>
+  </head>
+  <body>
+    {% set preselected_service = preselected_service|default(None) %}
+    <div class="page">
+      <section class="hero">
+        <div class="hero-card">
+          <div class="eyebrow"><span class="dot"></span> Online foglalás</div>
+          <h1>{{ business.name }}</h1>
+          <p class="lead">
+            {{ business.about_description }}
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="section-head">
+            <div>
+              <h2>Foglalási áttekintés</h2>
+            </div>
+          </div>
+
+          <div class="summary">
+            <div class="summary-box">
+              <div class="summary-title">Szolgáltatás</div>
+              <div id="summaryService" class="summary-empty">Nincs kiválasztva</div>
+            </div>
+            <div class="summary-box">
+              <div class="summary-title">Munkatárs</div>
+              <div id="summaryStaff" class="summary-empty">Nincs kiválasztva</div>
+            </div>
+            <div class="summary-box">
+              <div class="summary-title">Időpont</div>
+              <div id="summarySlot" class="summary-empty">Nincs kiválasztva</div>
+            </div>
+            <div class="summary-box">
+              <div class="summary-title">Ár</div>
+              <div id="summaryPrice" class="summary-empty">-</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="layout" id="booking">
+        <div class="stack">
+          <section class="card" id="services">
+            <div class="section-head">
+              <div>
+                <h2>Szolgáltatás kiválasztása</h2>
+              </div>
+            </div>
+
+            <div class="stepper">
+              <div class="step active" data-step-indicator="1">1. Szolgáltatás</div>
+              <div class="step" data-step-indicator="2">2. Munkatárs</div>
+              <div class="step" data-step-indicator="3">3. Időpont</div>
+              <div class="step" data-step-indicator="4">4. Megerősítés</div>
+            </div>
+
+            <div class="services-tabs" id="serviceTabs">
+              {% for serviceType, items in serviceDatas.items() %}
+                <button type="button" class="tab {% if loop.first %}active{% endif %}" data-type="{{ serviceType|e }}">{{ serviceType }}</button>
+              {% endfor %}
+            </div>
+
+            <div id="servicePanels">
+              {% for serviceType, items in serviceDatas.items() %}
+                <div class="service-list service-panel {% if not loop.first %}hidden{% endif %}" data-panel="{{ serviceType|e }}">
+                  {% for service in items %}
+                    <article class="service-card" data-service-id="{{ service.id }}" data-service-type="{{ serviceType|e }}" data-service-name="{{ service.name|e }}" data-service-duration="{{ service.duration }}" data-service-price="{{ service.price }}" data-service-description="{{ service.description|e }}">
+                      <div>
+                        <h3>{{ service.name }}</h3>
+                        <p class="service-desc">{{ service.description }}</p>
+                        <div class="service-meta">
+                          <span class="pill">{{ time_format(service.duration) }}</span>
+                          <span class="pill">{{ service.price }} Ft</span>
+                        </div>
+                      </div>
+                      <div class="radio-wrap">
+                        <input type="radio" name="service" id="service-{{ service.id }}" value="{{ service.id }}" {% if preselected_service and preselected_service|string == service.id|string %}checked{% endif %}/>
+                        <label for="service-{{ service.id }}">Kiválaszt</label>
+                      </div>
+                    </article>
+                  {% endfor %}
+                </div>
+              {% endfor %}
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="section-head">
+              <div>
+                <h2>Munkatárs kiválasztása</h2>
+              </div>
+            </div>
+
+            <div class="field-grid">
+              <div class="field">
+                <label for="staffSelect">Munkatárs</label>
+                <select id="staffSelect">
+                  <option value="">Előbb válassz szolgáltatást</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="dateSelect">Dátum</label>
+                <input id="dateSelect" type="date" />
+              </div>
+            </div>
+
+            <p class="hint" style="margin-top:10px">
+              Ha több munkatárs is megfelel, bármelyiket választhatod. A szabad időpontok a kiválasztott szolgáltatás időtartamával, a nyitvatartásból számolva jelennek meg.
+            </p>
+          </section>
+
+          <section class="card">
+            <div class="section-head">
+              <div>
+                <h2>Elérhető időpontok</h2>
+              </div>
+            </div>
+
+            <div id="slots" class="slot-grid"></div>
+            <div id="slotsHint" class="hint" style="margin-top:10px">Válassz szolgáltatást, munkatársat és dátumot.</div>
+          </section>
+
+          <section class="card">
+            <div class="section-head">
+              <div>
+                <h2>4. Megjegyzés és foglalás</h2>
+                <p>A foglalás elküldése csak bejelentkezett ügyfeleknek engedélyezett.</p>
+              </div>
+            </div>
+
+            {% if not current_user.is_authenticated %}
+              <div class="notice">
+                Bejelentkezés szükséges a foglaláshoz.
+                <div style="margin-top:12px">
+                  <a class="btn btn-primary" href="{{ url_for('user.login', next=request.url) }}">Bejelentkezés</a>
+                </div>
+              </div>
+            {% else %}
+              <div class="field">
+                <label for="notes">Megjegyzés</label>
+                <textarea id="notes" placeholder="Opcionális megjegyzés..."></textarea>
+              </div>
+
+              <div class="actions">
+                <button class="btn btn-primary" id="bookBtn" type="button">Foglalás elküldése</button>
+                <button class="btn btn-ghost" id="clearBtn" type="button">Kiválasztások törlése</button>
+              </div>
+
+              <div id="result" style="margin-top:14px"></div>
+            {% endif %}
+          </section>
+        </div>
+
+        <aside class="sidebar " style="opacity: 0;">
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <h2>Gyors összegzés</h2>
+                <p>Mi fog történni a foglaláskor?</p>
+              </div>
+            </div>
+
+            <div class="summary">
+              <div class="summary-line"><span>Szolgáltatás</span><strong id="sideService">—</strong></div>
+              <div class="summary-line"><span>Munkatárs</span><strong id="sideStaff">—</strong></div>
+              <div class="summary-line"><span>Időpont</span><strong id="sideSlot">—</strong></div>
+              <div class="summary-line"><span>Időtartam</span><strong id="sideDuration">—</strong></div>
+              <div class="summary-line"><span>Ár</span><strong id="sidePrice">—</strong></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="footer">
+        © 2026 SimpleMeet
+      </div>
+    </div>
+
+    <script>
+      const businessId = {{ business.id|tojson }};
+      const preselectedService = {{ preselected_service|tojson }};
+      const staffData = {{ staffs|tojson }};
+      const servicesData = [
+        {% for service in services %}
+          {
+            id: {{ service.id|tojson }},
+            name: {{ service.name|tojson }},
+            type: {{ service.serviceType|tojson }},
+            duration: {{ service.duration|tojson }},
+            price: {{ (service.price|string)|tojson }},
+            description: {{ (service.description or "")|tojson }}
+          }{% if not loop.last %},{% endif %}
+        {% endfor %}
+      ];
+
+      const serviceById = Object.fromEntries(servicesData.map(s => [String(s.id), s]));
+      const serviceInputs = [...document.querySelectorAll('input[name="service"]')];
+      const serviceCards = [...document.querySelectorAll('.service-card')];
+      const serviceTabs = [...document.querySelectorAll('[data-type]')];
+      const servicePanels = [...document.querySelectorAll('[data-panel]')];
+      const staffSelect = document.getElementById('staffSelect');
+      const dateSelect = document.getElementById('dateSelect');
+      const slotsContainer = document.getElementById('slots');
+      const slotsHint = document.getElementById('slotsHint');
+      const result = document.getElementById('result');
+      const bookBtn = document.getElementById('bookBtn');
+      const clearBtn = document.getElementById('clearBtn');
+
+      const summaryService = document.getElementById('summaryService');
+      const summaryStaff = document.getElementById('summaryStaff');
+      const summarySlot = document.getElementById('summarySlot');
+      const summaryPrice = document.getElementById('summaryPrice');
+      const sideService = document.getElementById('sideService');
+      const sideStaff = document.getElementById('sideStaff');
+      const sideSlot = document.getElementById('sideSlot');
+      const sideDuration = document.getElementById('sideDuration');
+      const sidePrice = document.getElementById('sidePrice');
+
+      let selectedSlot = null;
+
+      function fmtMoney(value) {
+        const num = Number(String(value).replace(',', '.'));
+        if (Number.isNaN(num)) return String(value);
+        return new Intl.NumberFormat('hu-HU').format(num) + ' Ft';
+      }
+
+      function fmtTimeFromISO(iso) {
+        return new Date(iso).toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' });
+      }
+
+      function fmtDateFromISO(iso) {
+        return new Date(iso).toLocaleDateString('hu-HU', { year: 'numeric', month: 'long', day: 'numeric' });
+      }
+
+      function serviceDurationText(minutes) {
+        const h = Math.floor(minutes / 60);
+        const m = minutes % 60;
+        if (h && m) return `${h} ó ${m} p`;
+        if (h) return `${h} óra`;
+        return `${m} perc`;
+      }
+
+      function getSelectedServiceId() {
+        const checked = document.querySelector('input[name="service"]:checked');
+        return checked ? String(checked.value) : null;
+      }
+
+      function getSelectedService() {
+        const id = getSelectedServiceId();
+        return id ? serviceById[id] || null : null;
+      }
+
+      function getSelectedStaffName() {
+        if (!staffSelect.value) return null;
+        const found = staffData.find(s => String(s.id) === String(staffSelect.value));
+        return found ? found.name : null;
+      }
+
+      function setStepState(stepNumber) {
+        document.querySelectorAll('[data-step-indicator]').forEach(el => {
+          const num = Number(el.dataset.stepIndicator);
+          el.classList.remove('active', 'done');
+          if (num < stepNumber) el.classList.add('done');
+          if (num === stepNumber) el.classList.add('active');
+        });
+      }
+
+      function showServicePanel(type) {
+        servicePanels.forEach(panel => {
+          panel.classList.toggle('hidden', panel.dataset.panel !== type);
+        });
+        serviceTabs.forEach(tab => {
+          tab.classList.toggle('active', tab.dataset.type === type);
+        });
+      }
+
+      function refreshServiceCardSelection() {
+        const selectedId = getSelectedServiceId();
+        serviceCards.forEach(card => {
+          card.classList.toggle('selected', String(card.dataset.serviceId) === selectedId);
+        });
+      }
+
+      function refreshSummary() {
+        const service = getSelectedService();
+        const staffName = getSelectedStaffName();
+        const serviceId = getSelectedServiceId();
+
+        if (service) {
+          const text = `${service.name} · ${serviceDurationText(Number(service.duration))}`;
+          summaryService.textContent = text;
+          sideService.textContent = service.name;
+          sideDuration.textContent = serviceDurationText(Number(service.duration));
+          summaryPrice.textContent = fmtMoney(service.price);
+          sidePrice.textContent = fmtMoney(service.price);
+        } else {
+          summaryService.textContent = 'Nincs kiválasztva';
+          sideService.textContent = '—';
+          sideDuration.textContent = '—';
+          summaryPrice.textContent = '-';
+          sidePrice.textContent = '—';
+        }
+
+        if (staffName) {
+          summaryStaff.textContent = staffName;
+          sideStaff.textContent = staffName;
+        } else {
+          summaryStaff.textContent = 'Nincs kiválasztva';
+          sideStaff.textContent = '—';
+        }
+
+        if (selectedSlot) {
+          const slotText = `${fmtTimeFromISO(selectedSlot.start_at)} – ${fmtTimeFromISO(selectedSlot.end_at)}`;
+          summarySlot.textContent = slotText;
+          sideSlot.textContent = slotText;
+        } else {
+          summarySlot.textContent = 'Nincs kiválasztva';
+          sideSlot.textContent = '—';
+        }
+
+        if (serviceId) {
+          setStepState(2);
+        } else {
+          setStepState(1);
+        }
+        if (serviceId && staffSelect.value) setStepState(3);
+        if (serviceId && staffSelect.value && dateSelect.value) setStepState(4);
+      }
+
+      function clearSlots(keepHint = true) {
+        slotsContainer.innerHTML = '';
+        selectedSlot = null;
+        if (keepHint) {
+          slotsHint.textContent = 'Válassz szolgáltatást, munkatársat és dátumot.';
+        }
+        refreshSummary();
+      }
+
+      function populateStaffs() {
+        const service = getSelectedService();
+        const current = staffSelect.value;
+
+        staffSelect.innerHTML = '';
+        const baseOption = document.createElement('option');
+        baseOption.value = '';
+        baseOption.textContent = service ? 'Válassz munkatársat' : 'Előbb válassz szolgáltatást';
+        staffSelect.appendChild(baseOption);
+
+        if (!service) {
+          staffSelect.disabled = true;
+          clearSlots();
+          refreshSummary();
+          return;
+        }
+
+        staffSelect.disabled = false;
+
+        const compatible = staffData.filter(staff => Array.isArray(staff.services) && staff.services.map(String).includes(String(service.id)));
+
+        if (compatible.length === 0) {
+          const option = document.createElement('option');
+          option.value = '';
+          option.textContent = 'Nincs ehhez a szolgáltatáshoz munkatárs';
+          staffSelect.appendChild(option);
+          staffSelect.disabled = true;
+          clearSlots();
+          refreshSummary();
+          return;
+        }
+
+        compatible.forEach(staff => {
+          const option = document.createElement('option');
+          option.value = staff.id;
+          option.textContent = staff.name;
+          staffSelect.appendChild(option);
+        });
+
+        if (compatible.length === 1) {
+          staffSelect.value = String(compatible[0].id);
+        } else if (current && compatible.some(staff => String(staff.id) === String(current))) {
+          staffSelect.value = current;
+        }
+
+        refreshSummary();
+      }
+
+      async function loadSlots() {
+        const service = getSelectedService();
+        const staffId = staffSelect.value;
+        const date = dateSelect.value;
+
+        selectedSlot = null;
+        slotsContainer.innerHTML = '';
+        slotsHint.textContent = 'Időpontok betöltése...';
+
+        if (!service || !staffId || !date) {
+          slotsHint.textContent = 'Válassz szolgáltatást, munkatársat és dátumot.';
+          refreshSummary();
+          return;
+        }
+
+        const url = `/api/availability?business_id=${encodeURIComponent(businessId)}&staff_id=${encodeURIComponent(staffId)}&service_id=${encodeURIComponent(service.id)}&date=${encodeURIComponent(date)}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!response.ok || !Array.isArray(data.slots) || data.slots.length === 0) {
+          slotsHint.textContent = 'Nincs szabad időpont erre a napra.';
+          refreshSummary();
+          return;
+        }
+
+        slotsHint.textContent = 'Válassz egy szabad kezdési időpontot.';
+        data.slots.forEach(slot => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'slot';
+          btn.innerHTML = `${fmtTimeFromISO(slot.start_at)}<span class="small">${fmtTimeFromISO(slot.end_at)}</span>`;
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.slot').forEach(x => x.classList.remove('active'));
+            btn.classList.add('active');
+            selectedSlot = slot;
+            refreshSummary();
+            setStepState(4);
+          });
+          slotsContainer.appendChild(btn);
+        });
+
+        refreshSummary();
+      }
+
+      function selectService(serviceId) {
+        const radio = document.querySelector(`input[name="service"][value="${serviceId}"]`);
+        if (radio) {
+          radio.checked = true;
+          radio.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      }
+
+      serviceTabs.forEach(tab => {
+        tab.addEventListener('click', () => showServicePanel(tab.dataset.type));
+      });
+
+      serviceInputs.forEach(input => {
+        input.addEventListener('change', async () => {
+          refreshServiceCardSelection();
+          populateStaffs();
+          clearSlots(false);
+
+          const service = getSelectedService();
+          if (service) {
+            const panel = servicePanels.find(p => p.dataset.panel === service.type);
+            if (panel) showServicePanel(service.type);
+          }
+
+          refreshSummary();
+          if (staffSelect.value && dateSelect.value) {
+            await loadSlots();
+          }
+        });
+      });
+
+      staffSelect.addEventListener('change', async () => {
+        clearSlots(false);
+        refreshSummary();
+        if (getSelectedService() && staffSelect.value && dateSelect.value) {
+          await loadSlots();
+        }
+      });
+
+      dateSelect.addEventListener('change', async () => {
+        clearSlots(false);
+        refreshSummary();
+        if (getSelectedService() && staffSelect.value && dateSelect.value) {
+          await loadSlots();
+        }
+      });
+
+      if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+          document.querySelectorAll('.slot').forEach(x => x.classList.remove('active'));
+          selectedSlot = null;
+          document.querySelectorAll('input[name="service"]').forEach(x => x.checked = false);
+          staffSelect.value = '';
+          staffSelect.disabled = true;
+          dateSelect.value = '';
+          showServicePanel(servicePanels[0]?.dataset.panel || '');
+          refreshServiceCardSelection();
+          populateStaffs();
+          clearSlots();
+          refreshSummary();
+        });
+      }
+
+      if (bookBtn) {
+        bookBtn.addEventListener('click', async () => {
+          const service = getSelectedService();
+
+          if (!service || !staffSelect.value || !dateSelect.value || !selectedSlot) {
+            result.innerHTML = "<div class='notice error'>Válassz szolgáltatást, munkatársat, dátumot és időpontot.</div>";
+            return;
+          }
+
+          const payload = {
+            business_id: businessId,
+            service_id: service.id,
+            staff_id: staffSelect.value,
+            start_at: selectedSlot.start_at,
+            notes: document.getElementById('notes').value || ''
+          };
+
+          try {
+            const response = await fetch('/api/book', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              result.innerHTML = `<div class="notice success">Foglalás sikeres. Azonosító: <strong>${data.appointment_id}</strong></div>`;
+              slotsContainer.innerHTML = '';
+              slotsHint.textContent = 'Foglalás létrehozva. Ha szeretnél, új időpontot is kereshetsz.';
+              selectedSlot = null;
+              document.querySelectorAll('.slot').forEach(x => x.classList.remove('active'));
+              refreshSummary();
+            } else {
+              result.innerHTML = `<div class="notice error">${data.error || 'Hiba történt a foglaláskor.'}</div>`;
+            }
+          } catch (err) {
+            result.innerHTML = "<div class='notice error'>Hálózati hiba történt.</div>";
+          }
+        });
+      }
+
+      window.addEventListener('load', () => {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        dateSelect.min = `${yyyy}-${mm}-${dd}`;
+
+        const firstServiceCard = serviceCards[0];
+        if (firstServiceCard) {
+          showServicePanel(firstServiceCard.dataset.serviceType);
+        }
+
+        refreshServiceCardSelection();
+        populateStaffs();
+
+        if (preselectedService) {
+          selectService(preselectedService);
+        }
+
+        refreshServiceCardSelection();
+        populateStaffs();
+        refreshSummary();
+
+        if (getSelectedService() && staffSelect.value && dateSelect.value) {
+          loadSlots();
+        }
+      });
+    </script>
+  </body>
+</html>

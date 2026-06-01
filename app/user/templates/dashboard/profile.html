@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profil</title>
+  </head>
+  <body>
+    <h1>Profil szerkesztése</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+
+      <div>
+        {{ form.username.label }} {{ form.username() }} {% for error in
+        form.username.errors %}
+        <div>{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div>
+        {{ form.email.label }} {{ form.email() }} {% for error in
+        form.email.errors %}
+        <div>{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <div>
+        {{ form.photo.label }} {{ form.photo() }} {% for error in
+        form.photo.errors %}
+        <div>{{ error }}</div>
+        {% endfor %}
+      </div>
+
+      <button type="submit">Mentés</button>
+    </form>
+  </body>
+</html>

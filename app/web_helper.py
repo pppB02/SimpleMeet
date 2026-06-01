@@ -55,7 +55,7 @@ def staff_profile_required(return_page="user.dashboard"):
     return decorator
 
 
-def save_photo(photo):
+def save_photo(photo,output_size=(256, 265)):
     ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
 
     def allowed_file(filename):
@@ -67,7 +67,6 @@ def save_photo(photo):
         secure_name = f"{random_hex}.{ext}"
 
         filepath = os.path.join(current_app.config['UPLOADED_PHOTOS_DEST'], secure_name)
-        output_size = (125, 125)
 
         i = Image.open(photo)
         i.thumbnail(output_size)

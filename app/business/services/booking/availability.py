@@ -1,20 +1,12 @@
+# app/business/services/booking/availability.py
 from datetime import datetime, timedelta
 
 
-def generate_slots(
-    date,
-    open_time,
-    close_time,
-    duration_minutes,
-    existing_appointments,
-    step_minutes=15
-):
+def generate_slots(date, open_time, close_time, duration_minutes, existing_appointments):
     slots = []
     current = datetime.combine(date, open_time)
     day_end = datetime.combine(date, close_time)
-
     duration = timedelta(minutes=duration_minutes)
-    step = timedelta(minutes=step_minutes)
 
     while current + duration <= day_end:
         slot_end = current + duration
@@ -30,6 +22,6 @@ def generate_slots(
                 "end_at": slot_end
             })
 
-        current += step
+        current += duration
 
     return slots

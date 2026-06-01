@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Üzlet adatai</title>
+  </head>
+  <body>
+    <h1>Üzlet adatai</h1>
+
+    <form method="POST">
+      {{ form.hidden_tag() }}
+
+      <div>{{ form.name.label }} {{ form.name() }}</div>
+
+      <div>{{ form.location.label }} {{ form.location() }}</div>
+
+      <div>{{ form.website.label }} {{ form.website() }}</div>
+
+      <button type="submit">Mentés</button>
+    </form>
+  </body>
+</html>

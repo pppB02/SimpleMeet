@@ -1,13 +1,11 @@
 from collections import defaultdict
 from datetime import datetime
-
+from ..web_helper import time_format
 from flask import Blueprint, render_template, url_for, send_from_directory, current_app, jsonify, request
 from flask_login import current_user
-
+from .services.constans import FURTHER_INFO_CHOICES
 from ..db_models import Business, Staff, UserAccount, Service, Appointment, OpeningHour
-from ..web_helper import time_format
 from app import db
-
 from ..business.services.booking.availability import generate_slots
 from ..business.services.booking.booking_service import create_appointment
 
@@ -21,12 +19,67 @@ def get_file(filename):
 
 @index.route("/")
 def home():
-    return render_template("index.html")
+    featured_businesses = Business.query.filter(
+        Business.about_description.isnot(None)
+    ).order_by(Business.id.desc()).all()
+
+    return render_template(
+        "index.html",
+        featured_businesses=featured_businesses
+    )
 
 
 @index.route("/adatvedelem")
 def adatvedelem():
     return render_template("adatvedelem.html")
+
+@index.route("/book/<slug>")
+def business_book(slug):
+    public_id = slug.rsplit("-", 1)[-1]
+    business = Business.query.filter_by(public_id=public_id).first_or_404()
+
+    staffs = Staff.query.filter_by(business_id=business.id).all()
+    staffDatas = []
+    for staff in staffs:
+        staffUser = UserAccount.query.filter_by(id=staff.user_id).first()
+        staffDatas.append({
+            "id": staff.id,
+            "name": staffUser.username if staffUser else "Ismeretlen",
+            "pfp_name": staff.pfp_name,
+            "services": [service.id for service in staff.services],
+        })
+
+    services = Service.query.filter_by(business_id=business.id, is_active=True).all()
+    serviceDatas = defaultdict(list)
+    for service in services:
+        serviceDatas[service.serviceType].append(service)
+
+    opening_hours = OpeningHour.query.filter_by(business_id=business.id).all()
+    preselected_service = request.args.get("service", type=int)
+
+    services_payload = [
+        {
+            "id": service.id,
+            "name": service.name,
+            "type": service.serviceType,
+            "duration": service.duration,
+            "price": str(service.price),
+            "description": service.description or "",
+        }
+        for service in services
+    ]
+
+    return render_template(
+        "temp_for_services/test.html",
+        business=business,
+        staffs=staffDatas,
+        serviceDatas=dict(serviceDatas),
+        services=services,
+        services_payload=services_payload,
+        opening_hours=opening_hours,
+        time_format=time_format,
+        preselected_service=preselected_service,
+    )
 
 
 @index.route("/a/<slug>")
@@ -36,36 +89,46 @@ def business_site(slug):
 
     staffs = Staff.query.filter_by(business_id=business.id).all()
     staffDatas = []
-
     for staff in staffs:
         staffUser = UserAccount.query.filter_by(id=staff.user_id).first()
-        staffDatas.append(
-            {
-                "id": staff.id,
-                "name": staffUser.username if staffUser else "Ismeretlen",
-                "pfp_name": staff.pfp_name,
-                "services": [service.id for service in staff.services],
-            }
-        )
+        staffDatas.append({
+            "id": staff.id,
+            "name": staffUser.username if staffUser else "Ismeretlen",
+            "pfp_name": staff.pfp_name,
+            "services": [service.id for service in staff.services],
+        })
 
     services = Service.query.filter_by(business_id=business.id, is_active=True).all()
-
     serviceDatas = defaultdict(list)
     for service in services:
         serviceDatas[service.serviceType].append(service)
 
     opening_hours = OpeningHour.query.filter_by(business_id=business.id).all()
+    preselected_service = request.args.get("service", type=int)
+
+    services_payload = [
+        {
+            "id": service.id,
+            "name": service.name,
+            "type": service.serviceType,
+            "duration": service.duration,
+            "price": str(service.price),
+            "description": service.description or "",
+        }
+        for service in services
+    ]
 
     return render_template(
-        "booking.html",
+        "temp_for_services/szolgaltatas_minta.html",
         business=business,
         staffs=staffDatas,
         serviceDatas=dict(serviceDatas),
         services=services,
+        services_payload=services_payload,
         opening_hours=opening_hours,
         time_format=time_format,
+        preselected_service=preselected_service,
     )
-
 
 @index.route("/api/availability")
 def availability():

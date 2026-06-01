@@ -52,8 +52,6 @@
                 <a href="#rolunk">Rólunk</a>
                 <a href="#nyitvatartas">Nyitvatartás</a>
             </nav>
-
-            <a href="#szolgaltatasok" class="btn btn-primary header-cta">Foglalás</a>
         </div>
     </header>
 
@@ -78,7 +76,13 @@
                 </div>
 
                 <div class="hero-image">
-                    <!-- IDE KELL A KÉP -->
+                    {% if business.about_business_image %}
+                        <img
+                            src="{{ url_for('index.get_file', filename=business.about_business_image) }}"
+                            alt="Üzlet képe"
+                            style="max-width: 100%"
+                        />
+                    {% endif %}
                 </div>
             </div>
         </section>
@@ -110,7 +114,10 @@
                                         <p>{{ service.description }}</p>
                                         <p class="svc-meta">{{ time_format(service.duration) }} <span>•</span> <strong>{{ service.price }} Ft</strong></p>
                                     </div>
-                                    <a href="#csapat" class="btn btn-primary">Foglalás →</a>
+                                    <a href="{{ url_for('index.business_book', slug=business.slug ~ '-' ~ business.public_id, service=service.id) }}" class="btn btn-primary">
+                                        Foglalás
+                                        <input type="radio" name="service" value="{{ service.id }}">
+                                    </a>
                                 </article>
                             {% endfor %}
                         </div>
@@ -126,28 +133,24 @@
         
         <!-- =============== CSAPAT =============== -->
         <section id="csapat" class="services">
-            <div class="container">
-                <p class="section-kicker">Csapat</p>
-                <h2>Csapatunk tagjai</h2>
-
-                <!-- Panel: Alap -->
-                <div>
-                    {% if staffs %}
-                        {% for staff in staffs %}
-                            
-                                <div>
-                                    <h1>{{ staff.name }}</h1>
-                                    <img src="{{ url_for('index.get_file',filename=staff.pfp_name or default.png) }}" width="300">
-                                </div>
-                       
-                        {% endfor %}
-                    {% else %}
-                        <div>
-                            <small>Csapattagok nem találhatóak!</small>
-                        </div>
-                    {% endif %}
-                    
+        <div class="container">
+            <h2>Csapat</h2>
+            <div class="staff-card">
+                {% if staffs %} {% for staff in staffs %}
+                <div class="staff-item">
+                    <img
+                    src="{{ url_for('index.get_file', filename=staff.pfp_name) }}"
+                    alt="{{ staff.name }}"
+                    />
+                    <div>
+                        <strong>{{ staff.name }}</strong><br />
+                    </div>
                 </div>
+                {% endfor %} {% else %}
+                <p>Nincs megjeleníthető csapattag.</p>
+                {% endif %}
+            </div>
+        </div>
         </section>
 
         <!-- =============== NYITVATARTÁS =============== -->
@@ -158,15 +161,41 @@
                     <h2>Nyitvatartási idő</h2>
                     <p class="muted">Látogasson el hozzánk az alábbi időpontokban, vagy foglaljon időpontot online a weboldalon.</p>
                 </div>
-                <ul class="hours-list">
-                    <li><span>Hétfő</span><span>8:00 – 20:00</span></li>
-                    <li><span>Kedd</span><span>8:00 – 20:00</span></li>
-                    <li><span>Szerda</span><span>8:00 – 20:00</span></li>
-                    <li><span>Csütörtök</span><span>8:00 – 20:00</span></li>
-                    <li><span>Péntek</span><span>8:00 – 20:00</span></li>
-                    <li><span>Szombat</span><span>9:00 – 18:00</span></li>
-                    <li><span>Vasárnap</span><span>Zárva</span></li>
-                </ul>
+<ul class="hours-list">
+
+    {% set day_names = {
+        0: "Hétfő",
+        1: "Kedd",
+        2: "Szerda",
+        3: "Csütörtök",
+        4: "Péntek",
+        5: "Szombat",
+        6: "Vasárnap"
+    } %}
+
+    {% for day in range(7) %}
+
+        {% set opening = business.opening_hours
+            | selectattr("day_of_week", "equalto", day)
+            | first %}
+
+        <li>
+            <span>{{ day_names[day] }}</span>
+
+            <span>
+                {% if opening and opening.open_time and opening.close_time %}
+                    {{ opening.open_time.strftime('%H:%M') }}
+                    –
+                    {{ opening.close_time.strftime('%H:%M') }}
+                {% else %}
+                    Zárva
+                {% endif %}
+            </span>
+        </li>
+
+    {% endfor %}
+
+</ul>
             </div>
         </section>
 
@@ -176,11 +205,16 @@
                 <div>
                     <p class="section-kicker">Rólunk</p>
                     <h2>Ismerje meg a csapatot és a szemléletünket</h2>
-                    <p>Csapatunk több éves tapasztalattal és megújult szemlélettel várja Önt. Célunk, hogy minden vendégünk számára nyugodt, átgondolt és magas színvonalú élményt nyújtsunk.</p>
-                    <p>Hiszünk abban, hogy a minőségi szolgáltatás részletekből áll össze: a figyelemből, a tiszta környezetből és a pontos munkából. Ez a hozzáállás vezet bennünket nap mint nap.</p>
+                    <p>{{ business.about_description or "Nincs leírás még." }}</p>
                 </div>
                 <div class="about-image">
-                    <!-- IDE KELL A KÉP -->
+                    {% if business.about_team_image %}
+                        <img
+                            src="{{ url_for('index.get_file', filename=business.about_team_image) }}"
+                            alt="Csapatkép"
+                            style="max-width: 100%"
+                        />
+                    {% endif %}
                 </div>
             </div>
         </section>
@@ -191,12 +225,9 @@
                 <p class="section-kicker">További információ</p>
                 <h2>Amit érdemes tudni</h2>
                 <div class="badge-list">
-                    <span class="badge">✓ Azonnali megerősítés</span>
-                    <span class="badge">✓ Online foglalás</span>
-                    <span class="badge">✓ Akadálymentesített</span>
-                    <span class="badge">✓ Gyerekbarát</span>
-                    <span class="badge">✓ Parkolás a helyszínen</span>
-                    <span class="badge">✓ Bankkártyás fizetés</span>
+                    {% for item in infos %}
+                        <span class="badge">{{ item }}</span>
+                    {% endfor %}
                 </div>
             </div>
         </section>

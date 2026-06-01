@@ -7,7 +7,20 @@ from .services.dashboard.OpeningHoursService import save_opening_hours, load_ope
 from ..web_helper import role_required, business_required, save_photo
 from ..user.services.customer.forms import SingUpForm, LoginForm
 from .services.onboarding.businessForm import Reg_NameAndWeb, Reg_ServiceType, Reg_Location
-from .services.dashboard.forms import MemberProfile, ConfirmInviteForm, openHours, NewServiceForm
+from .services.dashboard.forms import (
+    MemberProfile,
+    ConfirmInviteForm,
+    openHours,
+    NewServiceForm,
+    BusinessEditForm,
+    AboutBusinessForm,
+    UserProfileForm
+)
+
+from .services.dashboard.aboutBusiness import (
+    save_about_business,
+    load_about_business_to_form
+)
 from ..user.services.customer.sign_up import signUpSrv
 from ..user.services.customer.login import loginSrv
 from .services.onboarding.finishSetup import FinishSetup
@@ -109,8 +122,8 @@ def businessServiceType():
     return render_template("onboarding/service_types.html", form=form)
 
 
-@business.route("/onboarding/location", methods=['POST', 'GET'])
-@role_required("business_admin", "business.login")
+@business.route("/onboarding/location", methods=['POST','GET'])
+@role_required("business_admin","business.login")
 def businessLocation():
     form = Reg_Location()
     if form.validate_on_submit():
@@ -118,19 +131,19 @@ def businessLocation():
         onboarding_data['location'] = form.location.data
         session['onboarding_data'] = onboarding_data
 
-        setup = FinishSetup(db, onboarding_data, current_user.get_id())
+        setup = FinishSetup(db,onboarding_data,current_user.get_id())
 
         try:
             setup.checkData()
             setup.SaveData()
         except Exception as e:
             print(str(e))
-            return render_template("onboarding/setup_finished.html", error=str(e))
+            return render_template("onboarding/setup_finished.html",error=str(e))
 
         session.pop('onboarding_data', None)
-        return redirect(url_for("business.dashboard"))
+        return redirect(url_for("business.aboutBusiness"))
 
-    return render_template("onboarding/location.html", form=form)
+    return render_template("onboarding/location.html",form=form)
 
 
 # ======================
@@ -278,6 +291,54 @@ def newService():
 
     return render_template("BDashboard/service/newService.html", form=form)
 
+@business.route("/dashboard/about-business", methods=['POST', 'GET'])
+@business_required()
+def aboutBusiness():
+    business_obj = Business.query.filter_by(admin_user_id=current_user.id).first()
+    form = AboutBusinessForm()
+    if request.method == "GET":
+        load_about_business_to_form(business_obj, form)
+
+    if form.validate_on_submit():
+        try:
+            raw_tags = request.form.get('selected_tags_submit', '')
+            save_about_business(business_obj, form, raw_tags)
+            flash("Az üzlet bemutatkozó oldala mentve.", "success")
+            return redirect(url_for("business.aboutBusiness"))
+        except Exception as e:
+            flash(str(e), "danger")
+
+    return render_template(
+        "BDashboard/about/about_business.html",
+        form=form,
+        business=business_obj,
+    )
+
+@business.route("/dashboard/edit-business", methods=["GET", "POST"])
+@business_required()
+def edit_business():
+    business_obj = Business.query.filter_by(admin_user_id=current_user.id).first()
+    form = BusinessEditForm()
+
+    if request.method == "GET":
+        form.name.data = business_obj.name
+        form.location.data = business_obj.location
+        form.website.data = business_obj.website
+
+    if form.validate_on_submit():
+        business_obj.name = form.name.data
+        business_obj.location = form.location.data
+        business_obj.website = form.website.data
+
+        db.session.commit()
+        flash("Az üzlet adatai mentve.", "success")
+        return redirect(url_for("business.edit_business"))
+
+    return render_template(
+        "BDashboard/settings/edit_business.html",
+        form=form,
+        business=business_obj
+    )
 
 # ======================
 # APPOINTMENTS (BUSINESS ADMIN)

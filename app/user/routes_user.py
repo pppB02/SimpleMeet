@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, url_for, request, redirect, flash
 from flask_login import logout_user, current_user
-
-from ..web_helper import role_required, staff_profile_required
+from ..business.services.dashboard.forms import UserProfileForm
+from ..web_helper import role_required, save_photo, staff_profile_required
 from .services.customer.forms import SingUpForm, LoginForm
 from app import db, login_manager
 from .services.customer.sign_up import signUpSrv
@@ -213,3 +213,37 @@ def staff_booking_cancel(appointment_id):
     except Exception as e:
         flash(str(e), "danger")
         return redirect(url_for("user.staff_booking_detail", appointment_id=appointment_id))
+    
+@user.route("/dashboard/profile", methods=["GET", "POST"])
+def profile():
+    if not current_user.is_authenticated:
+        return redirect(url_for("user.login"))
+
+    if current_user.role not in ("customer", "staff"):
+        return redirect(url_for("user.dashboard"))
+
+    form = UserProfileForm()
+
+    if request.method == "GET":
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+
+        # staff esetén profilkép is frissíthető
+        if current_user.role == "staff" and getattr(current_user, "staff_profile", None):
+            if form.photo.data:
+                filename = save_photo(form.photo.data)
+                if filename:
+                    current_user.staff_profile.pfp_name = filename
+
+        # customer esetén csak account adat
+        # staff esetén account + staff profil kép
+
+        db.session.commit()
+        flash("Profil sikeresen mentve.", "success")
+        return redirect(url_for("user.profile"))
+
+    return render_template("dashboard/profile.html", form=form)

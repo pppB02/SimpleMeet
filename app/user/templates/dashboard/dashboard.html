@@ -4,34 +4,485 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f6f7fb;
+        --surface: #ffffff;
+        --surface-2: #f2f4f8;
+        --text: #0f172a;
+        --muted: #64748b;
+        --line: #e5e7eb;
+        --brand: #0f172a;
+        --brand-2: #111827;
+        --accent: #111827;
+        --accent-soft: #eef2ff;
+        --success: #16a34a;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+        --radius: 24px;
+      }
+
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; }
+      body {
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(15, 23, 42, 0.06), transparent 28%),
+          radial-gradient(circle at top right, rgba(17, 24, 39, 0.05), transparent 22%),
+          var(--bg);
+        color: var(--text);
+      }
+
+      a { color: inherit; text-decoration: none; }
+      button, input, select, textarea { font: inherit; }
+
+      .shell {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(246, 247, 251, 0.88);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(229, 231, 235, 0.85);
+      }
+
+      .topbar-inner,
+      .page,
+      .footer-inner {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .topbar-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 0;
+      }
+
+      .brand {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .brand strong {
+        font-size: 1.1rem;
+        letter-spacing: -0.02em;
+      }
+
+      .brand span {
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .top-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--text);
+        font-weight: 600;
+        transition: 0.2s ease;
+      }
+
+      .chip:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+      }
+
+      .chip.primary {
+        background: var(--brand);
+        color: white;
+        border-color: var(--brand);
+      }
+
+      .page {
+        flex: 1;
+        padding: 28px 0 40px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.6fr) minmax(320px, 0.9fr);
+        gap: 20px;
+        align-items: stretch;
+      }
+
+      .panel {
+        background: var(--surface);
+        border: 1px solid rgba(229, 231, 235, 0.8);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+
+      .hero-main {
+        padding: 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .hero-main::after {
+        content: "";
+        position: absolute;
+        inset: auto -120px -120px auto;
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(15, 23, 42, 0.08), transparent 68%);
+        pointer-events: none;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        width: fit-content;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--brand);
+        font-weight: 700;
+        font-size: 0.88rem;
+      }
+
+      .hero-main h1 {
+        margin: 0;
+        font-size: clamp(1.7rem, 4vw, 3rem);
+        line-height: 1.05;
+        letter-spacing: -0.04em;
+      }
+
+      .hero-main p {
+        margin: 0;
+        max-width: 62ch;
+        color: var(--muted);
+        font-size: 1rem;
+        line-height: 1.7;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .stat {
+        background: linear-gradient(180deg, #fff, #fafafa);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 16px;
+      }
+
+      .stat .label {
+        color: var(--muted);
+        font-size: 0.88rem;
+        margin-bottom: 8px;
+      }
+
+      .stat .value {
+        font-size: 1.45rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+      }
+
+      .hero-side {
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .quick-nav {
+        display: grid;
+        gap: 10px;
+      }
+
+      .nav-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 16px;
+        border-radius: 18px;
+        border: 1px solid var(--line);
+        background: var(--surface-2);
+        transition: 0.2s ease;
+      }
+
+      .nav-card:hover {
+        transform: translateY(-1px);
+        border-color: #d7dce3;
+        background: #fff;
+      }
+
+      .nav-card strong {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .nav-card span {
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .section {
+        margin-top: 22px;
+        display: grid;
+        gap: 16px;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .section-head h2 {
+        margin: 0;
+        font-size: 1.3rem;
+        letter-spacing: -0.03em;
+      }
+
+      .section-head p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .mini-card {
+        padding: 18px;
+        border-radius: 20px;
+        border: 1px solid var(--line);
+        background: white;
+      }
+
+      .mini-card .title {
+        color: var(--muted);
+        font-size: 0.88rem;
+        margin-bottom: 10px;
+      }
+
+      .mini-card .big {
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+
+      .footer {
+        padding: 24px 0 30px;
+        color: var(--muted);
+      }
+
+      .footer-inner {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        border-top: 1px solid rgba(229, 231, 235, 0.9);
+        padding-top: 16px;
+      }
+
+      @media (max-width: 980px) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+
+        .stats,
+        .card-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .topbar-inner,
+        .section-head,
+        .footer-inner {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .page {
+          width: min(1180px, calc(100% - 20px));
+        }
+
+        .hero-main,
+        .hero-side {
+          padding: 18px;
+        }
+
+        .chip {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .top-actions {
+          width: 100%;
+        }
+      }
+    </style>
   </head>
   <body>
-    <h1>Üdvözöljük {{ current_user.username }}</h1>
+    <div class="shell">
+      <header class="topbar">
+        <div class="topbar-inner">
+          <div class="brand">
+            <strong>SimpleMeet</strong>
+            <span>
+              {% if current_user.staff_profile %}
+              Staff dashboard
+              {% else %}
+              Ügyfél dashboard
+              {% endif %}
+            </span>
+          </div>
 
-    <nav>
-      <a href="{{ url_for('user.customer_bookings') }}">Saját foglalásaim</a>
+          <div class="top-actions">
+            <a class="chip" href="{{ url_for('user.customer_bookings') }}">Foglalásaim</a>
+            {% if current_user.staff_profile %}
+            <a class="chip primary" href="{{ url_for('user.staff_dashboard') }}">Staff felület</a>
+            {% endif %}
+            <a class="chip" href="{{ url_for('user.logout') }}">Kijelentkezés</a>
+          </div>
+        </div>
+      </header>
 
-      {% if current_user.staff_profile %}
-      <a href="{{ url_for('user.staff_dashboard') }}">Staff dashboard</a>
-      {% endif %}
+      <main class="page">
+        <section class="hero">
+          <div class="panel hero-main">
+            <div class="eyebrow">Üdvözlünk, {{ current_user.username }}</div>
+            <h1>
+              {% if current_user.staff_profile %}
+              Gyors áttekintés a napi munkához
+              {% else %}
+              A foglalásaid és adataid egy helyen
+              {% endif %}
+            </h1>
+            <p>
+              {% if current_user.staff_profile %}
+              Itt látod a napi működés legfontosabb elemeit, a foglalásaidat és a munkához kapcsolódó gyors eléréseket.
+              {% else %}
+              Itt átlátod a foglalásaidat, a korábbi időpontjaidat és gyorsan eléred a legfontosabb funkciókat.
+              {% endif %}
+            </p>
 
-      <a href="{{ url_for('user.logout') }}">Kilépés</a>
-    </nav>
+            <div class="stats">
+              <div class="stat">
+                <div class="label">Összes foglalás</div>
+                <div class="value">{{ appointments|length if appointments is defined else 0 }}</div>
+              </div>
+              <div class="stat">
+                <div class="label">Státusz</div>
+                <div class="value">
+                  {% if current_user.staff_profile %}
+                  Staff
+                  {% else %}
+                  Ügyfél
+                  {% endif %}
+                </div>
+              </div>
+              <div class="stat">
+                <div class="label">Elérhető műveletek</div>
+                <div class="value">Részletek</div>
+              </div>
+            </div>
+          </div>
 
-    {% if appointments is defined %}
-    <h2>Legutóbbi foglalások</h2>
-    <ul>
-      {% for appointment in appointments %}
-      <li>
-        <a
-          href="{% if is_staff %}{{ url_for('user.staff_booking_detail', appointment_id=appointment.id) }}{% else %}{{ url_for('user.customer_booking_detail', appointment_id=appointment.id) }}{% endif %}"
-        >
-          #{{ appointment.id }} – {{ appointment.start_at }} – {{
-          appointment.status }}
-        </a>
-      </li>
-      {% endfor %}
-    </ul>
-    {% endif %}
+          <aside class="panel hero-side">
+            <div class="section-head" style="align-items: flex-start">
+              <div>
+                <h2>Gyors elérés</h2>
+                <p>Leggyakoribb navigációs pontok</p>
+              </div>
+            </div>
+
+            <div class="quick-nav">
+              <a class="nav-card" href="{{ url_for('user.staff_bookings') }}">
+                <div>
+                  <strong>Saját foglalásaim</strong>
+                  <span>Foglalások listája és részletek</span>
+                </div>
+                <span>→</span>
+              </a>
+
+              {% if current_user.staff_profile %}
+              <a class="nav-card" href="{{ url_for('user.staff_dashboard') }}">
+                <div>
+                  <strong>Staff dashboard</strong>
+                  <span>Munkatársi felület megnyitása</span>
+                </div>
+                <span>→</span>
+              </a>
+              {% endif %}
+            </div>
+          </aside>
+        </section>
+
+        {% if appointments is defined and appointments %}
+        <section class="section">
+          <div class="section-head">
+            <div>
+              <h2>Legutóbbi foglalások</h2>
+              <p>Az utolsó rögzített időpontok</p>
+            </div>
+            <a class="chip" href="{{ url_for('user.customer_bookings') }}">Összes foglalás</a>
+          </div>
+
+          <div class="card-grid">
+            {% for appointment in appointments[:3] %}
+            <a
+              class="mini-card"
+              href="{% if is_staff %}{{ url_for('user.staff_booking_detail', appointment_id=appointment.id) }}{% else %}{{ url_for('user.customer_booking_detail', appointment_id=appointment.id) }}{% endif %}"
+            >
+              <div class="title">#{{ appointment.id }} · {{ appointment.status }}</div>
+              <div class="big">{{ appointment.service_item.name }}</div>
+              <div style="margin-top: 8px; color: var(--muted); line-height: 1.6">
+                
+                {{ appointment.start_at }} → {{ appointment.end_at }}
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+        </section>
+        {% endif %}
+      </main>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div>© 2026 SimpleMeet</div>
+        </div>
+      </footer>
+    </div>
   </body>
 </html>

@@ -40,30 +40,20 @@ class Business(db.Model):
     name = db.Column(db.String(255), nullable=False)
     location = db.Column(db.String(255))
     website = db.Column(db.String(255))
-
-    categories = db.Column(
-        db.Enum(
-            "barber-shop",
-            "hair-salon",
-            "finger-nail",
-            "spa",
-            name="business_category_enum"
-        ),
-        nullable=False
-    )
-
-    admin_user_id = db.Column(
-        db.Integer,
-        db.ForeignKey('user_account.id'),
-        nullable=False
-    )
-
+    categories = db.Column(db.Enum("barber-shop","hair-salon","finger-nail","spa"))
+    admin_user_id = db.Column(db.Integer, db.ForeignKey('user_account.id'), nullable=False)
     public_id = db.Column(db.String(255), nullable=False)
     slug = db.Column(db.String(255), nullable=False)
+    further_info = db.Column(db.JSON())
 
+    # új about mezők
+    about_description = db.Column(db.Text)
+    about_business_image = db.Column(db.String(255))
+    about_team_image = db.Column(db.String(255))
+
+    # Kapcsolatok
     staff_members = db.relationship('Staff', backref='employer', lazy=True)
     service = db.relationship('Service', backref='service_provider', lazy=True)
-    appointments = db.relationship('Appointment', backref='business_item', lazy=True)
 
 
 # ======================
