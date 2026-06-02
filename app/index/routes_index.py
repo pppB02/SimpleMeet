@@ -8,6 +8,7 @@ from ..db_models import Business, Staff, UserAccount, Service, Appointment, Open
 from app import db
 from ..business.services.booking.availability import generate_slots
 from ..business.services.booking.booking_service import create_appointment
+from sqlalchemy.exc import OperationalError
 
 index = Blueprint("index", __name__, static_folder="static", template_folder="templates", static_url_path="/index/static")
 
@@ -19,9 +20,15 @@ def get_file(filename):
 
 @index.route("/")
 def home():
-    featured_businesses = Business.query.filter(
-        Business.about_description.isnot(None)
-    ).order_by(Business.id.desc()).all()
+    try:
+        featured_businesses = (
+            Business.query
+            .filter(Business.about_description.isnot(None))
+            .order_by(Business.id.desc())
+            .all()
+        )
+    except OperationalError:
+        featured_businesses = []
 
     return render_template(
         "index.html",
