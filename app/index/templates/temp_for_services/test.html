@@ -430,7 +430,6 @@
     <div class="page">
       <section class="hero">
         <div class="hero-card">
-          <div class="eyebrow"><span class="dot"></span> Online foglalás</div>
           <h1>{{ business.name }}</h1>
           <p class="lead">
             {{ business.about_description }}
@@ -483,7 +482,7 @@
 
             <div class="services-tabs" id="serviceTabs">
               {% for serviceType, items in serviceDatas.items() %}
-                <button type="button" class="tab {% if loop.first %}active{% endif %}" data-type="{{ serviceType|e }}">{{ serviceType }}</button>
+                <button type="button" class="tab {% if loop.first %}active{% endif %}" data-type="{{ serviceType|e }}">{{ SERVICE_TYPES[serviceType] }}</button>
               {% endfor %}
             </div>
 
@@ -551,7 +550,7 @@
           <section class="card">
             <div class="section-head">
               <div>
-                <h2>4. Megjegyzés és foglalás</h2>
+                <h2>Megjegyzés és foglalás</h2>
                 <p>A foglalás elküldése csak bejelentkezett ügyfeleknek engedélyezett.</p>
               </div>
             </div>

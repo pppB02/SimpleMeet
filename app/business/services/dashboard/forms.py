@@ -158,7 +158,7 @@ class NewServiceForm(FlaskForm):
                 ("hair-coloring", "hajfestés és színváltoztatás"),
                 ("corrective-treatments", "hajszerkezet-javító kezelések"),
             ],
-        },
+        }
     )
 
     description = TextAreaField(

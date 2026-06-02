@@ -27,3 +27,18 @@ FURTHER_INFO_CHOICES = {
     "eco-friendly": "Környezetbarát",
     "lgbtq-friendly": "LMBTQ+ barát hely"
 }
+
+SERVICE_TYPES = {
+    "beard-trimming": "Szakál Vágás",
+    "mens-haircut": "Férfi hajvágás",
+    "mens-shaving": "Férfi borotválkozás",
+    "relaxation-massages": "Relaxációs masszázsok",
+    "body-treatments-and-rituals": "Testkezelések és rituálék",
+    "premium-skincare": "Prémium arcápolás",
+    "aesthetic-and-classic-manicure": "Esztétikai és klasszikus manikűr",
+    "nail-application": "Tartós lakkozás és műkörömépítés",
+    "SPA-Hand-Treatment": "SPA kézápolás",
+    "haircuts-and-styling": "Hajvágás és styling",
+    "hair-coloring": "hajfestés és színváltoztatás",
+    "corrective-treatments": "hajszerkezet-javító kezelések"
+}

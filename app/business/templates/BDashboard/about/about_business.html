@@ -1,132 +1,144 @@
 <!doctype html>
-<html lang="en">
+<html lang="hu">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Rólunk • SimpleMeet</title>
+    <link rel="stylesheet" href="{{ url_for('business.static', filename='base/fresha-dashboard.css') }}" />
   </head>
-  <body>
-    <div>
-      <h1>Üzlet bemutatkozó oldal</h1>
+  <body class="app-shell">
+    {% set active_page = "about-business" %}
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-mark">SM</div>
+          <div class="brand-text">
+            <strong>{{ business.name if business is defined and business else 'SimpleMeet' }}</strong>
+            <span>{{ business.location or 'Nincs megadott helyszín' }}</span>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <a class="button button-secondary back-button" href="{{ url_for('business.dashboard') }}">Dashboardra</a>
+          <a class="button button-ghost" href="{{ url_for('business.logout') }}">Kijelentkezés</a>
+        </div>
+      </div>
+    </header>
 
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-title">
+          <div>
+            <h2>Navigáció</h2>
+          </div>
+        </div>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'dashboard' else '' }}" href="{{ url_for('business.dashboard') }}">Dashboard</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'appointments' else '' }}" href="{{ url_for('business.appointments') }}">Foglalások</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'team-members' else '' }}" href="{{ url_for('business.team') }}">Csapat</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'catalog' else '' }}" href="{{ url_for('business.catalog') }}">Szolgáltatások</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'hours' else '' }}" href="{{ url_for('business.hours') }}">Nyitvatartás</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'edit-business' else '' }}" href="{{ url_for('business.edit_business') }}">Üzlet adatai</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'about-business' else '' }}" href="{{ url_for('business.aboutBusiness') }}">Rólunk</a>
+      </aside>
+
+      <main class="content">
+        <div class="flash-stack">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">
+                <strong style="text-transform:capitalize;">{{ category }}</strong>
+                <div>{{ message }}</div>
+              </div>
+            {% endfor %}
+          {% endif %}
+          {% endwith %}
+        </div>
+
+<section class="hero">
+  <div class="hero-header">
+    <div>
+      <h1>Üzlet bemutatkozó oldala</h1>
+      <p>Tölts fel leírást, képeket és szolgáltatási címkéket a publikus profilhoz.</p>
+    </div>
+  </div>
+</section>
+
+<section class="grid-1">
+  <div class="panel">
+    <div class="panel-header">
+      <div>
+        <h2>Tartalom szerkesztése</h2>
+        <p>Bemutatkozó szöveg, képek és extra címkék.</p>
+      </div>
+    </div>
+    <div class="panel-body">
       <form method="POST" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
 
-        <div>
-          {{ form.about_description.label }} {{ form.about_description(rows=8,
-          cols=60) }} {% for error in form.about_description.errors %}
-          <div>{{ error }}</div>
-          {% endfor %}
+        <div class="form-grid">
+          <div class="field full">
+            {{ form.about_description.label(class="field-label") }}
+            {{ form.about_description(class="input", rows="7", placeholder="Írd le röviden az üzletet, stílust, élményt...") }}
+            {% for error in form.about_description.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
+
+          <div class="field">
+            {{ form.about_business_image.label(class="field-label") }}
+            {{ form.about_business_image(class="input") }}
+            {% for error in form.about_business_image.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
+
+          <div class="field">
+            {{ form.about_team_image.label(class="field-label") }}
+            {{ form.about_team_image(class="input") }}
+            {% for error in form.about_team_image.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
+
+          <div class="field full">
+            {{ form.further_info.label(class="field-label") }}
+            {{ form.further_info(class="input", id="further_info") }}
+            <div class="help-text">Válassz egy címkét, az hozzáadódik a kártyákhoz. Több címke is megadható.</div>
+            <div class="tags-container" id="tags-container"></div>
+            <input type="hidden" name="selected_tags_submit" id="hidden-tags-input" value="{{ business.further_info | join(',') if business.further_info else '' }}" />
+          </div>
         </div>
-
-        <div>
-          {{ form.about_business_image.label }} {{ form.about_business_image()
-          }} {% for error in form.about_business_image.errors %}
-          <div>{{ error }}</div>
-          {% endfor %}
+        <div class="auth-actions" style="margin-top:18px;">
+          <button class="button button-primary" type="submit">{{ form.submit.label.text }}</button>
         </div>
-
-        <div>
-          {{ form.about_team_image.label }} {{ form.about_team_image() }} {% for
-          error in form.about_team_image.errors %}
-          <div>{{ error }}</div>
-          {% endfor %}
-        </div>
-
-        <div class="form-group">
-          {{ form.further_info.label }} <br />
-          {{ form.further_info(class="form-control") }}
-        </div>
-
-        <div class="tags-container" id="tags-container"></div>
-
-        <input
-          type="hidden"
-          name="selected_tags_submit"
-          id="hidden-tags-input"
-          value="{{ business.further_info | join(',') if business.further_info else '' }}"
-        />
-
-        <button type="submit">Mentés</button>
       </form>
-
-      <hr />
-
-      <h2>Előnézet</h2>
-
-      <p>{{ business.about_description or "Nincs leírás még." }}</p>
-
-      {% if business.about_business_image %}
-      <img
-        src="{{ url_for('index.get_file', filename=business.about_business_image) }}"
-        alt="Üzlet képe"
-        style="max-width: 100%"
-      />
-      {% endif %} {% if business.about_team_image %}
-      <img
-        src="{{ url_for('index.get_file', filename=business.about_team_image) }}"
-        alt="Csapatkép"
-        style="max-width: 320px"
-      />
-      {% endif %}
     </div>
-    <form method="POST">{{ form.hidden_tag() }}</form>
-  </body>
-</html>
+  </div>
 
-<style>
-  .tags-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 15px;
-  }
-  .tag {
-    background-color: #28a745;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 20px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .tag .remove-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-  }
-</style>
+  
+</section>
 
 <script>
   const selectEl = document.getElementById("further_info");
   const containerEl = document.getElementById("tags-container");
   const hiddenInputEl = document.getElementById("hidden-tags-input");
+  let selectedValues = (hiddenInputEl.value || "").split(",").filter(Boolean);
 
-  let selectedValues =
-    "{{ business.further_info | join(',') if business.further_info else '' }}"
-      .split(",")
-      .filter(Boolean);
-
-  function createTagHTML(val, text) {
+  function renderTag(val, text) {
     const tag = document.createElement("div");
-    tag.classList.add("tag");
+    tag.className = "tag";
     tag.setAttribute("data-value", val);
     tag.innerHTML = `<span>${text}</span><button type="button" class="remove-btn" onclick="removeTag('${val}')">&times;</button>`;
     containerEl.appendChild(tag);
   }
 
-  function initPreselectedTags() {
+  function syncHidden() {
+    hiddenInputEl.value = selectedValues.join(",");
+  }
+
+  function initTags() {
     selectedValues.forEach((val) => {
-      const option = Array.from(selectEl.options).find(
-        (opt) => opt.value === val,
-      );
+      const option = Array.from(selectEl.options).find((opt) => opt.value === val);
       if (option) {
         option.disabled = true;
-        createTagHTML(val, option.text);
+        renderTag(val, option.text);
       }
     });
+    syncHidden();
   }
 
   selectEl.addEventListener("change", function () {
@@ -137,28 +149,24 @@
     if (val && !selectedValues.includes(val)) {
       selectedValues.push(val);
       selectedOption.disabled = true;
-
-      createTagHTML(val, text);
-      hiddenInputEl.value = selectedValues.join(",");
+      renderTag(val, text);
+      syncHidden();
     }
     selectEl.value = "";
   });
 
   window.removeTag = function (value) {
     selectedValues = selectedValues.filter((item) => item !== value);
-
     const tagEl = containerEl.querySelector(`[data-value="${value}"]`);
     if (tagEl) tagEl.remove();
-
-    const optionToEnable = Array.from(selectEl.options).find(
-      (opt) => opt.value === value,
-    );
-    if (optionToEnable) optionToEnable.disabled = false;
-
-    hiddenInputEl.value = selectedValues.join(",");
+    const option = Array.from(selectEl.options).find((opt) => opt.value === value);
+    if (option) option.disabled = false;
+    syncHidden();
   };
 
-  document.addEventListener("DOMContentLoaded", function () {
-    initPreselectedTags();
-  });
+  document.addEventListener("DOMContentLoaded", initTags);
 </script>
+      </main>
+    </div>
+  </body>
+</html>

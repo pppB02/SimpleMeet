@@ -3,47 +3,150 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Foglalások</title>
+    <title>Foglalások • SimpleMeet</title>
+    <link rel="stylesheet" href="{{ url_for('business.static', filename='base/fresha-dashboard.css') }}" />
   </head>
-  <body>
-    <h1>{{ business.name }} – Foglalások</h1>
+  <body class="app-shell">
+    {% set active_page = "appointments" %}
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-mark">SM</div>
+          <div class="brand-text">
+            <strong>{{ business.name if business is defined and business else 'SimpleMeet' }}</strong>
+            <span>{{ business.location or 'Nincs megadott helyszín' }}</span>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <a class="button button-secondary back-button" href="{{ url_for('business.dashboard') }}">Dashboardra</a>
+          <a class="button button-ghost" href="{{ url_for('business.logout') }}">Kijelentkezés</a>
+        </div>
+      </div>
+    </header>
 
-    <p>
-      <a href="{{ url_for('business.dashboard') }}">Vissza a dashboardra</a>
-    </p>
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-title">
+          <div>
+            <h2>Navigáció</h2>
+          </div>
+        </div>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'dashboard' else '' }}" href="{{ url_for('business.dashboard') }}">Dashboard</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'appointments' else '' }}" href="{{ url_for('business.appointments') }}">Foglalások</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'team-members' else '' }}" href="{{ url_for('business.team') }}">Csapat</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'catalog' else '' }}" href="{{ url_for('business.catalog') }}">Szolgáltatások</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'hours' else '' }}" href="{{ url_for('business.hours') }}">Nyitvatartás</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'edit-business' else '' }}" href="{{ url_for('business.edit_business') }}">Üzlet adatai</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'about-business' else '' }}" href="{{ url_for('business.aboutBusiness') }}">Rólunk</a>
+      </aside>
 
-    <table border="1" cellpadding="8" cellspacing="0">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Vendég</th>
-          <th>Szolgáltatás</th>
-          <th>Munkatárs</th>
-          <th>Kezdés</th>
-          <th>Vége</th>
-          <th>Státusz</th>
-          <th>Részletek</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for appointment in appointments %}
-        <tr>
-          <td>{{ appointment.id }}</td>
-          <td>{{ appointment.user.username }}</td>
-          <td>{{ appointment.service_item.name }}</td>
-          <td>{{ appointment.staff_member.user_info.username }}</td>
-          <td>{{ appointment.start_at }}</td>
-          <td>{{ appointment.end_at }}</td>
-          <td>{{ appointment.status }}</td>
-          <td>
-            <a
-              href="{{ url_for('business.appointment_detail', appointment_id=appointment.id) }}"
-              >Megnyitás</a
-            >
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+      <main class="content">
+        <div class="flash-stack">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">
+                <strong style="text-transform:capitalize;">{{ category }}</strong>
+                <div>{{ message }}</div>
+              </div>
+            {% endfor %}
+          {% endif %}
+          {% endwith %}
+        </div>
+
+<section class="hero">
+  <div class="hero-header">
+    <div>
+      <h1>{{ business.name }} foglalásai</h1>
+      <p>Áttekintő lista az összes időpontról.</p>
+    </div>
+  </div>
+</section>
+
+{% if appointments %}
+<section class="table-wrap">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Vendég</th>
+        <th>Szolgáltatás</th>
+        <th>Munkatárs</th>
+        <th>Kezdés</th>
+        <th>Vége</th>
+        <th>Státusz</th>
+        <th>Megnyitás</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for appointment in appointments %}
+      <tr>
+        <td>#{{ appointment.id }}</td>
+        <td>{{ appointment.user.username if appointment.user else '-' }}</td>
+        <td>{{ appointment.service_item.name if appointment.service_item else '-' }}</td>
+        <td>{{ appointment.staff_member.user_info.username if appointment.staff_member and appointment.staff_member.user_info else '-' }}</td>
+        <td>{{ appointment.start_at.strftime('%Y.%m.%d %H:%M') if appointment.start_at else '-' }}</td>
+        <td>{{ appointment.end_at.strftime('%Y.%m.%d %H:%M') if appointment.end_at else '-' }}</td>
+        <td>
+          {% set status = (appointment.status or '')|lower %}
+          {% if 'confirm' in status %}
+            <span class="badge success">{{ appointment.status }}</span>
+          {% elif 'cancel' in status %}
+            <span class="badge danger">{{ appointment.status }}</span>
+          {% elif 'complete' in status or 'done' in status %}
+            <span class="badge dark">{{ appointment.status }}</span>
+          {% else %}
+            <span class="badge warning">{{ appointment.status }}</span>
+          {% endif %}
+        </td>
+        <td>
+          <a class="button button-secondary" href="{{ url_for('business.appointment_detail', appointment_id=appointment.id) }}">Részletek</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="mobile-list">
+  {% for appointment in appointments %}
+  <article class="mobile-item">
+    <div class="mobile-item-head">
+      <div>
+        <h3 class="mobile-item-title">#{{ appointment.id }} · {{ appointment.user.username if appointment.user else '-' }}</h3>
+        <div class="mobile-item-meta">
+          <span>{{ appointment.service_item.name if appointment.service_item else '-' }}</span>
+          <span>{{ appointment.staff_member.user_info.username if appointment.staff_member and appointment.staff_member.user_info else '-' }}</span>
+        </div>
+      </div>
+      {% set status = (appointment.status or '')|lower %}
+      {% if 'confirm' in status %}
+        <span class="badge success">{{ appointment.status }}</span>
+      {% elif 'cancel' in status %}
+        <span class="badge danger">{{ appointment.status }}</span>
+      {% elif 'complete' in status or 'done' in status %}
+        <span class="badge dark">{{ appointment.status }}</span>
+      {% else %}
+        <span class="badge warning">{{ appointment.status }}</span>
+      {% endif %}
+    </div>
+    <div class="mobile-item-meta">
+      <span>Kezdés: {{ appointment.start_at.strftime('%Y.%m.%d %H:%M') if appointment.start_at else '-' }}</span>
+      <span>Vége: {{ appointment.end_at.strftime('%Y.%m.%d %H:%M') if appointment.end_at else '-' }}</span>
+    </div>
+    <div>
+      <a class="button button-primary" href="{{ url_for('business.appointment_detail', appointment_id=appointment.id) }}">Megnyitás</a>
+    </div>
+  </article>
+  {% endfor %}
+</section>
+{% else %}
+<section class="card">
+  <h3 class="card-title">Még nincs foglalás</h3>
+  <p class="card-subtitle">Amint jön egy új időpont, itt fog megjelenni.</p>
+</section>
+{% endif %}
+      </main>
+    </div>
   </body>
 </html>

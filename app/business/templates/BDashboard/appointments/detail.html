@@ -3,51 +3,163 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Foglalás részletek</title>
+    <title>Foglalás részletei • SimpleMeet</title>
+    <link rel="stylesheet" href="{{ url_for('business.static', filename='base/fresha-dashboard.css') }}" />
   </head>
-  <body>
-    <h1>Foglalás #{{ appointment.id }}</h1>
+  <body class="app-shell">
+    {% set active_page = "appointments" %}
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-mark">SM</div>
+          <div class="brand-text">
+            <strong>{{ business.name if business is defined and business else 'SimpleMeet' }}</strong>
+            <span>Részletes foglalásnézet</span>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <a class="button button-secondary back-button" href="{{ url_for('business.appointments') }}">Vissza a listához</a>
+          <a class="button button-ghost" href="{{ url_for('business.logout') }}">Kijelentkezés</a>
+        </div>
+      </div>
+    </header>
 
-    <p><strong>Üzlet:</strong> {{ business.name }}</p>
-    <p><strong>Vendég:</strong> {{ appointment.user.username }}</p>
-    <p><strong>Szolgáltatás:</strong> {{ appointment.service_item.name }}</p>
-    <p>
-      <strong>Munkatárs:</strong> {{ appointment.staff_member.user_info.username
-      }}
-    </p>
-    <p><strong>Kezdés:</strong> {{ appointment.start_at }}</p>
-    <p><strong>Vége:</strong> {{ appointment.end_at }}</p>
-    <p><strong>Státusz:</strong> {{ appointment.status }}</p>
-    <p><strong>Megjegyzés:</strong> {{ appointment.notes or "-" }}</p>
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-title">
+          <div>
+            <h2>Navigáció</h2>
+            <p>Gyors hozzáférés</p>
+          </div>
+        </div>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'dashboard' else '' }}" href="{{ url_for('business.dashboard') }}">Dashboard</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'appointments' else '' }}" href="{{ url_for('business.appointments') }}">Foglalások</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'team-add-member' else '' }}" href="{{ url_for('business.teamMembers') }}">Új csapattag</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'team-members' else '' }}" href="{{ url_for('business.team') }}">Csapat</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'catalog' else '' }}" href="{{ url_for('business.catalog') }}">Szolgáltatások</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'new-service' else '' }}" href="{{ url_for('business.newService') }}">Új szolgáltatás</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'hours' else '' }}" href="{{ url_for('business.hours') }}">Nyitvatartás</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'edit-business' else '' }}" href="{{ url_for('business.edit_business') }}">Üzlet adatai</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'about-business' else '' }}" href="{{ url_for('business.aboutBusiness') }}">Rólunk / képek</a>
+      </aside>
 
-    <div style="margin-top: 16px">
-      <form
-        method="post"
-        action="{{ url_for('business.appointment_confirm', appointment_id=appointment.id) }}"
-        style="display: inline"
-      >
-        <button type="submit">Visszaigazolás</button>
-      </form>
+      <main class="content">
+        <div class="flash-stack">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">
+                <strong style="text-transform:capitalize;">{{ category }}</strong>
+                <div>{{ message }}</div>
+              </div>
+            {% endfor %}
+          {% endif %}
+          {% endwith %}
+        </div>
 
-      <form
-        method="post"
-        action="{{ url_for('business.appointment_complete', appointment_id=appointment.id) }}"
-        style="display: inline"
-      >
-        <button type="submit">Kész</button>
-      </form>
-
-      <form
-        method="post"
-        action="{{ url_for('business.appointment_cancel', appointment_id=appointment.id) }}"
-        style="display: inline"
-      >
-        <button type="submit">Lemondás</button>
-      </form>
+<section class="hero">
+  <div class="hero-header">
+    <div>
+      <div class="kicker">Foglalás részlete</div>
+      <h1>Foglalás #{{ appointment.id }}</h1>
+      <p>Innen érheted el a visszaigazolást, a lezárást vagy a lemondást.</p>
     </div>
+    <div class="hero-actions">
+      <a class="button button-secondary" href="{{ url_for('business.appointments') }}">Lista</a>
+      <a class="button button-primary" href="{{ url_for('business.dashboard') }}">Dashboard</a>
+    </div>
+  </div>
+</section>
 
-    <p>
-      <a href="{{ url_for('business.appointments') }}">Vissza a listához</a>
-    </p>
+<section class="grid-2">
+  <div class="panel">
+    <div class="panel-header">
+      <div>
+        <h2>Összegzés</h2>
+        <p>A foglalás fő adatai.</p>
+      </div>
+    </div>
+    <div class="panel-body">
+      {% set status = (appointment.status or '')|lower %}
+      <div class="meta-row" style="margin-top:0;">
+        {% if 'confirm' in status %}
+          <span class="badge success">{{ appointment.status }}</span>
+        {% elif 'cancel' in status %}
+          <span class="badge danger">{{ appointment.status }}</span>
+        {% elif 'complete' in status or 'done' in status %}
+          <span class="badge dark">{{ appointment.status }}</span>
+        {% else %}
+          <span class="badge warning">{{ appointment.status }}</span>
+        {% endif %}
+      </div>
+
+      <div class="grid-2" style="margin-top:16px;">
+        <div class="card flat">
+          <p class="card-subtitle">Vendég</p>
+          <h3 style="margin:8px 0 0;">{{ appointment.user.username if appointment.user else '-' }}</h3>
+        </div>
+        <div class="card flat">
+          <p class="card-subtitle">Szolgáltatás</p>
+          <h3 style="margin:8px 0 0;">{{ appointment.service_item.name if appointment.service_item else '-' }}</h3>
+        </div>
+        <div class="card flat">
+          <p class="card-subtitle">Munkatárs</p>
+          <h3 style="margin:8px 0 0;">{{ appointment.staff_member.user_info.username if appointment.staff_member and appointment.staff_member.user_info else '-' }}</h3>
+        </div>
+        <div class="card flat">
+          <p class="card-subtitle">Ár</p>
+          <h3 style="margin:8px 0 0;">{{ appointment.service_item.price if appointment.service_item and appointment.service_item.price is not none else '-' }} Ft</h3>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:16px;">
+        <div class="card flat">
+          <p class="card-subtitle">Kezdés</p>
+          <h3 style="margin:8px 0 0;">{{ appointment.start_at.strftime('%Y.%m.%d %H:%M') if appointment.start_at else '-' }}</h3>
+        </div>
+        <div class="card flat">
+          <p class="card-subtitle">Vége</p>
+          <h3 style="margin:8px 0 0;">{{ appointment.end_at.strftime('%Y.%m.%d %H:%M') if appointment.end_at else '-' }}</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">
+      <div>
+        <h2>Műveletek</h2>
+        <p>Gyors státuszváltások.</p>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="card flat">
+        <p class="card-title">Megjegyzés</p>
+        <p class="card-subtitle">{{ appointment.notes or 'Nincs megjegyzés.' }}</p>
+      </div>
+
+      <div class="service-actions" style="margin-top:16px;">
+        <form method="post" action="{{ url_for('business.appointment_confirm', appointment_id=appointment.id) }}">
+          
+          <button class="button button-primary" type="submit">Visszaigazolás</button>
+        </form>
+        <form method="post" action="{{ url_for('business.appointment_complete', appointment_id=appointment.id) }}">
+          
+          <button class="button button-secondary" type="submit">Kész</button>
+        </form>
+        <form method="post" action="{{ url_for('business.appointment_cancel', appointment_id=appointment.id) }}">
+          
+          <button class="button button-danger" type="submit">Lemondás</button>
+        </form>
+      </div>
+
+      <div class="note-box" style="margin-top:16px;">
+        A visszaigazolás, lezárás és lemondás után a flash üzenet azonnal megjelenik.
+      </div>
+    </div>
+  </div>
+</section>
+      </main>
+    </div>
   </body>
 </html>

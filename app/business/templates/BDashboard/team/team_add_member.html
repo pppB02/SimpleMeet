@@ -1,61 +1,135 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team</title>
-</head>
-<body>
-    <form action="" method="POST" enctype="multipart/form-data">
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Új csapattag • SimpleMeet</title>
+    <link rel="stylesheet" href="{{ url_for('business.static', filename='base/fresha-dashboard.css') }}" />
+  </head>
+  <body class="app-shell">
+    {% set active_page = "team-add-member" %}
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-mark">SM</div>
+          <div class="brand-text">
+            <strong>{{ business.name if business is defined and business else 'SimpleMeet' }}</strong>
+            <span>Meghívó küldés</span>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <a class="button button-secondary back-button" href="{{ url_for('business.team') }}">Vissza a csapatra</a>
+          <a class="button button-ghost" href="{{ url_for('business.logout') }}">Kijelentkezés</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-title">
+          <div>
+            <h2>Navigáció</h2>
+            <p>Gyors hozzáférés</p>
+          </div>
+        </div>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'dashboard' else '' }}" href="{{ url_for('business.dashboard') }}">Dashboard</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'appointments' else '' }}" href="{{ url_for('business.appointments') }}">Foglalások</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'team-add-member' else '' }}" href="{{ url_for('business.teamMembers') }}">Új csapattag</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'team-members' else '' }}" href="{{ url_for('business.team') }}">Csapat</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'catalog' else '' }}" href="{{ url_for('business.catalog') }}">Szolgáltatások</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'new-service' else '' }}" href="{{ url_for('business.newService') }}">Új szolgáltatás</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'hours' else '' }}" href="{{ url_for('business.hours') }}">Nyitvatartás</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'edit-business' else '' }}" href="{{ url_for('business.edit_business') }}">Üzlet adatai</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'about-business' else '' }}" href="{{ url_for('business.aboutBusiness') }}">Rólunk / képek</a>
+      </aside>
+
+      <main class="content">
+        <div class="flash-stack">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">
+                <strong style="text-transform:capitalize;">{{ category }}</strong>
+                <div>{{ message }}</div>
+              </div>
+            {% endfor %}
+          {% endif %}
+          {% endwith %}
+        </div>
+
+<section class="hero">
+  <div class="hero-header">
+    <div>
+      <div class="kicker">Csapattag meghívása</div>
+      <h1>Új munkatárs hozzáadása</h1>
+      <p>Add meg a nevet, az email címet és a képet, majd a rendszer küldhet meghívót a csatlakozáshoz.</p>
+    </div>
+    <div class="hero-actions">
+      <a class="button button-secondary" href="{{ url_for('business.team') }}">Csapat</a>
+      <a class="button button-primary" href="{{ url_for('business.dashboard') }}">Dashboard</a>
+    </div>
+  </div>
+</section>
+
+<section class="grid-2">
+  <div class="panel">
+    <div class="panel-header">
+      <div>
+        <h2>Meghívó űrlap</h2>
+        <p>Az email címre kiküldhető a csatlakozási link.</p>
+      </div>
+    </div>
+    <div class="panel-body">
+      <form action="" method="POST" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
-        <div>
-            {{ form.name.label() }}
-            {% if form.name.errors %}
-                {{ form.name() }}
-                <div>
-                    {% for error in form.name.errors %}
-                        <span>{{error}}</span>
-                    {% endfor %}
-                </div>
-            {% else %}
-                {{ form.name() }}
-            {% endif %}
+
+        <div class="form-grid">
+          <div class="field full">
+            {{ form.name.label(class="field-label") }}
+            {{ form.name(class="input", placeholder="Teljes név") }}
+            {% for error in form.name.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
+
+          <div class="field full">
+            {{ form.email.label(class="field-label") }}
+            {{ form.email(class="input", placeholder="name@example.com") }}
+            {% for error in form.email.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
+
+          <div class="field full">
+            {{ form.photo.label(class="field-label") }}
+            {{ form.photo(class="input") }}
+            {% for error in form.photo.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
         </div>
 
-        <div>
-            {{ form.email.label() }}
-            {% if form.email.errors %}
-                {{ form.email() }}
-                <div>
-                    {% for error in form.email.errors %}
-                        <span>{{error}}</span>
-                    {% endfor %}
-                </div>
-            {% else %}
-                {{ form.email() }}
-            {% endif %}
+        <div class="auth-actions" style="margin-top:18px;">
+          <button class="button button-primary" type="submit">{{ form.submit.label.text }}</button>
+          <a class="button button-secondary" href="{{ url_for('business.team') }}">Mégse</a>
         </div>
+      </form>
+    </div>
+  </div>
 
-        <div>
-            {{ form.photo.label() }}
-            {% if form.photo.errors %}
-                {{ form.photo() }}
-                <div>
-                    {% for error in form.photo.errors %}
-                        <span>{{error}}</span>
-                    {% endfor %}
-                </div>
-            {% else %}
-                {{ form.photo() }}
-            {% endif %}
+  <div class="panel">
+    <div class="panel-header">
+      <div>
+        <h2>Előnézet</h2>
+        <p>A feltöltött kép vagy a legutóbb mentett fájl.</p>
+      </div>
+    </div>
+    <div class="panel-body">
+      {% if filename %}
+        <div class="preview-image">
+          <img src="{{ url_for('index.get_file', filename=filename) }}" alt="Előnézet">
         </div>
-        {% if filename %}
-            <img src="{{ url_for('index.get_file',filename=filename) }}" width="300">
-        {% endif %}
-
-        <div>
-            {{ form.submit() }}
-        </div>
-    </form>
-</body>
+      {% else %}
+        <div class="note-box">Tölts fel egy profilképet, hogy a meghívó professzionálisabb legyen.</div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+      </main>
+    </div>
+  </body>
 </html>

@@ -66,7 +66,7 @@
 
                     <div class="hero-meta">
                         <span class="meta-item"><span class="star">★</span> <strong>4.9</strong> (128)</span>
-                        <span class="meta-item">Nyitva 20:00-ig</span>
+                        <span class="meta-item">{{ business.website }}</span>
                     </div>
 
                     <div class="hero-actions">
@@ -100,7 +100,7 @@
 
                     <div class="cat-tabs">
                         {% for serviceType in serviceDatas %}
-                            <label for="cat-{{ serviceType }}" class="cat-pill">{{ serviceType }}</label>
+                            <label for="cat-{{ serviceType }}" class="cat-pill">{{ SERVICE_TYPES[serviceType] }}</label>
                         {% endfor %}
                     </div>
 

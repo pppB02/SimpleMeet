@@ -3,35 +3,124 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nyitvatartás</title>
+    <title>Nyitvatartás • SimpleMeet</title>
+    <link rel="stylesheet" href="{{ url_for('business.static', filename='base/fresha-dashboard.css') }}" />
   </head>
-  <body>
+  <body class="app-shell">
+    {% set active_page = "hours" %}
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-mark">SM</div>
+          <div class="brand-text">
+            <strong>{{ business.name if business is defined and business else 'SimpleMeet' }}</strong>
+            <span>{{ business.location or 'Nincs megadott helyszín' }}</span>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <a class="button button-secondary back-button" href="{{ url_for('business.dashboard') }}">Dashboardra</a>
+          <a class="button button-ghost" href="{{ url_for('business.logout') }}">Kijelentkezés</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-title">
+          <div>
+            <h2>Navigáció</h2>
+          </div>
+        </div>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'dashboard' else '' }}" href="{{ url_for('business.dashboard') }}">Dashboard</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'appointments' else '' }}" href="{{ url_for('business.appointments') }}">Foglalások</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'team-members' else '' }}" href="{{ url_for('business.team') }}">Csapat</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'catalog' else '' }}" href="{{ url_for('business.catalog') }}">Szolgáltatások</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'hours' else '' }}" href="{{ url_for('business.hours') }}">Nyitvatartás</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'edit-business' else '' }}" href="{{ url_for('business.edit_business') }}">Üzlet adatai</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'about-business' else '' }}" href="{{ url_for('business.aboutBusiness') }}">Rólunk</a>
+      </aside>
+
+      <main class="content">
+        <div class="flash-stack">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">
+                <strong style="text-transform:capitalize;">{{ category }}</strong>
+                <div>{{ message }}</div>
+              </div>
+            {% endfor %}
+          {% endif %}
+          {% endwith %}
+        </div>
+
+<section class="hero">
+  <div class="hero-header">
+    <div>
+      <h1>Nyitvatartás</h1>
+      <p>Minden nap külön beállítható.</p>
+    </div>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-header">
+    <div>
+      <h2>Heti nyitvatartás</h2>
+      <p>Add meg a nyitás és zárás időpontját napokra bontva.</p>
+    </div>
+  </div>
+  <div class="panel-body">
     <form action="" method="POST">
-      {{ form.hidden_tag() }} {% set days = [ ("mon", "Hétfő"), ("tue", "Kedd"),
-      ("wed", "Szerda"), ("thu", "Csütörtök"), ("fri", "Péntek"), ("sat",
-      "Szombat"), ("sun", "Vasárnap") ] %} {% for prefix, label in days %}
-      <fieldset style="margin-bottom: 16px">
-        <legend>{{ label }}</legend>
+      {{ form.hidden_tag() }}
 
-        <div>
-          {{ form[prefix ~ 'OpenHour'].label }} {{ form[prefix ~ 'OpenHour']()
-          }} {{ form[prefix ~ 'OpenMin'].label }} {{ form[prefix ~ 'OpenMin']()
-          }}
-        </div>
+      {% set days = [
+        ('mon', 'Hétfő'),
+        ('tue', 'Kedd'),
+        ('wed', 'Szerda'),
+        ('thu', 'Csütörtök'),
+        ('fri', 'Péntek'),
+        ('sat', 'Szombat'),
+        ('sun', 'Vasárnap')
+      ] %}
 
-        <div>
-          {{ form[prefix ~ 'CloseHour'].label }} {{ form[prefix ~ 'CloseHour']()
-          }} {{ form[prefix ~ 'CloseMin'].label }} {{ form[prefix ~
-          'CloseMin']() }}
-        </div>
+      <div class="grid-2">
+        {% for prefix, label in days %}
+        <article class="card">
+          <h3 class="card-title">{{ label }}</h3>
+          <div class="form-grid" style="margin-top:14px;">
+            <div class="field">
+              <span class="help-text">Nyitás óra</span>
+              {{ form[prefix ~ 'OpenHour'](class="input") }}
+            </div>
+            <div class="field">
+              <span class="help-text">Nyitás perc</span>
+              {{ form[prefix ~ 'OpenMin'](class="input") }}
+            </div>
+            <div class="field">
+              <span class="help-text">Zárás óra</span>
+              {{ form[prefix ~ 'CloseHour'](class="input") }}
+            </div>
+            <div class="field">
+              <span class="help-text">Zárás perc</span>
+              {{ form[prefix ~ 'CloseMin'](class="input") }}
+            </div>
+            <div class="field full checkbox-row">
+              {{ form[prefix ~ 'Closed']() }}
+              <label for="{{ form[prefix ~ 'Closed'].id }}">Zárva</label>
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
 
-        <div>
-          {{ form[prefix ~ 'Closed']() }} {{ form[prefix ~ 'Closed'].label }}
-        </div>
-      </fieldset>
-      {% endfor %}
-
-      <div>{{ form.submit() }}</div>
+      <div class="auth-actions" style="margin-top:20px;">
+        <button class="button button-primary" type="submit">{{ form.submit.label.text }}</button>
+      </div>
     </form>
+  </div>
+</section>
+      </main>
+    </div>
   </body>
 </html>

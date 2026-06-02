@@ -3,21 +3,126 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Üzlet adatai</title>
+    <title>Üzlet adatai • SimpleMeet</title>
+    <link rel="stylesheet" href="{{ url_for('business.static', filename='base/fresha-dashboard.css') }}" />
   </head>
-  <body>
-    <h1>Üzlet adatai</h1>
+  <body class="app-shell">
+    {% set active_page = "edit-business" %}
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-mark">SM</div>
+          <div class="brand-text">
+            <strong>{{ business.name if business is defined and business else 'SimpleMeet' }}</strong>
+            <span>{{ business.location or 'Nincs megadott helyszín' }}</span>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <a class="button button-secondary back-button" href="{{ url_for('business.dashboard') }}">Dashboardra</a>
+          <a class="button button-ghost" href="{{ url_for('business.logout') }}">Kijelentkezés</a>
+        </div>
+      </div>
+    </header>
 
-    <form method="POST">
-      {{ form.hidden_tag() }}
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-title">
+          <div>
+            <h2>Navigáció</h2>
+          </div>
+        </div>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'dashboard' else '' }}" href="{{ url_for('business.dashboard') }}">Dashboard</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'appointments' else '' }}" href="{{ url_for('business.appointments') }}">Foglalások</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'team-members' else '' }}" href="{{ url_for('business.team') }}">Csapat</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'catalog' else '' }}" href="{{ url_for('business.catalog') }}">Szolgáltatások</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'hours' else '' }}" href="{{ url_for('business.hours') }}">Nyitvatartás</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'edit-business' else '' }}" href="{{ url_for('business.edit_business') }}">Üzlet adatai</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'about-business' else '' }}" href="{{ url_for('business.aboutBusiness') }}">Rólunk</a>
+      </aside>
 
-      <div>{{ form.name.label }} {{ form.name() }}</div>
+      <main class="content">
+        <div class="flash-stack">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">
+                <strong style="text-transform:capitalize;">{{ category }}</strong>
+                <div>{{ message }}</div>
+              </div>
+            {% endfor %}
+          {% endif %}
+          {% endwith %}
+        </div>
 
-      <div>{{ form.location.label }} {{ form.location() }}</div>
+<section class="hero">
+  <div class="hero-header">
+    <div>
+      <h1>Üzlet adatai</h1>
+      <p>Nevek, helyszín és weboldal.</p>
+    </div>
+  </div>
+</section>
 
-      <div>{{ form.website.label }} {{ form.website() }}</div>
+<section class="grid-2">
+  <div class="panel">
+    <div class="panel-header">
+      <div>
+        <h2>Szerkesztés</h2>
+        <p>Az üzleti profil alapadatai.</p>
+      </div>
+    </div>
+    <div class="panel-body">
+      <form method="POST">
+        {{ form.hidden_tag() }}
 
-      <button type="submit">Mentés</button>
-    </form>
+        <div class="form-grid">
+          <div class="field full">
+            {{ form.name.label(class="field-label") }}
+            {{ form.name(class="input") }}
+            {% for error in form.name.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
+
+          <div class="field full">
+            {{ form.location.label(class="field-label") }}
+            {{ form.location(class="input") }}
+            {% for error in form.location.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
+
+          <div class="field full">
+            {{ form.website.label(class="field-label") }}
+            {{ form.website(class="input") }}
+            {% for error in form.website.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
+        </div>
+
+        <div class="auth-actions" style="margin-top:18px;">
+          <button class="button button-primary" type="submit">{{ form.submit.label.text }}</button>
+          <a class="button button-secondary" href="{{ url_for('business.dashboard') }}">Mégse</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">
+      <div>
+        <h2>Előnézet</h2>
+        <p>A nyilvános profil rövid összefoglalója.</p>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="card">
+        <p class="card-subtitle">Név</p>
+        <h3 style="margin:8px 0 0;">{{ business.name }}</h3>
+        <p class="card-subtitle" style="margin-top:14px;">Helyszín</p>
+        <strong>{{ business.location or '-' }}</strong>
+        <p class="card-subtitle" style="margin-top:14px;">Weboldal</p>
+        <strong>{{ business.website or '-' }}</strong>
+      </div>
+    </div>
+  </div>
+</section>
+      </main>
+    </div>
   </body>
 </html>

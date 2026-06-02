@@ -1,25 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <form action="" method="post">
-        {{ form.hidden_tag() }}
-        {% if form.agreeTerms.errors %}
-            <div>{{ form.agreeTerms() }}</div>
-            <div>
-                {% for error in form.agreeTerms.errors %}
-                    <span>{{error}}</span>
-                {% endfor %}
-            </div>
-        {% else %}
-            <div>{{ form.agreeTerms() }}</div>
-        {% endif %}
 
-        {{ form.submit(class="continue") }}
-    </form>
-</body>
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meghívó megerősítése • SimpleMeet</title>
+    <link rel="stylesheet" href="{{ url_for('business.static', filename='base/fresha-dashboard.css') }}" />
+  </head>
+  <body class="auth-shell">
+    <div class="auth-card">
+      <div class="brand" style="margin-bottom:18px;">
+        <div class="brand-mark">SM</div>
+        <div class="brand-text">
+          <strong>SimpleMeet</strong>
+          <span>Meghívó megerősítés</span>
+        </div>
+      </div>
+
+      <h1>Csatlakozás a {{business.name}} csapathoz</h1>
+      <p>Az alábbi jelölőnégyzet elfogadása szükséges a meghívó aktiválásához és a csatlakozáshoz.</p>
+
+      <div class="flash-stack">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash {{ category }}"><strong style="text-transform:capitalize;">{{ category }}</strong><div>{{ message }}</div></div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        {% if error %}
+          <div class="flash danger"><strong>Hiba</strong><div>{{ error }}</div></div>
+        {% endif %}
+      </div>
+
+      <form action="" method="post" style="margin-top:18px;">
+        {{ form.hidden_tag() }}
+
+        <label class="choice-card" style="margin-bottom:14px;">
+          {{ form.agreeTerms() }}
+          <span>
+            <strong>Elfogadom az <a class="link" href="{{ url_for('index.dataProtection') }}">adatvédelmi</a> és <a class="link" href="{{ url_for('index.termsOfService') }}">csatlakozási feltételeket</a></strong><br>
+            <span class="help-text">A folytatáshoz ezt kötelező bejelölni.</span>
+          </span>
+        </label>
+        {% for error in form.agreeTerms.errors %}
+          <div class="field-error" style="margin-bottom:12px;">{{ error }}</div>
+        {% endfor %}
+
+        <div class="auth-actions">
+          <button class="button button-primary" type="submit">{{ form.submit.label.text }}</button>
+        </div>
+      </form>
+    </div>
+  </body>
 </html>

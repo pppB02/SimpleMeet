@@ -3,34 +3,108 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Szolgáltatások</title>
+    <title>Szolgáltatások • SimpleMeet</title>
+    <link rel="stylesheet" href="{{ url_for('business.static', filename='base/fresha-dashboard.css') }}" />
   </head>
-  <body>
-    <h1>{{ business.name }} – Szolgáltatások</h1>
+  <body class="app-shell">
+    {% set active_page = "catalog" %}
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-mark">SM</div>
+          <div class="brand-text">
+            <strong>{{ business.name if business is defined and business else 'SimpleMeet' }}</strong>
+            <span>{{ business.location or 'Nincs megadott helyszín' }}</span>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <a class="button button-secondary back-button" href="{{ url_for('business.dashboard') }}">Dashboardra</a>
+          <a class="button button-ghost" href="{{ url_for('business.logout') }}">Kijelentkezés</a>
+        </div>
+      </div>
+    </header>
 
-    <p><a href="{{ url_for('business.newService') }}">Új szolgáltatás</a></p>
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-title">
+          <div>
+            <h2>Navigáció</h2>
+          </div>
+        </div>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'dashboard' else '' }}" href="{{ url_for('business.dashboard') }}">Dashboard</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'appointments' else '' }}" href="{{ url_for('business.appointments') }}">Foglalások</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'team-members' else '' }}" href="{{ url_for('business.team') }}">Csapat</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'catalog' else '' }}" href="{{ url_for('business.catalog') }}">Szolgáltatások</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'hours' else '' }}" href="{{ url_for('business.hours') }}">Nyitvatartás</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'edit-business' else '' }}" href="{{ url_for('business.edit_business') }}">Üzlet adatai</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'about-business' else '' }}" href="{{ url_for('business.aboutBusiness') }}">Rólunk</a>
+      </aside>
 
-    <table border="1" cellpadding="8" cellspacing="0">
-      <thead>
-        <tr>
-          <th>Név</th>
-          <th>Típus</th>
-          <th>Időtartam</th>
-          <th>Ár</th>
-          <th>Aktív</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for service in services %}
-        <tr>
-          <td>{{ service.name }}</td>
-          <td>{{ service.serviceType }}</td>
-          <td>{{ service.duration }} perc</td>
-          <td>{{ service.price }} Ft</td>
-          <td>{{ "igen" if service.is_active else "nem" }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+      <main class="content">
+        <div class="flash-stack">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">
+                <strong style="text-transform:capitalize;">{{ category }}</strong>
+                <div>{{ message }}</div>
+              </div>
+            {% endfor %}
+          {% endif %}
+          {% endwith %}
+        </div>
+
+<section class="hero">
+  <div class="hero-header">
+    <div>
+      <h1>Szolgáltatások</h1>
+      <p>Itt kezelheted a teljes kínálatot.</p>
+    </div>
+    <div class="hero-actions">
+      <a class="button button-primary" href="{{ url_for('business.newService') }}">Új szolgáltatás</a>
+    </div>
+  </div>
+</section>
+
+{% if services %}
+<section class="service-grid">
+  {% for service in services %}
+  <article class="service-card">
+    <div>
+      <div class="service-meta">
+        <span class="badge">{{ service.serviceType }}</span>
+        {% if service.is_active %}
+          <span class="badge success">Aktív</span>
+        {% else %}
+          <span class="badge danger">Inaktív</span>
+        {% endif %}
+      </div>
+      <h3 style="margin-top:12px;">{{ service.name }}</h3>
+      <p style="margin-top:8px;">{{ service.description or 'Nincs leírás megadva.' }}</p>
+    </div>
+    <div class="grid-2" style="gap:12px;">
+      <div class="card flat">
+        <p class="card-subtitle">Időtartam</p>
+        <strong>{{ service.duration }} perc</strong>
+      </div>
+      <div class="card flat">
+        <p class="card-subtitle">Ár</p>
+        <strong>{{ service.price }} Ft</strong>
+      </div>
+    </div>
+  </article>
+  {% endfor %}
+</section>
+{% else %}
+<section class="card">
+  <h3 class="card-title">Még nincs szolgáltatás</h3>
+  <p class="card-subtitle">Hozz létre egy új szolgáltatást, hogy a vendégek foglalhassanak.</p>
+  <div class="hero-actions">
+    <a class="button button-primary" href="{{ url_for('business.newService') }}">Új szolgáltatás</a>
+  </div>
+</section>
+{% endif %}
+      </main>
+    </div>
   </body>
 </html>

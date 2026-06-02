@@ -3,7 +3,7 @@ from datetime import datetime
 from ..web_helper import time_format
 from flask import Blueprint, render_template, url_for, send_from_directory, current_app, jsonify, request
 from flask_login import current_user
-from .services.constans import FURTHER_INFO_CHOICES
+from .services.constans import FURTHER_INFO_CHOICES, SERVICE_TYPES
 from ..db_models import Business, Staff, UserAccount, Service, Appointment, OpeningHour
 from app import db
 from ..business.services.booking.availability import generate_slots
@@ -29,8 +29,12 @@ def home():
     )
 
 
-@index.route("/adatvedelem")
-def adatvedelem():
+@index.route("/data-protection")
+def dataProtection():
+    return render_template("adatvedelem.html")
+
+@index.route("/terms-of-service")
+def termsOfService():
     return render_template("adatvedelem.html")
 
 @index.route("/book/<slug>")
@@ -79,6 +83,7 @@ def business_book(slug):
         opening_hours=opening_hours,
         time_format=time_format,
         preselected_service=preselected_service,
+        SERVICE_TYPES = SERVICE_TYPES
     )
 
 
@@ -117,7 +122,6 @@ def business_site(slug):
         }
         for service in services
     ]
-
     return render_template(
         "temp_for_services/szolgaltatas_minta.html",
         business=business,
@@ -128,6 +132,11 @@ def business_site(slug):
         opening_hours=opening_hours,
         time_format=time_format,
         preselected_service=preselected_service,
+        SERVICE_TYPES = SERVICE_TYPES,
+        infos = [
+        FURTHER_INFO_CHOICES[i]
+        for i in business.further_info
+    ]
     )
 
 @index.route("/api/availability")

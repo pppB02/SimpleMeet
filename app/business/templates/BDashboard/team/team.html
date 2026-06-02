@@ -3,44 +3,108 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Csapat</title>
+    <title>Csapat • SimpleMeet</title>
+    <link rel="stylesheet" href="{{ url_for('business.static', filename='base/fresha-dashboard.css') }}" />
   </head>
-  <body>
-    <table>
-      <thead>
-        <tr>
-          <th>Staff ID</th>
-          <th>Felhasználó</th>
-          <th>Kép</th>
-          <th>Szolgáltatások</th>
-          <th>Akciók</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for member in membersTable %}
-        <tr>
-          <td>{{ member.id }}</td>
-          <td>{{ member.user_info.username }}</td>
-          <td>
-            {% if member.pfp_name %}
-            <img
-              src="{{ url_for('index.get_file', filename=member.pfp_name) }}"
-              alt=""
-              width="48"
-            />
-            {% endif %}
-          </td>
-          <td>
-            {% if member.services %} {% for service in member.services %}
-            <div>{{ service.name }} ({{ service.serviceType }})</div>
-            {% endfor %} {% else %}
-            <small>Nincs hozzárendelt szolgáltatás</small>
-            {% endif %}
-          </td>
-          <td>{{ member.business_id }}</td>
-        </tr>
+  <body class="app-shell">
+    {% set active_page = "team-members" %}
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-mark">SM</div>
+          <div class="brand-text">
+            <strong>{{ business.name if business is defined and business else 'SimpleMeet' }}</strong>
+            <span>{{ business.location or 'Nincs megadott helyszín' }}</span>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <a class="button button-secondary back-button" href="{{ url_for('business.dashboard') }}">Dashboardra</a>
+          <a class="button button-ghost" href="{{ url_for('business.logout') }}">Kijelentkezés</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-title">
+          <div>
+            <h2>Navigáció</h2>
+          </div>
+        </div>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'dashboard' else '' }}" href="{{ url_for('business.dashboard') }}">Dashboard</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'appointments' else '' }}" href="{{ url_for('business.appointments') }}">Foglalások</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'team-members' else '' }}" href="{{ url_for('business.team') }}">Csapat</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'catalog' else '' }}" href="{{ url_for('business.catalog') }}">Szolgáltatások</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'hours' else '' }}" href="{{ url_for('business.hours') }}">Nyitvatartás</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'edit-business' else '' }}" href="{{ url_for('business.edit_business') }}">Üzlet adatai</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'about-business' else '' }}" href="{{ url_for('business.aboutBusiness') }}">Rólunk</a>
+      </aside>
+
+      <main class="content">
+        <div class="flash-stack">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">
+                <strong style="text-transform:capitalize;">{{ category }}</strong>
+                <div>{{ message }}</div>
+              </div>
+            {% endfor %}
+          {% endif %}
+          {% endwith %}
+        </div>
+
+<section class="hero">
+  <div class="hero-header">
+    <div>
+      <h1>Csapat</h1>
+      <p>Az összes munkatárs.</p>
+    </div>
+    <div class="hero-actions">
+      <a class="button button-primary" href="{{ url_for('business.teamMembers') }}">Új csapattag</a>
+    </div>
+  </div>
+</section>
+
+{% if membersTable %}
+<section class="grid-3">
+  {% for member in membersTable %}
+  <article class="card">
+    <div class="field-inline" style="align-items:flex-start;">
+      <div style="width:64px;height:64px;border-radius:20px;overflow:hidden;background:#f8fafc;border:1px solid var(--border);display:grid;place-items:center;flex:0 0 auto;">
+        {% if member.pfp_name %}
+          <img src="{{ url_for('index.get_file', filename=member.pfp_name) }}" alt="{{ member.user_info.username }}" style="width:100%;height:100%;object-fit:cover;">
+        {% else %}
+          <span class="help-text">Nincs kép</span>
+        {% endif %}
+      </div>
+      <div>
+        <h3 class="card-title" style="margin-bottom:4px;">{{ member.user_info.username }}</h3>
+      </div>
+    </div>
+
+    <div class="meta-row">
+      {% if member.services %}
+        {% for service in member.services %}
+          <span class="badge">{{ service.name }} · {{ service.serviceType }}</span>
         {% endfor %}
-      </tbody>
-    </table>
+      {% else %}
+        <span class="badge warning">Nincs hozzárendelt szolgáltatás</span>
+      {% endif %}
+    </div>
+  </article>
+  {% endfor %}
+</section>
+{% else %}
+<section class="card">
+  <h3 class="card-title">Még nincs csapattag</h3>
+  <p class="card-subtitle">Adj hozzá egy új munkatársat a következő meghívással.</p>
+  <div class="hero-actions">
+    <a class="button button-primary" href="{{ url_for('business.teamMembers') }}">Új csapattag meghívása</a>
+  </div>
+</section>
+{% endif %}
+      </main>
+    </div>
   </body>
 </html>

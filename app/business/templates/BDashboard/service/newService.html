@@ -1,113 +1,169 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SimpleMeet</title>
-</head>
-<body>
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Új szolgáltatás • SimpleMeet</title>
+    <link rel="stylesheet" href="{{ url_for('business.static', filename='base/fresha-dashboard.css') }}" />
+  </head>
+  <body class="app-shell">
+    {% set active_page = "new-service" %}
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="brand">
+          <div class="brand-mark">SM</div>
+          <div class="brand-text">
+            <strong>{{ business.name if business is defined and business else 'SimpleMeet' }}</strong>
+            <span>Szolgáltatás létrehozás</span>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <a class="button button-secondary back-button" href="{{ url_for('business.catalog') }}">Vissza a szolgáltatásokhoz</a>
+          <a class="button button-ghost" href="{{ url_for('business.logout') }}">Kijelentkezés</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-title">
+          <div>
+            <h2>Navigáció</h2>
+            <p>Gyors hozzáférés</p>
+          </div>
+        </div>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'dashboard' else '' }}" href="{{ url_for('business.dashboard') }}">Dashboard</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'appointments' else '' }}" href="{{ url_for('business.appointments') }}">Foglalások</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'team-add-member' else '' }}" href="{{ url_for('business.teamMembers') }}">Új csapattag</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'team-members' else '' }}" href="{{ url_for('business.team') }}">Csapat</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'catalog' else '' }}" href="{{ url_for('business.catalog') }}">Szolgáltatások</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'new-service' else '' }}" href="{{ url_for('business.newService') }}">Új szolgáltatás</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'hours' else '' }}" href="{{ url_for('business.hours') }}">Nyitvatartás</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'edit-business' else '' }}" href="{{ url_for('business.edit_business') }}">Üzlet adatai</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'about-business' else '' }}" href="{{ url_for('business.aboutBusiness') }}">Rólunk / képek</a>
+      </aside>
+
+      <main class="content">
+        <div class="flash-stack">
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="flash {{ category }}">
+                <strong style="text-transform:capitalize;">{{ category }}</strong>
+                <div>{{ message }}</div>
+              </div>
+            {% endfor %}
+          {% endif %}
+          {% endwith %}
+        </div>
+
+<section class="hero">
+  <div class="hero-header">
     <div>
-        <form action="" method="post">
-            {{ form.hidden_tag() }}
-
-            <div>
-                {{ form.name.label() }}
-                {% if form.name.errors %}
-                    {{ form.name() }}
-                    <div>
-                        {% for error in form.name.errors %}
-                            <span>{{error}}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.name() }}
-                {% endif %}
-            </div>
-
-            <div>
-                {{ form.serviceType.label() }}
-                {% if form.serviceType.errors %}
-                    {{ form.serviceType() }}
-                    <div>
-                        {% for error in form.serviceType.errors %}
-                            <span>{{error}}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.serviceType() }}
-                {% endif %}
-            </div>
-
-            <div>
-                {{ form.description.label() }}
-                {% if form.description.errors %}
-                    {{ form.description() }}
-                    <div>
-                        {% for error in form.description.errors %}
-                            <span>{{error}}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.description() }}
-                {% endif %}
-            </div>
-
-            <div>
-                {{ form.duration.label() }}
-                {% if form.duration.errors %}
-                    {{ form.duration() }}
-                    <div>
-                        {% for error in form.duration.errors %}
-                            <span>{{error}}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.duration() }}
-                {% endif %}
-            </div>
-
-            <div>
-                {{ form.priceType.label() }}
-                {% if form.priceType.errors %}
-                    {{ form.priceType() }}
-                    <div>
-                        {% for error in form.priceType.errors %}
-                            <span>{{error}}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.priceType() }}
-                {% endif %}
-            </div>
-
-            <div>
-                {{ form.price.label() }}
-                {% if form.price.errors %}
-                    {{ form.price() }}
-                    <div>
-                        {% for error in form.price.errors %}
-                            <span>{{error}}</span>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.price() }}
-                {% endif %}
-            </div>
-
-            <div>
-                {% for subfield in form.teamMembers %}
-                <div class="category">
-                    {{ subfield }}
-                    <label for="{{ subfield.id }}">{{ subfield.label.text }}</label>
-                </div>
-                {% endfor %}
-            </div>
-
-            <div>
-                {{ form.submit() }}
-            </div>
-
-        </form>
+      <div class="kicker">Új szolgáltatás</div>
+      <h1>Szolgáltatás hozzáadása</h1>
+      <p>Állítsd be a nevet, típust, időtartamot, árat és a hozzárendelt munkatársat egy modern űrlapon.</p>
     </div>
-</body>
+    <div class="hero-actions">
+      <a class="button button-secondary" href="{{ url_for('business.catalog') }}">Szolgáltatások</a>
+      <a class="button button-primary" href="{{ url_for('business.dashboard') }}">Dashboard</a>
+    </div>
+  </div>
+</section>
+
+<section class="grid-2">
+  <div class="panel">
+    <div class="panel-header">
+      <div>
+        <h2>Szolgáltatás adatai</h2>
+        <p>Töltsd ki az alapinformációkat.</p>
+      </div>
+    </div>
+    <div class="panel-body">
+      <form action="" method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="form-grid">
+          <div class="field full">
+            {{ form.name.label(class="field-label") }}
+            {{ form.name(class="input", placeholder="Pl. Férfi hajvágás") }}
+            {% for error in form.name.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
+
+          <div class="field full">
+            {{ form.serviceType.label(class="field-label") }}
+            {{ form.serviceType(class="input") }}
+            {% for error in form.serviceType.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
+
+          <div class="field full">
+            {{ form.description.label(class="field-label") }}
+            {{ form.description(class="input", rows="5", placeholder="Rövid és meggyőző leírás") }}
+            {% for error in form.description.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
+
+          <div class="field">
+            {{ form.duration.label(class="field-label") }}
+            {{ form.duration(class="input") }}
+            {% for error in form.duration.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
+
+          <div class="field">
+            {{ form.priceType.label(class="field-label") }}
+            {{ form.priceType(class="input") }}
+            {% for error in form.priceType.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
+
+          <div class="field full">
+            {{ form.price.label(class="field-label") }}
+            {{ form.price(class="input", placeholder="Pl. 6500") }}
+            {% for error in form.price.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
+
+          <div class="field full">
+            <label class="field-label">Hozzárendelt munkatárs</label>
+            {% if form.teamMembers.choices and form.teamMembers.choices[0][0] != '0' %}
+              <div class="radio-grid">
+                {% for subfield in form.teamMembers %}
+                  <label class="choice-card">
+                    {{ subfield() }}
+                    <span>{{ subfield.label.text }}</span>
+                  </label>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="note-box">Nincs elérhető munkatárs. Előbb adj hozzá csapattagot.</div>
+            {% endif %}
+            {% for error in form.teamMembers.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
+          </div>
+        </div>
+
+        <div class="auth-actions" style="margin-top:18px;">
+          <button class="button button-primary" type="submit">{{ form.submit.label.text }}</button>
+          <a class="button button-secondary" href="{{ url_for('business.catalog') }}">Mégse</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-header">
+      <div>
+        <h2>Hasznos tippek</h2>
+        <p>Mitől lesz jól foglalható a szolgáltatás?</p>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="note-box">
+        <strong>Javaslat:</strong> rövid, egyértelmű név, pontos időtartam és valós ár. Így a vendégek könnyebben foglalnak.
+      </div>
+      <div class="note-box" style="margin-top:12px;">
+        Az időpontgenerálás a backendben a szolgáltatás hosszához igazodik, nem statikus 15 perces blokkokhoz.
+      </div>
+    </div>
+  </div>
+</section>
+      </main>
+    </div>
+  </body>
 </html>

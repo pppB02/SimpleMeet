@@ -163,6 +163,7 @@ def confirmInviteSite(token):
         return "Invalid or expired token"
 
     form = ConfirmInviteForm()
+    business_obj = Business.query.filter_by(id=datas["business_id"]).first()
     if form.validate_on_submit():
         if form.agreeTerms.data:
             try:
@@ -172,7 +173,7 @@ def confirmInviteSite(token):
                 print(e)
                 return render_template("confirm_invite/confirm_invite.html", form=form, error=str(e))
 
-    return render_template("confirm_invite/confirm_invite.html", form=form)
+    return render_template("confirm_invite/confirm_invite.html", form=form,business=business_obj)
 
 
 # ======================
