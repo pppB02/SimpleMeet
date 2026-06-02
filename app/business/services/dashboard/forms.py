@@ -42,7 +42,7 @@ for ossz_perc in range(5, 721, 5):
 
 
 class MemberProfile(FlaskForm):
-    name = StringField("Name", validators=[DataRequired()])
+    name = StringField("Név", validators=[DataRequired()])
     email = StringField("Email", validators=[DataRequired()])
     photo = FileField(
         "Kép",
@@ -51,7 +51,7 @@ class MemberProfile(FlaskForm):
             FileRequired("File kell"),
         ],
     )
-    submit = SubmitField("Send link")
+    submit = SubmitField("Meghívó küldése")
 
     def validate_email(self, email):
         if email.data.strip() == current_user.email:
@@ -60,7 +60,7 @@ class MemberProfile(FlaskForm):
 
 class ConfirmInviteForm(FlaskForm):
     agreeTerms = BooleanField("agreeTerms", default=False, validators=[DataRequired()])
-    submit = SubmitField("Sing Up")
+    submit = SubmitField("Csatlakozás")
 
 
 class openHours(FlaskForm):
@@ -183,9 +183,9 @@ class NewServiceForm(FlaskForm):
     submit = SubmitField("Mentés")
 
 class BusinessEditForm(FlaskForm):
-    name = StringField("Business name", validators=[DataRequired(), Length(min=2, max=255)])
-    location = StringField("Location", validators=[Optional(), Length(max=255)])
-    website = StringField("Website", validators=[Optional()], render_kw={"placeholder": "www.yourwebsite.com"})
+    name = StringField("Vállalkozás neve", validators=[DataRequired(), Length(min=2, max=255)])
+    location = StringField("Hely", validators=[Optional(), Length(max=255)])
+    website = StringField("Weboldal", validators=[Optional()], render_kw={"placeholder": "www.yourwebsite.com"})
     submit = SubmitField("Mentés")
 
     def validate_name(self, name):

@@ -13,12 +13,12 @@
         <div class="brand">
           <div class="brand-mark">SM</div>
           <div class="brand-text">
-            <strong>{{ business.name if business is defined and business else 'SimpleMeet' }}</strong>
-            <span>Meghívó küldés</span>
+            <strong>{{ (business.name) | default('SimpleMeet', true) }}</strong>
+            <span>{{ (business.location) | default('Nincs megadott helyszín', true) }}</span>
           </div>
         </div>
         <div class="topbar-actions">
-          <a class="button button-secondary back-button" href="{{ url_for('business.team') }}">Vissza a csapatra</a>
+          <a class="button button-secondary back-button" href="{{ url_for('business.dashboard') }}">Dashboardra</a>
           <a class="button button-ghost" href="{{ url_for('business.logout') }}">Kijelentkezés</a>
         </div>
       </div>
@@ -29,18 +29,15 @@
         <div class="sidebar-title">
           <div>
             <h2>Navigáció</h2>
-            <p>Gyors hozzáférés</p>
           </div>
         </div>
         <a class="sidebar-link {{ 'is-active' if active_page == 'dashboard' else '' }}" href="{{ url_for('business.dashboard') }}">Dashboard</a>
         <a class="sidebar-link {{ 'is-active' if active_page == 'appointments' else '' }}" href="{{ url_for('business.appointments') }}">Foglalások</a>
-        <a class="sidebar-link {{ 'is-active' if active_page == 'team-add-member' else '' }}" href="{{ url_for('business.teamMembers') }}">Új csapattag</a>
-        <a class="sidebar-link {{ 'is-active' if active_page == 'team-members' else '' }}" href="{{ url_for('business.team') }}">Csapat</a>
+        <a class="sidebar-link is-active" href="{{ url_for('business.team') }}">Csapat</a>
         <a class="sidebar-link {{ 'is-active' if active_page == 'catalog' else '' }}" href="{{ url_for('business.catalog') }}">Szolgáltatások</a>
-        <a class="sidebar-link {{ 'is-active' if active_page == 'new-service' else '' }}" href="{{ url_for('business.newService') }}">Új szolgáltatás</a>
         <a class="sidebar-link {{ 'is-active' if active_page == 'hours' else '' }}" href="{{ url_for('business.hours') }}">Nyitvatartás</a>
         <a class="sidebar-link {{ 'is-active' if active_page == 'edit-business' else '' }}" href="{{ url_for('business.edit_business') }}">Üzlet adatai</a>
-        <a class="sidebar-link {{ 'is-active' if active_page == 'about-business' else '' }}" href="{{ url_for('business.aboutBusiness') }}">Rólunk / képek</a>
+        <a class="sidebar-link {{ 'is-active' if active_page == 'about-business' else '' }}" href="{{ url_for('business.aboutBusiness') }}">Rólunk</a>
       </aside>
 
       <main class="content">
@@ -60,13 +57,8 @@
 <section class="hero">
   <div class="hero-header">
     <div>
-      <div class="kicker">Csapattag meghívása</div>
       <h1>Új munkatárs hozzáadása</h1>
       <p>Add meg a nevet, az email címet és a képet, majd a rendszer küldhet meghívót a csatlakozáshoz.</p>
-    </div>
-    <div class="hero-actions">
-      <a class="button button-secondary" href="{{ url_for('business.team') }}">Csapat</a>
-      <a class="button button-primary" href="{{ url_for('business.dashboard') }}">Dashboard</a>
     </div>
   </div>
 </section>
@@ -124,7 +116,7 @@
           <img src="{{ url_for('index.get_file', filename=filename) }}" alt="Előnézet">
         </div>
       {% else %}
-        <div class="note-box">Tölts fel egy profilképet, hogy a meghívó professzionálisabb legyen.</div>
+        <div class="note-box">Tölts fel egy profilképet.</div>
       {% endif %}
     </div>
   </div>

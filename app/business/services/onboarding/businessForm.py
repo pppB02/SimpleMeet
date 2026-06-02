@@ -8,15 +8,15 @@ from ....db_models import Business
 
 
 class Reg_NameAndWeb(FlaskForm):
-    name = StringField("Business name", validators=[DataRequired()])
+    name = StringField("Vállalkozás neve", validators=[DataRequired()])
 
     website = StringField(
-        "Website",
+        "Weboldal",
         validators=[Optional()],
         render_kw={"placeholder": "www.yourwebsite.com"},
     )
 
-    submit = SubmitField("Continue")
+    submit = SubmitField("Tovább")
 
     def validate_name(self, name):
         existing_name = Business.query.filter_by(name=name.data).first()
@@ -34,18 +34,18 @@ class Reg_ServiceType(FlaskForm):
         validators=[DataRequired()],
         choices=[
             ("barber-shop", "Barber"),
-            ("finger-nail", "Nails"),
-            ("hair-salon", "Hair salon"),
-            ("spa", "Medspa"),
+            ("finger-nail", "Körmös"),
+            ("hair-salon", "Fodrász"),
+            ("spa", "Wellness"),
         ],
     )
 
-    submit = SubmitField("Continue")
+    submit = SubmitField("Tovább")
 
 
 class Reg_Location(FlaskForm):
-    location = StringField("Where's your business located?", validators=[DataRequired()])
-    submit = SubmitField("Continue")
+    location = StringField("Hol található a vállalkozása?", validators=[DataRequired()])
+    submit = SubmitField("Tovább")
 
     def validate_location(self, location):
         pass

@@ -5,7 +5,7 @@ from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationE
 from ....db_models import UserAccount
 
 class SingUpForm(FlaskForm):
-    username = StringField("Username",validators=[
+    username = StringField("Név",validators=[
                                         DataRequired(),
                                         Length(min=2, max=20)])
     
@@ -13,18 +13,18 @@ class SingUpForm(FlaskForm):
                                         DataRequired(),
                                         Email()])
     
-    password = PasswordField("Password",validators=[DataRequired(),
+    password = PasswordField("Jelszó",validators=[DataRequired(),
                                                    Length(min=8)])
-    confirm_password = PasswordField("ConfirmPassword",validators=[DataRequired(),
+    confirm_password = PasswordField("Jelszó mégegyszer",validators=[DataRequired(),
                                                     EqualTo("password")])
     
-    submit = SubmitField("Sing Up")
+    submit = SubmitField("Regisztrálás")
 
     def validate_email(self, email):
         existing_user_email = UserAccount.query.filter_by(
             email=email.data).first()
         if existing_user_email:
-            raise ValidationError(f"Ezt az email címet már regisztrálták! <a href='{url_for('user.login')}'>Bejelentkezés</a>")
+            raise ValidationError(f"Ezt az email címet már regisztrálták! <a href='{url_for('business.login')}'>Bejelentkezés</a>")
 
 
 class LoginForm(FlaskForm):
@@ -32,10 +32,10 @@ class LoginForm(FlaskForm):
                                         DataRequired(),
                                         Email()])
     
-    password = PasswordField("Password",validators=[DataRequired(),
+    password = PasswordField("Jelszó",validators=[DataRequired(),
                                                    Length(min=8)])
     
-    remember = BooleanField("Remember Me")
+    remember = BooleanField("Emlékezz rám")
     
-    submit = SubmitField("Login")
+    submit = SubmitField("Bejelentkezés")
 

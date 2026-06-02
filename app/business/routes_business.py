@@ -211,6 +211,7 @@ def team():
 def teamMembers():
     form = MemberProfile()
     filename = None
+    business_obj = Business.query.filter_by(admin_user_id=current_user.id).first()
 
     if form.validate_on_submit():
         photo = form.photo.data
@@ -224,7 +225,7 @@ def teamMembers():
         MemberAdd(email=email, name=name, business_owner_id=current_user.id, pfp=filename)
         return redirect(url_for("business.team"))
 
-    return render_template("BDashboard/team/team_add_member.html", form=form, filename=filename)
+    return render_template("BDashboard/team/team_add_member.html", form=form, filename=filename, business=business_obj)
 
 
 @business.route("/dashboard/hours", methods=['POST', 'GET'])
@@ -290,7 +291,7 @@ def newService():
         flash("Szolgáltatás mentve", "success")
         return redirect(url_for("business.catalog"))
 
-    return render_template("BDashboard/service/newService.html", form=form)
+    return render_template("BDashboard/service/newService.html", form=form, business=business_obj)
 
 @business.route("/dashboard/about-business", methods=['POST', 'GET'])
 @business_required()

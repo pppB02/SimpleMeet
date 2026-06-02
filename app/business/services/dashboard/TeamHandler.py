@@ -1,6 +1,7 @@
 from ....db_models import Business, Staff, UserAccount, StaffIviteLinks
 from app import db, serializer
 import os
+from flask import flash, url_for
 
 
 def MemberAdd(email, name, business_owner_id, pfp):
@@ -20,6 +21,15 @@ def MemberAdd(email, name, business_owner_id, pfp):
 
     newLink = StaffIviteLinks(email=email, token=token)
 
+
+    subject = f"Hi {name}, you've been invited to join {business.name} on SimpleMeet"
+
+
+    #invite_link = f"http://localhost:5000/business/confirm-invite/{token}"
+    invite_link = url_for("business.confirmInviteSite",token=token, _external=True)
+    
+    flash(invite_link,category="message")
+
     try:
         db.session.add(newLink)
         db.session.commit()
@@ -29,20 +39,10 @@ def MemberAdd(email, name, business_owner_id, pfp):
         print(e)
         raise
 
-    subject = f"Hi {name}, you've been invited to join {business.name} on SimpleMeet"
-    file_path = os.path.join(os.getcwd(), "MailTemplates", "invite", "index.html")
 
-    if os.path.exists(file_path):
-        with open(file_path, 'r', encoding='utf-8') as file:
-            file_content = file.read()
-    else:
-        file_content = "<p>You are invited.</p><a href='{{invite_link}}'>Join</a>"
-
-    invite_link = f"http://localhost:5000/business/confirm-invite/{token}"
     print(invite_link)
 
-    # ha van EmailService, akkor itt lehetne elküldeni
-    # sendEmail(subject, email, html)
+
 
     return token
 
